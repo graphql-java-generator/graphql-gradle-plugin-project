@@ -6,32 +6,35 @@
  * User Manual available at https://docs.gradle.org/5.4/userguide/java_library_plugin.html
  */
 
+ 
 plugins {
     // Apply the java-library plugin to add support for Java Library
     id 'java-library'
 }
 
+repositories {
+	//  mavenLocal is used to get snapshot of the com.graphql-java-generator maven plugin, and relatives dependencies
+	mavenLocal()
+	mavenCentral()
+}
+
 dependencies {
 	// Let's reuse the logic already implemented in our maven plugin
     implementation 'com.graphql-java-generator:graphql-maven-plugin-project:1.0.0-RC1'
-
-    // Use JUnit test framework
-    testImplementation 'junit:junit:4.12'
+	
+	// Logging with log4j2
+	compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.12.0'
+	compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.12.0'
+	
+	// Use JUnit test framework
+	testImplementation("org.junit.jupiter:junit-jupiter-api:5.5.0")
+	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.5.0")
+	testRuntimeOnly("org.apache.logging.log4j:log4j-jul:2.12.0")
+	
 }
 
-// A sample plugin, just to try
-
-
-class GreetingPlugin implements Plugin<Project> {
-	void apply(Project project) {
-		project.task('hello') {
-			doLast {
-				println 'Hello from the ' + project.name
-			}
-		}
-	}
+test {
+	// We're using JUnit 5
+	useJUnitPlatform()
+	systemProperty 'java.util.logging.manager', 'org.apache.logging.log4j.jul.LogManager'
 }
-
-// Apply the plugin
-apply plugin: GreetingPlugin
-

@@ -25,5 +25,12 @@ dependencies {
 	implementation 'com.google.guava:guava:27.0.1-jre'
 
 	// Use JUnit test framework
-	testImplementation 'junit:junit:4.12'
+	testImplementation("org.junit.jupiter:junit-jupiter-api:5.5.0")
+	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.5.0")
+}
+
+test {
+	// We're using JUnit 5 
+	useJUnitPlatform()
+	systemProperty 'java.util.logging.manager', 'org.apache.logging.log4j.jul.LogManager'
 }
