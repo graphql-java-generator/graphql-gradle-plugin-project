@@ -7,30 +7,20 @@
  */
 
 plugins {
-	// Apply the java-library plugin to add support for Java Library
-	id 'java-library'
+	id 'org.asciidoctor.convert' version '1.5.6' apply false
 }
 
-repositories {
-	//  mavenLocal is used to get snapshot of the com.graphql-java-generator maven plugin, and relatives dependencies
-	mavenLocal()
-	mavenCentral()
-}
+allprojects {
 
-dependencies {
-	// This dependency is exported to consumers, that is to say found on their compile classpath.
-	api 'org.apache.commons:commons-math3:3.6.1'
+	version = '1.0.0-RC1-SNAPSHOT'
 
-	// This dependency is used internally, and not exposed to consumers on their own compile classpath.
-	implementation 'com.google.guava:guava:27.0.1-jre'
+	repositories {
+		//  mavenLocal is used to get snapshot of the com.graphql-java-generator maven plugin, and relatives dependencies
+		mavenLocal()
+		mavenCentral()
+	}
 
-	// Use JUnit test framework
-	testImplementation("org.junit.jupiter:junit-jupiter-api:5.5.0")
-	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.5.0")
-}
+	dependencies {
 
-test {
-	// We're using JUnit 5 
-	useJUnitPlatform()
-	systemProperty 'java.util.logging.manager', 'org.apache.logging.log4j.jul.LogManager'
+	}
 }

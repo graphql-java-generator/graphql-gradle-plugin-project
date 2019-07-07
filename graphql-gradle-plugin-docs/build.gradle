@@ -1,0 +1,11 @@
+plugins {
+	id 'org.asciidoctor.convert'
+}
+
+asciidoctor {
+	sources {
+		include 'graphqlPlugin.adoc'
+	}
+}
+
+build.dependsOn 'asciidoctor'

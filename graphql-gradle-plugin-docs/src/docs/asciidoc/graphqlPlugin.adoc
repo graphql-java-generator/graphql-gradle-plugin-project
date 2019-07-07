@@ -1,0 +1,17 @@
+= Greeter Command-line Application
+
+A simple application demonstrating the flexibility of a Gradle multi-project.
+
+== Installation
+
+Unpack the ZIP or TAR file in a suitable location
+
+== Usage
+
+[listing]
+----
+$ cd greeter-1.0
+$ ./bin/greeter gradlephant
+
+Hello, Gradlephant
+----
