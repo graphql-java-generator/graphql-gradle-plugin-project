@@ -8,9 +8,7 @@
 
 plugins {
 	id 'org.asciidoctor.convert' version '1.5.6' apply false
-//	id 'org.example.greeting'
 }
-//apply plugin: graphql.gradleplugin.GraphqlPlugin
 
 
 allprojects {
@@ -27,6 +25,4 @@ allprojects {
 
 	}
 }
-
-
 
