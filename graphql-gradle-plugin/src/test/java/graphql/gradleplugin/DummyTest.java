@@ -1,28 +1,30 @@
 /**
  * 
  */
-package graphql.graphqlplugin;
+package graphql.gradleplugin;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import graphql.gradleplugin.Dummy;
+
 /**
  * @author EtienneSF
  *
  */
-class GraphqlGradlePluginTest {
+class DummyTest {
 
-	GraphqlGradlePlugin graphqlGradlePlugin;
+	Dummy graphqlGradlePlugin;
 
 	@BeforeEach
 	public void setup() {
-		graphqlGradlePlugin = new GraphqlGradlePlugin();
+		graphqlGradlePlugin = new Dummy();
 	}
 
 	/**
-	 * Test method for {@link graphql.graphqlplugin.GraphqlGradlePlugin#plus(int, int)}.
+	 * Test method for {@link graphql.gradleplugin.Dummy#plus(int, int)}.
 	 */
 	@Test
 	void testPlus() {

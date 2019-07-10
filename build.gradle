@@ -12,7 +12,7 @@ plugins {
 
 allprojects {
 
-	version = '1.0.0-RC1-SNAPSHOT'
+	version = '1.0.0-RC2-SNAPSHOT'
 
 	repositories {
 		//  mavenLocal is used to get snapshot of the com.graphql-java-generator maven plugin, and relatives dependencies
@@ -24,3 +24,7 @@ allprojects {
 
 	}
 }
+
+//apply plugin: graphql.gradleplugin.GraphqlPlugin
+apply plugin: org.example.greeting.GreetingPlugin
+

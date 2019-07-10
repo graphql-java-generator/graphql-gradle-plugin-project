@@ -3,4 +3,4 @@
  * @author EtienneSF
  *
  */
-package graphql.graphqlplugin;
+package graphql.gradleplugin;
