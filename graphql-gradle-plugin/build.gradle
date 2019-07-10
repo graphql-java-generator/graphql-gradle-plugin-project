@@ -1,7 +1,7 @@
 
 plugins {
 	id 'java-gradle-plugin'
-//	id 'org.example.greeting'
+	id 'org.example.greeting'
 }
 
 repositories {
@@ -38,5 +38,5 @@ test {
 
 
 //apply plugin: 'com.graphql-java-generator.GraphqlPlugin'
-apply plugin: org.example.greeting.GreetingPlugin
+//apply plugin: org.example.greeting.GreetingPlugin
 
