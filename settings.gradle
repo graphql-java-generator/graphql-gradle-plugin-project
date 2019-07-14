@@ -9,8 +9,8 @@
 
 rootProject.name = 'graphql-gradle-plugin-project'
 
-//include 'graphql-gradle-plugin'
 includeBuild 'graphql-gradle-plugin'
+
 include 'graphql-gradle-plugin-docs'
 include 'graphql-gradle-plugin-samples-Basic-client'
 

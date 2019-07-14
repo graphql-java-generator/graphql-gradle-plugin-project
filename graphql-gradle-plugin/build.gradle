@@ -15,9 +15,7 @@
 apply plugin: 'java'
 apply plugin: 'maven'
 
-group = 'my-gradle-test'
-version = '1.0.0-RC2-SNAPSHOT'
-
+apply from: '../common_conf.gradle'
 
 repositories {
 	//  mavenLocal is used to get snapshot of the com.graphql-java-generator maven plugin, and relatives dependencies
@@ -43,15 +41,8 @@ dependencies {
 
 }
 
-//project(':graphql-gradle-plugin').tasks.install.mustRunAfter build
-
 test {
 	// We're using JUnit 5
 	useJUnitPlatform()
 	systemProperty 'java.util.logging.manager', 'org.apache.logging.log4j.jul.LogManager'
 }
-
-
-//graphql {
-//	packageName = "my.package"
-//}
