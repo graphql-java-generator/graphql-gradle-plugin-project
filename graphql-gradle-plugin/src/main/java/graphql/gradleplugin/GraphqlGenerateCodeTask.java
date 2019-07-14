@@ -14,20 +14,26 @@ import org.gradle.api.tasks.TaskAction;
  */
 public class GraphqlGenerateCodeTask extends DefaultTask {
 
-	private String packageName = "com.generated.graphql";
+	/** The Gradle extension, to read the plugin parameters from the script */
+	private GraphqlExtension extension;
 
 	@Input
 	public String getPackageName() {
-		return packageName;
-	}
-
-	public void setPackageName(String packageName) {
-		this.packageName = packageName;
+		return extension.getPackageName();
 	}
 
 	@TaskAction
 	public void execute() {
-		System.out.println("Package name is " + packageName);
+		System.out.println("Package name is (from extension) " + extension.getPackageName());
+	}
+
+	/**
+	 * Register the Gradle extension, to read the plugin parameters from the script
+	 * 
+	 * @param extension
+	 */
+	public void setExtension(GraphqlExtension extension) {
+		this.extension = extension;
 	}
 
 }

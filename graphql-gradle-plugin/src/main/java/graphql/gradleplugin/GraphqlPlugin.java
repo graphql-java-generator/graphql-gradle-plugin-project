@@ -15,13 +15,13 @@ public class GraphqlPlugin implements Plugin<Project> {
 
 	@Override
 	public void apply(Project project) {
-		// project.getExtensions().create("graphql", GraphqlExtension.class, project);
+		GraphqlExtension extension = project.getExtensions().create("graphql", GraphqlExtension.class, project);
 
 		project.getTasks().register("graphqlGenerateCode", GraphqlGenerateCodeTask.class,
 				new Action<GraphqlGenerateCodeTask>() {
 					@Override
 					public void execute(GraphqlGenerateCodeTask task) {
-						// No action
+						task.setExtension(extension);
 					}
 				});
 	}
