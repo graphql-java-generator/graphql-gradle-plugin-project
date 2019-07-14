@@ -13,7 +13,10 @@ plugins {
 
 allprojects {
 
+	//	group = 'com.graphql-java-generator'
+	group = 'my-gradle-test'
 	version = '1.0.0-RC2-SNAPSHOT'
+//	version = '1.2.3'
 
 	repositories {
 		//  mavenLocal is used to get snapshot of the com.graphql-java-generator maven plugin, and relatives dependencies

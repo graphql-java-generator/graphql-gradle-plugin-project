@@ -1,8 +1,23 @@
+//buildscript {
+//	//	dependencies {
+//	//		classpath group: 'de.dynamicfiles.projects.gradle.plugins', name: 'javafx-gradle-plugin', version: "${gradle.javafxGradlePluginVersion}"
+//	//	}
+//	repositories {
+//		mavenLocal()
+//		mavenCentral()
+//		maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+//
+//	}
+//	apply plugin: 'java'
+//}
 
-plugins {
-	id 'java-gradle-plugin'
-//	id 'org.example.greeting'
-}
+
+apply plugin: 'java'
+apply plugin: 'maven'
+
+group = 'my-gradle-test'
+version = '1.0.0-RC2-SNAPSHOT'
+
 
 repositories {
 	//  mavenLocal is used to get snapshot of the com.graphql-java-generator maven plugin, and relatives dependencies
@@ -11,19 +26,24 @@ repositories {
 }
 
 dependencies {
+
+	implementation gradleApi()
+
 	// Let's reuse the logic already implemented in our maven plugin
 	//implementation 'com.graphql-java-generator:graphql-maven-plugin-project:1.0.0-RC1'
 
 	// Logging with log4j2
-	implementation 'org.apache.logging.log4j:log4j-api:2.12.0'
-	implementation 'org.apache.logging.log4j:log4j-core:2.12.0'
+	implementation 'org.apache.logging.log4j:log4j-api:2.11.2'
+	implementation 'org.apache.logging.log4j:log4j-core:2.11.2'
 
 	// Use JUnit test framework
 	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.0'
 	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.5.0'
-	testRuntimeOnly 'org.apache.logging.log4j:log4j-jul:2.12.0'
+	testRuntimeOnly 'org.apache.logging.log4j:log4j-jul:2.11.2'
 
 }
+
+//project(':graphql-gradle-plugin').tasks.install.mustRunAfter build
 
 test {
 	// We're using JUnit 5
@@ -35,8 +55,3 @@ test {
 //graphql {
 //	packageName = "my.package"
 //}
-
-
-//apply plugin: 'com.graphql-java-generator.GraphqlPlugin'
-//apply plugin: org.example.greeting.GreetingPlugin
-

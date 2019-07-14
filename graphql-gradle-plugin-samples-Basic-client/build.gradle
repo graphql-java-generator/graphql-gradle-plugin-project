@@ -1,14 +1,100 @@
 
+//Essayer avec COmposite Build
+//Ou abandonner, et séparer Build du plugin, et les  samples dans des projest gradle différents (pas multi-module)
 
-import com.company.gradle.binaryrepo.LatestArtifactVersion
 
-tasks.register("latestVersionMavenCentral", LatestArtifactVersion) {
-	coordinates = 'commons-lang:commons-lang:1.5'
-	serverUrl = 'http://repo1.maven.org/maven2/'
+buildscript {
+
+	//	apply from: '../graphql-gradle-plugin/build.gradle'
+
+
+	repositories {
+		mavenLocal()
+		mavenCentral()
+		//		maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+	}
+
+	//	build.dependsOn project(':graphql-gradle-plugin').tasks.install
+
+	//	build.dependsOn project(':graphql-gradle-plugin').tasks.install
+
+	dependencies {
+		//		classpath group: 'org.example.greeting', name: 'GreetingPlugin', version: "1.0.0-RC2-SNAPSHOT"
+		classpath group: 'my-gradle-test', name: 'Designing_Gradle_plugins', version: "1.2.3"
+		//		classpath group: 'my-gradle-test', name: 'graphql-gradle-plugin', version: "1.2.3"
+		classpath group: 'my-gradle-test', name: 'graphql-gradle-plugin', version: "1.0.0-RC2-SNAPSHOT"
+		//				classpath project(':graphql-gradle-plugin')
+	}
+
+
 }
 
-tasks.register("latestVersionInhouseRepo", LatestArtifactVersion) {
-	coordinates = 'commons-lang:commons-lang:2.6'
-	serverUrl = 'http://my.company.com/maven2'
+
+//plugins {
+//	id 'java'
+//	id 'graphql-gradle-plugin'
+//	//	id 'application'
+//}
+apply plugin: 'java'
+apply plugin: 'maven'
+
+
+
+repositories {
+	mavenLocal()
+	//		mavenCentral()
+	//		maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
 }
+
+
+dependencies {
+	//	//		classpath group: 'org.example.greeting', name: 'GreetingPlugin', version: "1.0.0-RC2-SNAPSHOT"
+	//	compile group: 'my-gradle-test', name: 'Designing_Gradle_plugins', version: "1.2.3"
+	//	compile group: 'my-gradle-test', name: 'graphql-gradle-plugin', version: "1.0.0-RC2-SNAPSHOT"
+	//	compile project(':graphql-gradle-plugin')
+}
+
+//import org.example.greeting.GreetingPlugin
+
+
+
+apply plugin: 'Designing_Gradle_plugins'
+apply plugin: 'graphql-gradle-plugin'
+//apply plugin: 'org.example.greeting'
+//apply plugin: 'org.example.greeting.GreetingPlugin'
+//apply plugin: GreetingPlugin
+
+
+
+// KO :Cannot add task 'build' as a task with that name already exists.
+//task build {
+//	dependsOn gradle.includedBuild('graphql-gradle-plugin').task(':install')
+//}
+build.dependsOn gradle.includedBuild('graphql-gradle-plugin').task(':install')
+
+
+
+//build.doFirst {
+//	project(':graphql-gradle-plugin').tasks.install
+//	println 'do it before build'
+//}
+
+//build.dependsOn 'pluginInstall'
+//
+//task pluginInstall(type: Upload) {
+//
+//}
+
+
+/*
+ import com.company.gradle.binaryrepo.LatestArtifactVersion
+ tasks.register("latestVersionMavenCentral", LatestArtifactVersion) {
+ coordinates = 'commons-lang:commons-lang:1.5'
+ serverUrl = 'http://repo1.maven.org/maven2/'
+ }
+ tasks.register("latestVersionInhouseRepo", LatestArtifactVersion) {
+ coordinates = 'commons-lang:commons-lang:2.6'
+ serverUrl = 'http://my.company.com/maven2'
+ }
+ */
 
