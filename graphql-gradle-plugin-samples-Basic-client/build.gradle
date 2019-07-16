@@ -16,10 +16,10 @@ apply plugin: 'graphql-gradle-plugin'
 
 // The next line makes sure that the plugin is installed in the local maven repository before the build starts.
 build.dependsOn gradle.includedBuild('graphql-gradle-plugin').task(':install')
-// The next lines makes the GraphQL plugin be executed before Java compiles, so that all sources habe bgenerated  
+// The next lines makes the GraphQL plugin be executed before Java compiles, so that all sources are generated on time  
 compileJava.dependsOn graphqlGenerateCode
 
 
 graphql {
-	packageName = 'my.package'
+	packageName = 'my.package2'
 }

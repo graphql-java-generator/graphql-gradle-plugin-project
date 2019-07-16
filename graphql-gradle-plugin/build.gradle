@@ -28,7 +28,7 @@ dependencies {
 	implementation gradleApi()
 
 	// Let's reuse the logic already implemented in our maven plugin
-	//implementation 'com.graphql-java-generator:graphql-maven-plugin-project:1.0.0-RC1'
+	implementation "${project.group}:graphql-maven-plugin-logic:${project.version}"
 
 	// Logging with log4j2
 	implementation 'org.apache.logging.log4j:log4j-api:2.11.2'
