@@ -1,7 +1,7 @@
 /**
  * 
  */
-package graphql.gradleplugin;
+package com.graphql_java_generator.gradleplugin;
 
 import java.io.IOException;
 import java.util.List;
@@ -24,6 +24,17 @@ import graphql.parser.Parser;
 // @Import({ JacksonAutoConfiguration.class })
 @ComponentScan(basePackages = { "com.graphql_java_generator" })
 public class SpringConfiguration {
+
+	/**
+	 * The current GraphQL extension, that contains the plugin configuration. It is set by the
+	 * {@link GraphqlGenerateCodeTask} task, before it starts the Spring context
+	 */
+	static GraphqlExtension graphqlExtension = null;
+
+	@Bean
+	GraphqlExtension graphqlExtension() {
+		return graphqlExtension;
+	}
 
 	/**
 	 * Loads the schema from the graphqls files. This method uses the {@link GraphQLJavaToolsAutoConfiguration} from the

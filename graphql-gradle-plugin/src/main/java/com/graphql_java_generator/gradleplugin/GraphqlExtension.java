@@ -1,10 +1,9 @@
-package graphql.gradleplugin;
+package com.graphql_java_generator.gradleplugin;
 
 import java.io.File;
 import java.io.Serializable;
 
 import org.gradle.api.Project;
-import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.plugin.Logger;
 import com.graphql_java_generator.plugin.Packaging;
@@ -17,7 +16,6 @@ import com.graphql_java_generator.plugin.PluginMode;
  * @author EtienneSF
  *
  */
-@Component
 public class GraphqlExtension implements PluginConfiguration, Serializable {
 
 	private static final long serialVersionUID = 1L;

@@ -13,7 +13,7 @@
 	</Appenders>
 
 	<Loggers>
-		<Logger name="graphql.gradleplugin" level="debug" />
+		<Logger name="com.graphql_java_generator.gradleplugin" level="debug" />
 		<Root level="info">
 			<AppenderRef ref="Console" />
 			<AppenderRef ref="File" />

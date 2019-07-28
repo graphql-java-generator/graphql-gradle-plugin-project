@@ -1,7 +1,7 @@
 /**
  * 
  */
-package graphql.gradleplugin;
+package com.graphql_java_generator.gradleplugin;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,69 +39,76 @@ public class GraphqlGenerateCodeTask extends DefaultTask implements PluginConfig
 	/** The Gradle extension, to read the plugin parameters from the script */
 	private transient GraphqlExtension graphqlExtension = null;
 
+	/**
+	 * @param project
+	 *            The current Gradle project
+	 * @param extension
+	 *            The GraphQL extension, which contains all parameters found in the build script
+	 */
 	@Inject
-	public GraphqlGenerateCodeTask(Project project) {
+	public GraphqlGenerateCodeTask(Project project, GraphqlExtension graphqlExtension) {
 		this.project = project;
+		this.graphqlExtension = graphqlExtension;
 	}
 
 	@Override
 	@Input
 	public String getPackageName() {
-		return getGraphqlExtension().getPackageName();
+		return graphqlExtension.getPackageName();
 	}
 
 	@Override
 	public Logger getLog() {
-		return getGraphqlExtension().getLog();
+		return graphqlExtension.getLog();
 	}
 
 	@Override
 	@Input
 	public PluginMode getMode() {
-		return getGraphqlExtension().getMode();
+		return graphqlExtension.getMode();
 	}
 
 	@Override
 	@Input
 	public Packaging getPackaging() {
-		return getGraphqlExtension().getPackaging();
+		return graphqlExtension.getPackaging();
 	}
 
 	@Override
 	@Input
 	public File getMainResourcesFolder() {
-		return getGraphqlExtension().getMainResourcesFolder();
+		return graphqlExtension.getMainResourcesFolder();
 	}
 
 	@Override
 	@Input
 	public String getSchemaFilePattern() {
-		return getGraphqlExtension().getSchemaFilePattern();
+		return graphqlExtension.getSchemaFilePattern();
 	}
 
 	@Override
 	@InputFile
 	@Optional
 	public File getSchemaPersonalizationFile() {
-		return getGraphqlExtension().getSchemaPersonalizationFile();
+		return graphqlExtension.getSchemaPersonalizationFile();
 	}
 
 	@Override
 	@Input
 	public String getSourceEncoding() {
-		return getGraphqlExtension().getSourceEncoding();
+		return graphqlExtension.getSourceEncoding();
 	}
 
 	@Override
 	@OutputDirectory
 	public File getTargetClassFolder() {
-		return getGraphqlExtension().getTargetClassFolder();
+		return graphqlExtension.getTargetClassFolder();
 	}
 
 	@Override
 	@OutputDirectory
 	public File getTargetSourceFolder() {
-		return getGraphqlExtension().getTargetSourceFolder();
+		return graphqlExtension.getTargetSourceFolder();
 	}
 
 	@TaskAction
@@ -111,6 +118,7 @@ public class GraphqlGenerateCodeTask extends DefaultTask implements PluginConfig
 			getLog().debug("Starting generation of java classes from graphqls files");
 
 			// We'll use Spring IoC
+			SpringConfiguration.graphqlExtension = graphqlExtension;
 			AbstractApplicationContext ctx = new AnnotationConfigApplicationContext(SpringConfiguration.class);
 
 			// Let's log the current configuration (this will do something only when in debug mode)
@@ -138,10 +146,4 @@ public class GraphqlGenerateCodeTask extends DefaultTask implements PluginConfig
 		}
 	}
 
-	public GraphqlExtension getGraphqlExtension() {
-		if (graphqlExtension == null) {
-			graphqlExtension = getProject().getExtensions().findByType(GraphqlExtension.class);
-		}
-		return graphqlExtension;
-	}
 }

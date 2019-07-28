@@ -1,7 +1,7 @@
 /**
  * 
  */
-package graphql.gradleplugin;
+package com.graphql_java_generator.gradleplugin;
 
 import org.gradle.api.Project;
 

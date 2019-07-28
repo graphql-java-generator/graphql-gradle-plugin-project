@@ -1,7 +1,7 @@
 /**
  * 
  */
-package graphql.gradleplugin;
+package com.graphql_java_generator.gradleplugin;
 
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -19,8 +19,8 @@ public class GraphqlPlugin implements Plugin<Project> {
 
 	@Override
 	public void apply(Project project) {
-		project.getExtensions().create(GRAPHQL_EXTENSION, GraphqlExtension.class, project);
-		project.getTasks().register(GRAPHQL_GENERATE_CODE_TASK_NAME, GraphqlGenerateCodeTask.class, project);
+		GraphqlExtension extension = project.getExtensions().create(GRAPHQL_EXTENSION, GraphqlExtension.class, project);
+		project.getTasks().register(GRAPHQL_GENERATE_CODE_TASK_NAME, GraphqlGenerateCodeTask.class, project, extension);
 	}
 
 }
