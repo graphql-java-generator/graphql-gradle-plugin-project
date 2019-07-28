@@ -1,6 +1,7 @@
 package graphql.gradleplugin;
 
 import java.io.File;
+import java.io.Serializable;
 
 import org.gradle.api.Project;
 import org.springframework.stereotype.Component;
@@ -17,15 +18,17 @@ import com.graphql_java_generator.plugin.PluginMode;
  *
  */
 @Component
-public class GraphqlExtension implements PluginConfiguration {
+public class GraphqlExtension implements PluginConfiguration, Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	final Project project;
 
 	/** The packageName in which the generated classes will be created */
-	String packageName;
+	String packageName = PluginConfiguration.DEFAULT_PACKAGE_NAME;
 
 	/** The encoding for the generated source files */
-	String sourceEncoding;
+	String sourceEncoding = PluginConfiguration.DEFAULT_SOURCE_ENCODING;
 
 	GradleLogger logger;
 
@@ -33,7 +36,7 @@ public class GraphqlExtension implements PluginConfiguration {
 	 * The generation mode: either client or server. Choose client to generate the code which can query a graphql server
 	 * or server to generate a code for the server side.
 	 */
-	PluginMode mode;
+	PluginMode mode = PluginMode.valueOf(PluginConfiguration.DEFAULT_MODE);
 
 	/**
 	 * The pattern to find the graphql schema file(s). The default value is "/*.graphqls" meaning that the maven plugin
@@ -46,7 +49,7 @@ public class GraphqlExtension implements PluginConfiguration {
 	 * It will also be possible to define one schema, by putting "mySchema.myOtherExtension" in the schemaFilePattern
 	 * configuration parameter of the plugin.
 	 */
-	String schemaFilePattern;
+	String schemaFilePattern = PluginConfiguration.DEFAULT_SCHEMA_FILE_PATTERN;
 
 	/**
 	 * schemaPersonalizationFile is the file name where the GraphQL maven plugin will find personalization that it must
@@ -55,10 +58,7 @@ public class GraphqlExtension implements PluginConfiguration {
 	 * this compile time file within your maven artefact<BR/>
 	 * The default value is a file named "noPersonalization", meaning: no schema personalization.
 	 */
-	String schemaPersonalizationFile;
-
-	/** The folder where the generated classes will be generated */
-	String targetSourceFolder;
+	String schemaPersonalizationFile = PluginConfiguration.DEFAULT_SCHEMA_PERSONALIZATION_FILE;
 
 	public GraphqlExtension(Project project) {
 		this.project = project;
@@ -92,7 +92,7 @@ public class GraphqlExtension implements PluginConfiguration {
 	}
 
 	@Override
-	public File getResourcesFolder() {
+	public File getMainResourcesFolder() {
 		return project.file("./src/main/resources");
 	}
 
@@ -103,7 +103,8 @@ public class GraphqlExtension implements PluginConfiguration {
 
 	@Override
 	public File getSchemaPersonalizationFile() {
-		return project.file(schemaPersonalizationFile);
+		return (PluginConfiguration.DEFAULT_SCHEMA_PERSONALIZATION_FILE.equals(schemaPersonalizationFile)) ? null
+				: project.file(schemaPersonalizationFile);
 	}
 
 	@Override

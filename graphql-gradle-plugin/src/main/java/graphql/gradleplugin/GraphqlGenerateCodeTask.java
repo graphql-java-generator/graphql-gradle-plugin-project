@@ -14,6 +14,7 @@ import org.gradle.api.UncheckedIOException;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputFile;
+import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.TaskAction;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -36,7 +37,7 @@ public class GraphqlGenerateCodeTask extends DefaultTask implements PluginConfig
 	final Project project;
 
 	/** The Gradle extension, to read the plugin parameters from the script */
-	private GraphqlExtension extension = null;
+	private transient GraphqlExtension graphqlExtension = null;
 
 	@Inject
 	public GraphqlGenerateCodeTask(Project project) {
@@ -68,8 +69,8 @@ public class GraphqlGenerateCodeTask extends DefaultTask implements PluginConfig
 
 	@Override
 	@Input
-	public File getResourcesFolder() {
-		return getGraphqlExtension().getResourcesFolder();
+	public File getMainResourcesFolder() {
+		return getGraphqlExtension().getMainResourcesFolder();
 	}
 
 	@Override
@@ -80,6 +81,7 @@ public class GraphqlGenerateCodeTask extends DefaultTask implements PluginConfig
 
 	@Override
 	@InputFile
+	@Optional
 	public File getSchemaPersonalizationFile() {
 		return getGraphqlExtension().getSchemaPersonalizationFile();
 	}
@@ -136,11 +138,10 @@ public class GraphqlGenerateCodeTask extends DefaultTask implements PluginConfig
 		}
 	}
 
-	@Input
 	public GraphqlExtension getGraphqlExtension() {
-		if (extension == null) {
-			extension = getProject().getExtensions().findByType(GraphqlExtension.class);
+		if (graphqlExtension == null) {
+			graphqlExtension = getProject().getExtensions().findByType(GraphqlExtension.class);
 		}
-		return extension;
+		return graphqlExtension;
 	}
 }
