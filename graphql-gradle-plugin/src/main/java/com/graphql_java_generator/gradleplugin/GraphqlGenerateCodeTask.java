@@ -11,7 +11,6 @@ import javax.inject.Inject;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Project;
 import org.gradle.api.UncheckedIOException;
-import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.Optional;
@@ -133,13 +132,16 @@ public class GraphqlGenerateCodeTask extends DefaultTask implements PluginConfig
 
 			ctx.close();
 
-			// Add of the generated source
-			project.getConvention().getPlugin(JavaPluginConvention.class).getSourceSets().getByName("main").getJava()
-					.getFiles().add(pluginConfiguration.getTargetSourceFolder());
-
-			getLog().info(nbGeneratedClasses + " java classes have been generated the schema(s) '"
+			getLog().info(nbGeneratedClasses + " java classes have been generated from the schema(s) '"
 					+ pluginConfiguration.getSchemaFilePattern() + "' in the package '"
 					+ pluginConfiguration.getPackageName() + "'");
+
+			// getLog().debug("Source dir added to the main.java.srcDirs: "
+			// + pluginConfiguration.getTargetSourceFolder().getAbsolutePath());
+			// project.getConvention().getPlugin(JavaPluginConvention.class).getSourceSets().getByName("main").getJava()
+			// .getSrcDirs().add(pluginConfiguration.getTargetSourceFolder());
+
+			getLog().debug("Finished generation of java classes from graphqls files (5)");
 
 		} catch (IOException e) {
 			throw new UncheckedIOException(e.getMessage(), e);

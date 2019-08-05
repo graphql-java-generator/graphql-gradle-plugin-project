@@ -14,12 +14,38 @@ apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'graphql-gradle-plugin'
 
+dependencies {
+
+	// Let's reuse the logic already implemented in our maven plugin
+	compile "${project.group}:graphql-maven-plugin-logic:${project.version}"
+
+	// Logging with log4j2
+	compile 'org.apache.logging.log4j:log4j-api:2.11.2'
+	compile 'org.apache.logging.log4j:log4j-core:2.11.2'
+
+	// Use JUnit test framework
+	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.0'
+	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.5.0'
+	testRuntimeOnly 'org.apache.logging.log4j:log4j-jul:2.11.2'
+
+	// Internal dependency: the client is tested against the server, so we need to build the server first (for tests)
+//	testRuntimeOnly project(':graphql-gradle-plugin-samples-Basic-server')
+}
+
 // The next line makes sure that the plugin is installed in the local maven repository before the build starts.
 build.dependsOn gradle.includedBuild('graphql-gradle-plugin').task(':install')
-// The next lines makes the GraphQL plugin be executed before Java compiles, so that all sources are generated on time  
+//build.dependsOn gradle.project(:graphql-gradle-plugin-samples-Basic-server).task('build')
+
+//sourceSets {
+//	generated{
+//		java.srcDir "${buildDir}/generated/graphqlGenerateCode/"
+//	}
+//}
+//
+//compileJava{
+//	source    += sourceSets.generated.java
+//}
+
+// The next lines makes the GraphQL plugin be executed before Java compiles, so that all sources are generated on time
 compileJava.dependsOn graphqlGenerateCode
 
-
-graphql {
-	packageName = 'my.package2'
-}

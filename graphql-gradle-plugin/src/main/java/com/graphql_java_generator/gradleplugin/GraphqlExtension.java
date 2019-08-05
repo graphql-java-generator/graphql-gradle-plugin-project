@@ -112,12 +112,14 @@ public class GraphqlExtension implements PluginConfiguration, Serializable {
 
 	@Override
 	public File getTargetClassFolder() {
-		return project.file("$buildDir/classes");
+		// TODO Understand why project.file("$buildDir/classes") doesn't work
+		return project.file("build/classes");
 	}
 
 	@Override
 	public File getTargetSourceFolder() {
-		return project.file("$buildDir/generated/" + GraphqlPlugin.GRAPHQL_GENERATE_CODE_TASK_NAME);
+		// TODO Understand why project.file("$buildDir/classes") doesn't work
+		return project.file("build/generated/" + GraphqlPlugin.GRAPHQL_GENERATE_CODE_TASK_NAME);
 	}
 
 }
