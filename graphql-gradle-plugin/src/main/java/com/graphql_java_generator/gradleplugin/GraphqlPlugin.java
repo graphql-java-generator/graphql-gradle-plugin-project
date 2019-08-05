@@ -30,79 +30,20 @@ public class GraphqlPlugin implements Plugin<Project> {
 		GraphqlExtension extension = project.getExtensions().create(GRAPHQL_EXTENSION, GraphqlExtension.class, project);
 		project.getTasks().register(GRAPHQL_GENERATE_CODE_TASK_NAME, GraphqlGenerateCodeTask.class, project, extension);
 
-		extension.getLog().debug("Applying GraphQL Plugin (5)");
-
-		// project.getConvention().getPlugin(JavaPluginConvention.class).getSourceSets().getByName("main").getJava()
-		// .getSrcDirs().add(extension.getTargetSourceFolder());
-		// for (File f : project.getConvention().getPlugin(JavaPluginConvention.class).getSourceSets().getByName("main")
-		// .getJava()) {
-		// extension.getLog().debug("JavaPluginConvention java contains: " + f.getAbsolutePath());
-		// }
-
-		// project.getPlugins().apply(JavaPlugin.class);
-		// SourceSet graphqlSourceSet = project.getConvention().getPlugin(JavaPluginConvention.class).getSourceSets()
-		// .create(GRAPHQL_SOURCE_SET_NAME);
-		// graphqlSourceSet.getJava().getSrcDirs().clear();
-		// graphqlSourceSet.getJava().srcDir(extension.getTargetSourceFolder());
-		// // graphqlSourceSet.getJava().getSrcDirs().add(extension.getTargetSourceFolder());
-		// // project.getConvention().getPlugin(JavaPluginConvention.class).getSourceSets().add(graphqlSourceSet);
-		// for (File f : graphqlSourceSet.getJava()) {
-		// extension.getLog().debug("graphqlSourceSet contains: " + f.getAbsolutePath());
-		// }
-
-		// 15:49:04.172 [INFO] [org.gradle.api.internal.file.collections.DirectoryFileTree] file or directory
-		// 'C:\appli\data\git\graphql-gradle-plugin-project\graphql-gradle-plugin-samples-Basic-client\src\graphqlSourceSet\java',
-		// not found
+		extension.getLog().debug("Applying GraphQL Plugin");
 
 		// Apply the java plugin, then add the generated source
 		project.getPlugins().apply(JavaPlugin.class);
-		JavaCompile javaCompile = (JavaCompile) project.getTasks().getByName("compileJava");
-		for (File f : javaCompile.getSource()) {
-			extension.getLog().debug("[Before adding GraphQL sources] javaCompile contains: " + f.getAbsolutePath());
-		}
+
 		JavaPluginConvention javaConvention = project.getConvention().getPlugin(JavaPluginConvention.class);
 		SourceSet main = javaConvention.getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME);
-		// main.getJava().getSrcDirs().add(extension.getTargetSourceFolder());
 		main.getJava().srcDir(extension.getTargetSourceFolder());
-		for (File f : project.getConvention().getPlugin(JavaPluginConvention.class).getSourceSets()
-				.getByName(SourceSet.MAIN_SOURCE_SET_NAME).getJava()) {
-			extension.getLog().debug("JavaPluginConvention java contains: " + f.getAbsolutePath());
-		}
 
-		// javaCompile.getSource().plus(graphqlSourceSet.getJava());
-		for (File f : javaCompile.getSource()) {
+		// Check of the files added into the compileJava task
+		for (File f : ((JavaCompile) project.getTasks().getByName("compileJava")).getSource()) {
 			extension.getLog().debug("[After adding GraphQL sources] javaCompile contains: " + f.getAbsolutePath());
 		}
 
-		// // Add of the generated source, when the java plugin is applied
-		// project.getPlugins().withType(JavaPlugin.class, new Action<JavaPlugin>() {
-		// @Override
-		// public void execute(JavaPlugin javaPlugin) {
-		// JavaCompile javaCompile = (JavaCompile) project.getTasks().getByName("compileJava");
-		// for (File f : javaCompile.getSource()) {
-		// extension.getLog()
-		// .debug("[Before adding GraphQL sources] javaCompile contains: " + f.getAbsolutePath());
-		// }
-		//
-		// // project.getConvention().getPlugin(JavaPluginConvention.class).getSourceSets().getByName("main")
-		// // .getJava().getFiles().add(extension.getTargetSourceFolder());
-		// JavaPluginConvention javaConvention = project.getConvention().getPlugin(JavaPluginConvention.class);
-		// SourceSet main = javaConvention.getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME);
-		// // main.getJava().getSrcDirs().add(extension.getTargetSourceFolder());
-		// main.getJava().srcDir(extension.getTargetSourceFolder());
-		//
-		// for (File f : project.getConvention().getPlugin(JavaPluginConvention.class).getSourceSets()
-		// .getByName(SourceSet.MAIN_SOURCE_SET_NAME).getJava()) {
-		// extension.getLog().debug("JavaPluginConvention java contains: " + f.getAbsolutePath());
-		// }
-		//
-		// javaCompile.getSource().plus(graphqlSourceSet.getJava());
-		// for (File f : javaCompile.getSource()) {
-		// extension.getLog()
-		// .debug("[After adding GraphQL sources] javaCompile contains: " + f.getAbsolutePath());
-		// }
-		// }
-		// });
 	}
 
 }
