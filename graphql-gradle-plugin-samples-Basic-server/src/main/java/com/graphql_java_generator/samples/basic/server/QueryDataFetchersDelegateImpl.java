@@ -2,7 +2,7 @@ package com.graphql_java_generator.samples.basic.server;
 
 import org.springframework.stereotype.Component;
 
-import com.generated.graphql.QueryDataFetchersDelegate;
+import com.graphqlplugin.server_mode.QueryDataFetchersDelegate;
 
 import graphql.schema.DataFetchingEnvironment;
 

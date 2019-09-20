@@ -16,12 +16,8 @@ apply plugin: 'graphql-gradle-plugin'
 
 dependencies {
 
-	// Let's reuse the logic already implemented in our maven plugin
-	compile "${project.group}:graphql-maven-plugin-logic:${project.version}"
-
-	// Logging with log4j2
-	compile 'org.apache.logging.log4j:log4j-api:2.11.2'
-	compile 'org.apache.logging.log4j:log4j-core:2.11.2'
+	// All the GraphQL dependencies (no dependencies for the GraphQL Gradle Plugin itself)
+	compile "${project.group}:graphql-java-client-dependencies:${project.version}"
 
 	// Use JUnit test framework
 	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.0'
@@ -29,22 +25,18 @@ dependencies {
 	testRuntimeOnly 'org.apache.logging.log4j:log4j-jul:2.11.2'
 
 	// Internal dependency: the client is tested against the server, so we need to build the server first (for tests)
-//	testRuntimeOnly project(':graphql-gradle-plugin-samples-Basic-server')
+	// testRuntimeOnly project(':graphql-gradle-plugin-samples-Basic-server')
 }
 
 // The next line makes sure that the plugin is installed in the local maven repository before the build starts.
+// THE NEXT LINE IS HERE ONLY BECAUSE THIS PROJECT IS WITHIN THE PLUGIN BUILD. It's useless (nd won't work) when you use the packaged plugin
 build.dependsOn gradle.includedBuild('graphql-gradle-plugin').task(':install')
-//build.dependsOn gradle.project(:graphql-gradle-plugin-samples-Basic-server).task('build')
 
-//sourceSets {
-//	generated{
-//		java.srcDir "${buildDir}/generated/graphqlGenerateCode/"
-//	}
-//}
-//
-//compileJava{
-//	source    += sourceSets.generated.java
-//}
+
+// Let's configure the GraphQL Gradle Plugin
+graphql {
+	mode = "client"  //This line is here only for the demo, as client is the default mode 
+}
 
 // The next lines makes the GraphQL plugin be executed before Java compiles, so that all sources are generated on time
 compileJava.dependsOn graphqlGenerateCode
