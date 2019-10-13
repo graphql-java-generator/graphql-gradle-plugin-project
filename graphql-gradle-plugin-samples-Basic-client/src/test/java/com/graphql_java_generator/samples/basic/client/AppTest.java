@@ -2,7 +2,7 @@ package com.graphql_java_generator.samples.basic.client;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.generated.graphql.Query;
@@ -24,7 +24,7 @@ public class AppTest {
 	// For prepared queries, the reponse is already built, and reuse for each call.
 	ObjectResponse helloResponse;
 
-	@BeforeAll
+	@BeforeEach
 	void beforeEach() throws GraphQLExecutionException, GraphQLRequestPreparationException {
 		query = new Query(GRAPHQL_SERVER_URL);
 

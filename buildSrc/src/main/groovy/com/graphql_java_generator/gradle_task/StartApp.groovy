@@ -18,7 +18,7 @@ class StartApp extends DefaultTask {
 	File jarFile
 
 	@Input
-	String url = ""
+	String url
 
 
 	/** The process that will be created by this task */
@@ -54,7 +54,7 @@ class StartApp extends DefaultTask {
 				throw new RuntimeException("Server exited")
 			}
 
-			if ( (status=getStatus()) == 200) {
+			if ( (status=getStatus(url)) == 200) {
 				// Ok, we're done
 				break
 			}

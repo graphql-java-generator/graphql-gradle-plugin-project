@@ -39,6 +39,20 @@ graphql {
 compileJava.dependsOn graphqlGenerateCode
 
 
+// This prevents the error "Class path contains multiple SLF4J bindings"
+// Thanks to this thread: https://stackoverflow.com/questions/23984009/disable-logback-in-springboot
+//configurations {
+//	all*.exclude module : 'spring-boot-starter-logging'
+//}
+configurations {
+
+	// Personnal add
+//	runtime.exclude group: "ch.qos.logback", module: "logback-classic"
+//	compile.exclude group: "ch.qos.logback", module: "logback-classic"
+
+	runtime.exclude group: "org.apache.logging.log4j", module: "log4j-to-slf4j"
+	compile.exclude group: "org.apache.logging.log4j", module: "log4j-to-slf4j"
+}
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -68,7 +82,7 @@ test {
 task startWebApp(type: StartApp) {
 	dependsOn 'assemble'
 	jarFile = file("../graphql-gradle-plugin-samples-Basic-server/build/libs/${project.name}_springboot-${project.version}.jar".replaceAll('client', 'server'))
-	url = 'https:/localhost:8180'
+	url = 'http://localhost:8180/graphiql'
 }
 
 // The next lines insures that the Basic-server is built before starting the integration test from the client.

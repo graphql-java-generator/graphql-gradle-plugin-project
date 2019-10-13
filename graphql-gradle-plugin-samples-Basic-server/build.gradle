@@ -39,9 +39,6 @@ dependencies {
 	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.0'
 	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.5.0'
 	testRuntimeOnly 'org.apache.logging.log4j:log4j-jul:2.11.2'
-
-	// Internal dependency: the client is tested against the server, so we need to build the server first (for tests)
-	// testRuntimeOnly project(':graphql-gradle-plugin-samples-Basic-server')
 }
 
 // Let's configure the GraphQL Gradle Plugin
