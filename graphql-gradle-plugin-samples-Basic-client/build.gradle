@@ -1,6 +1,6 @@
 //Let's import the custom plugin we defined in buildSrc of the root project
-import com.graphql_java_generator.build.StartApp
-import com.graphql_java_generator.build.StopApp
+import com.graphql_java_generator.gradle_task.StartApp
+import com.graphql_java_generator.gradle_task.StopApp
 
 
 buildscript {
@@ -23,9 +23,6 @@ dependencies {
 	// All the GraphQL dependencies (no dependencies for the GraphQL Gradle Plugin itself)
 	compile "${project.group}:graphql-java-client-dependencies:${project.version}"
 
-	// Internal dependency: the client is tested against the server, so we need to build the server first (for tests)
-//	testImplementation project(':graphql-gradle-plugin-samples-Basic-server')
-
 	// Use JUnit test framework
 	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.0'
 	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.5.0'
@@ -40,10 +37,6 @@ graphql {
 
 // The next lines makes the GraphQL plugin be executed before Java compiles, so that all sources are generated on time
 compileJava.dependsOn graphqlGenerateCode
-
-
-test.dependsOn ':graphql-gradle-plugin-samples-Basic-server:assemble'
-
 
 
 
@@ -64,27 +57,28 @@ test.dependsOn ':graphql-gradle-plugin-samples-Basic-server:assemble'
 //// The next line makes sure that the plugin is installed in the local maven repository before the build starts.
 //// THE NEXT LINE IS HERE ONLY BECAUSE THIS PROJECT IS WITHIN THE PLUGIN BUILD. It's useless (nd won't work) when you use the packaged plugin
 //build.dependsOn gradle.includedBuild('graphql-gradle-plugin').task(':install')
-//
-//// The next lines insures that the Basic-server is built before starting the integration test from the client.
-//test.dependsOn(':graphql-gradle-plugin-samples-Basic-server:fatJar')
-//
-//
-//test {
-//	// enable JUnit Platform (a.k.a. JUnit 5) support
-//	useJUnitPlatform()
-//}
+
+
+test {
+	// enable JUnit Platform (a.k.a. JUnit 5) support
+	useJUnitPlatform()
+}
 
 
 task startWebApp(type: StartApp) {
 	dependsOn 'assemble'
-	jarFile = file("../graphql-gradle-plugin-samples-Basic-server/build/libs/${project.name}_springboot_${project.version}.jar")
+	jarFile = file("../graphql-gradle-plugin-samples-Basic-server/build/libs/${project.name}_springboot-${project.version}.jar".replaceAll('client', 'server'))
 	url = 'https:/localhost:8180'
 }
+
+// The next lines insures that the Basic-server is built before starting the integration test from the client.
+startWebApp.dependsOn ':graphql-gradle-plugin-samples-Basic-server:assemble'
+test.dependsOn startWebApp
 
 //test.finalizedBy {
 //	startWebApp.stopApp()
 //}
 
-task stopWebApp(type: StopApp) {
-	process = tasks["startWebApp"].process
-}
+//task stopWebApp(type: StopApp) {
+//	process = tasks["startWebApp"].process
+//}
