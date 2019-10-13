@@ -4,6 +4,9 @@
 # Ignore Gradle build output directory
 build
 
+# Ignore logs folder (generated during integration tests)
+logs/
+
 # Ignore eclipse files
 .settings/
 .classpath
