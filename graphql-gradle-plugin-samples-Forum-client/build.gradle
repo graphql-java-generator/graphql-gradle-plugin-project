@@ -45,6 +45,7 @@ dependencies {
 // Let's configure the GraphQL Gradle Plugin
 graphql {
 	mode = "client"  //This line is here only for the demo, as client is the default mode
+	packageName = "com.graphql_java_generator.samples.forum.client.graphql.forum.client"
 }
 
 // The next lines makes the GraphQL plugin be executed before Java compiles, so that all sources are generated on time
@@ -68,7 +69,7 @@ task startWebApp(type: StartApp) {
 	url = 'http://localhost:8180/graphiql'
 
 	// The next lines insures that the Basic-server is built before starting the integration test from the client.
-	dependsOn ':graphql-gradle-plugin-samples-Basic-server:assemble'
+	dependsOn ':graphql-gradle-plugin-samples-Forum-server:assemble'
 
 	// The stopWebApp must be attached here. And must run after tests
 	finalizedBy 'stopWebApp'

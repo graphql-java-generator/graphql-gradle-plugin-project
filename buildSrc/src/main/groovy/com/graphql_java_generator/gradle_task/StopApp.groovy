@@ -11,12 +11,15 @@ import org.gradle.api.tasks.TaskAction
  */
 class StopApp extends DefaultTask {
 
+//	@Input
+//	Process process
+	
 	@Input
-	Process process
+	StartApp startAppTask
 
 	@TaskAction
 	def stopApp(){
-		process.destroy()
+		startAppTask.process.destroy()
 	}
 
 	//		@Input
