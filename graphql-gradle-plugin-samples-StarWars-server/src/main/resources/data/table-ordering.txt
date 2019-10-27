@@ -1,0 +1,6 @@
+droid
+human
+episode
+droid_appears_in
+human_appears_in
+character_friends
