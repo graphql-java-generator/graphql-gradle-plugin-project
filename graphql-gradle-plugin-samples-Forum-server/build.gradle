@@ -50,16 +50,3 @@ graphql {
 
 // The next lines makes the GraphQL plugin be executed before Java compiles, so that all sources are generated on time
 compileJava.dependsOn graphqlGenerateCode
-
-// Thanks to https://www.mkyong.com/gradle/gradle-create-a-jar-file-with-dependencies/
-// Create a single Jar with all dependencies
-//task fatJar(type: Jar) {
-//	manifest {
-//		attributes 'Implementation-Title': 'Gradle Jar File Example',
-//		'Implementation-Version': version,
-//		'Main-Class': 'com.graphqlplugin.server_mode.GraphQLServerMain'
-//	}
-//	baseName = project.name + '-all'
-//	from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-//	with jar
-//}
