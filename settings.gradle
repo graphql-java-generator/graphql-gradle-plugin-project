@@ -17,3 +17,6 @@ include 'graphql-gradle-plugin-samples-Basic-client'
 include 'graphql-gradle-plugin-samples-Forum-client'
 include 'graphql-gradle-plugin-samples-Forum-server'
 
+//include 'graphql-gradle-plugin-samples-StarWars-server'
+//include 'graphql-gradle-plugin-samples-StarWars-client'
+
