@@ -14,7 +14,7 @@ import com.graphql_java_generator.samples.forum.server.Topic;
 /**
  * @author EtienneSF
  */
-public interface TopicRepository extends CrudRepository<Topic, UUID> {
+public interface TopicRepository extends CrudRepository<Topic, UUID>, FindTopicRepository {
 
 	@Query(value = "select t from Topic t where t.boardId= ?1")
 	List<Topic> findByBoardId(UUID boardId);
