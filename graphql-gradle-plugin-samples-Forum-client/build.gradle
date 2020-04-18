@@ -1,46 +1,42 @@
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////  NEXT LINES ARE HERE ONLY BECAUSE WE'RE BUILDING THE PLUGIN WITHIN THE SAME MULTIMODULE PROJECT            ////////
-//////  That is: we must be sure the plugin is built before we use it                                             ////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-//Let's import the custom plugin we defined in buildSrc of the root project
-import com.graphql_java_generator.gradle_task.StartApp
-import com.graphql_java_generator.gradle_task.StopApp
-
-
 buildscript {
-	repositories {
-		mavenLocal()
-		mavenCentral()
-	}
-	dependencies {
-		// Dependencies on the GraphQL Plugin. Replace this version by the release you want to use.
-		classpath group: "com.graphql-java-generator", name: 'graphql-gradle-plugin', version: "${project.version}"
-	}
+    repositories {
+        mavenCentral()
+		// The plugin depends on the graphql-maven-plugin, whose snapshot versions are on the local maven repository.
+		// So, for development reason, we need to access to the local maven repository. It's useless for standard use of the plugin
+        mavenLocal()
+    }
+    dependencies {
+    	// The version number is not used in this multi-module project: the included build of graphql-gradle-plugin
+    	// will replace this declaration. But this dummy declaration is needed!
+    	//
+    	// Of course, for a real use of the plugin in your project, you'll have to replace by the last plugin's version
+        classpath "com.graphql-java-generator:graphql-gradle-plugin:local-SNAPSHOT"
+    }
 }
 
+apply plugin:  'java-library'
+apply plugin:  'com.graphql_java_generator.graphql-gradle-plugin'
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//////  START OF THE Basic Client Gradle configuration to use the GraphQL Generator plugin                        ////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-apply plugin: 'java'
-apply plugin: 'maven'
-apply plugin: 'graphql-gradle-plugin'
+repositories {
+	mavenCentral()
+	// The plugin depends on the graphql-maven-plugin, whose snapshot versions are on the local maven repository.
+	// So, for development reason, we need to access to the local maven repository. It's useless for standard use of the plugin
+	mavenLocal()
+}
 
 dependencies {
+	// The graphql-java-client-dependencies module agregates all dependencies for the generated code
+    implementation "com.graphql-java-generator:graphql-java-client-dependencies"
+    // This project uses some custom scalars from the graphql-java-extended-scalars module
+    implementation 'com.graphql-java:graphql-java-extended-scalars'
 
-	// All the GraphQL dependencies (no dependencies for the GraphQL Gradle Plugin itself)
-	compile "${project.group}:graphql-java-client-dependencies:${project.version}"
-
-	// Use JUnit test framework
-	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.0'
-	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.5.0'
-	testRuntimeOnly 'org.apache.logging.log4j:log4j-jul:2.11.2'
-
+	// Dependencies for tests
+	testImplementation 'org.springframework:spring-test'
+	testImplementation 'org.junit.jupiter:junit-jupiter-api'
+	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+	testRuntimeOnly 'org.apache.logging.log4j:log4j-slf4j-impl'
 }
+
 
 // Let's configure the GraphQL Gradle Plugin
 graphql {
@@ -50,7 +46,6 @@ graphql {
 
 // The next lines makes the GraphQL plugin be executed before Java compiles, so that all sources are generated on time
 compileJava.dependsOn graphqlGenerateCode
-
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -63,20 +58,25 @@ test {
 	useJUnitPlatform()
 }
 
+//Let's import the custom plugin we defined in buildSrc of the root project
+import com.graphql_java_generator.gradle_task.StartApp
+import com.graphql_java_generator.gradle_task.StopApp
+
 
 task startWebApp(type: StartApp) {
-	jarFile = file("../${project.name}/build/libs/${project.name}_springboot-${project.version}.jar".replaceAll('client', 'server'))
+	// Let's start the server that matches the current client project
+	jarFile = file("../${project.name}/build/libs/${project.name}.jar".replaceAll('client', 'server'))
 	url = 'http://localhost:8180/graphiql'
 
-	// The next lines insures that the Basic-server is built before starting the integration test from the client.
-	dependsOn ':graphql-gradle-plugin-samples-Forum-server:assemble'
+	// The next lines insures that the relevant server project is built before starting the integration test from this client module.
+	dependsOn ":${project.name}:bootJar".replaceAll('client', 'server')
 
 	// The stopWebApp must be attached here. And must run after tests
 	finalizedBy 'stopWebApp'
 }
 
 task stopWebApp(type: StopApp) {
-	//	The line blow is executed during configuration phase. So the process is unknown. 
+	// The line blow is executed during configuration phase. So the process is unknown. 
 	// We just define the Task object. The StopApp task will read the process id at execution time
 	startAppTask = tasks["startWebApp"]
 
@@ -87,11 +87,3 @@ task stopWebApp(type: StopApp) {
 // The next lines insures that the Basic-server is built before starting the integration test from the client.
 // Using mustRunAfter instead of dependsOn allows to manually start the server, then just execute the test task.
 test.dependsOn startWebApp
-
-
-configurations {
-	// There has been an issue with stack overflow, because of redondant SLF4J implementation, when executing JUnit tests
-	// It seems to be a random issue : gradle builds are not consistent !  :-((
-	runtime.exclude group: "org.apache.logging.log4j", module: "log4j-to-slf4j"
-	compile.exclude group: "org.apache.logging.log4j", module: "log4j-to-slf4j"
-}

@@ -1,9 +1,0 @@
-
-rootProject.name = 'graphql-gradle-plugin-samples-allGraphQLCases-server'
-
-//group = 'com.graphql-java-generator'
-//version = 'local-SNAPSHOT'
-
-
-includeBuild '../graphql-gradle-plugin'
-

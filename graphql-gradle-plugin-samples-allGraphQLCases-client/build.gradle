@@ -1,7 +1,5 @@
-//apply from: '../common_conf.gradle'
 
 buildscript {
- 	//apply from: '../common_conf.gradle'
     repositories {
         mavenCentral()
 		// The plugin depends on the graphql-maven-plugin, whose snapshot versions are on the local maven repository.
@@ -11,7 +9,6 @@ buildscript {
     dependencies {
     	// The version number is not used in this multi-module project: the included build of graphql-gradle-plugin
     	// will replace this declaration. But this dummy declaration is needed!
-    	// WHAT A FUCKING MESS! 
     	//
     	// Of course, for a real use of the plugin in your project, you'll have to replace by the last plugin's version
         classpath "com.graphql-java-generator:graphql-gradle-plugin:local-SNAPSHOT"
@@ -30,15 +27,16 @@ repositories {
 
 dependencies {
 	// The graphql-java-client-dependencies module agregates all dependencies for the generated code
-    compile "com.graphql-java-generator:graphql-java-client-dependencies:local-SNAPSHOT"
+    implementation "com.graphql-java-generator:graphql-java-client-dependencies:${project.version}"
     // This project uses some custom scalars from the graphql-java-extended-scalars module
-    compile 'com.graphql-java:graphql-java-extended-scalars:1.0.1'
+    implementation "com.graphql-java:graphql-java-extended-scalars:${graphqlJavaExtendedScalarsVersion}"
 
 	// Dependencies for tests
-	testImplementation 'org.springframework:spring-test:5.2.5.RELEASE'
-	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.0'
-	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.5.0'
-	testRuntimeOnly 'org.apache.logging.log4j:log4j-slf4j-impl:2.11.2'
+	testImplementation "org.springframework:spring-test:${springTestVersion}"
+	testImplementation "org.junit.jupiter:junit-jupiter-api:${junitJupiterVersion}"
+	testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}"
+	testRuntimeOnly "org.apache.logging.log4j:log4j-slf4j-impl:${log4jVersion}"
+    
 }
 
 
@@ -86,7 +84,7 @@ import com.graphql_java_generator.gradle_task.StopApp
 
 task startWebApp(type: StartApp) {
 	// Let's start the server that matches the current client project
-	jarFile = file("../${project.name}/build/libs/${project.name}.jar".replaceAll('client', 'server'))
+	jarFile = file("../${project.name}/build/libs/${project.name}-${project.version}.jar".replaceAll('client', 'server'))
 	url = 'http://localhost:8180/graphiql'
 
 	// The next lines insures that the relevant server project is built before starting the integration test from this client module.
@@ -108,12 +106,3 @@ task stopWebApp(type: StopApp) {
 // The next lines insures that the Basic-server is built before starting the integration test from the client.
 // Using mustRunAfter instead of dependsOn allows to manually start the server, then just execute the test task.
 test.dependsOn startWebApp
-
-/*
-configurations {
-	// There has been an issue with stack overflow, because of redondant SLF4J implementation, when executing JUnit tests
-	// It seems to be a random issue : gradle builds are not consistent !  :-((
-	runtime.exclude group: "org.apache.logging.log4j", module: "log4j-to-slf4j"
-	compile.exclude group: "org.apache.logging.log4j", module: "log4j-to-slf4j"
-}
-*/

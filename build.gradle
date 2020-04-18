@@ -1,22 +1,58 @@
 
+
 plugins {
 	id 'org.asciidoctor.convert' version '1.5.6' apply false
 }
 
+// Let's get the group and version for this project
+apply from: 'common_conf.gradle'
 
 
 allprojects {
+	
 
+
+/*
+	Apparently, constraint doesn't with maven dependencies!
+	
+	Gradle IS REALLY A MESS!
+	:(
+	
+	dependencies {
+	    constraints {
+			// Internal plugin dependencies
+		    implementation("com.graphql-java-generator:graphql-java-client-dependencies:${project.version}")
+		    implementation("com.graphql-java-generator:graphql-java-server-dependencies:${project.version}")
+		    
+		    // GraphQL dependencies
+		    implementation 'com.graphql-java:graphql-java-extended-scalars:1.0.1'
+		
+			// Dependencies for tests
+			testImplementation 'org.springframework:spring-test:5.2.5.RELEASE'
+			testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.0'
+			testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.5.0'
+			testRuntimeOnly 'org.apache.logging.log4j:log4j-slf4j-impl:2.11.2'
+	    }
+	}
+*/
+
+}
+
+
+subprojects {
+	
+	// Let's get the group and version for this project
+	apply from: '../common_conf.gradle'
+	
+	// Dependency management
+	ext {
+		graphqlJavaExtendedScalarsVersion = '1.0.1'
+		springTestVersion = '5.2.5.RELEASE'
+		junitJupiterVersion = '5.5.0'
+		log4jVersion = '2.11.2'		
+	}
+	
 	if (project.name.contains('samples') && System.properties['graphqlGradlePlugin.graphqlMavenPluginProject.path'] != null) {
-		task printName() {
-			doLast {
-				println "I'm ${project.name}. My folder is ${project.path}"
-				println "copy from: " + System.properties['graphqlGradlePlugin.graphqlMavenPluginProject.path'] +'/graphql-maven-plugin-samples/' + project.name.replace('gradle', 'maven')
-				println "copy into: ${project.projectDir}"
-				println "Current version is ${version}, ${project.version}"
-				println 'Current version2 is ${version}, ${project.version}'
-			}
-		}
 
 		task copySamplesFromMavenPlugin(type: Copy) {
 			group = "Preparation"
@@ -39,10 +75,5 @@ allprojects {
 		    into "${project.projectDir}"
 		}
 	}
-}
-
-subprojects {
-
-	// No action
 }
 
