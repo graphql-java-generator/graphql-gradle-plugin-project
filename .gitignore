@@ -3,6 +3,8 @@
 
 # Ignore Gradle build output directory
 build
+# Some files (including unit test log) coming from the maven part are still generated in target/ folders
+target
 
 # Ignore logs folder (generated during integration tests)
 logs/

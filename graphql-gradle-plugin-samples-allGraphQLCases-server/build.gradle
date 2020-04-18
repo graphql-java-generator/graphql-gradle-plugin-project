@@ -1,0 +1,92 @@
+
+buildscript {
+	//If the next line is uncommented the 'com.graphql_java_generator.graphql-gradle-plugin' is not found
+	// (with both the 'local-SNAPSHOT' and the '${version} versions)
+ 	//apply from: '../common_conf.gradle'
+ 	
+    repositories {
+        mavenCentral()
+		// The plugin depends on the graphql-maven-plugin, whose snapshot versions are on the local maven repository.
+		// So, for development reason, we need to access to the local maven repository. It's useless for standard use of the plugin
+        mavenLocal()
+    }
+    
+    dependencies {
+    	// The version number is not used in this multi-module project: the included build of graphql-gradle-plugin
+    	// will replace this declaration. But this dummy declaration is needed!
+    	// WHAT A FUCKING MESS! 
+    	//
+    	// Of course, for a real use of the plugin in your project, you'll have to replace by the last plugin's version
+        classpath 'com.graphql-java-generator:graphql-gradle-plugin:dummy'
+        
+        classpath 'org.springframework.boot:spring-boot-gradle-plugin:2.2.6.RELEASE'
+    }
+    
+}
+
+apply plugin: 'java-library'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'com.graphql_java_generator.graphql-gradle-plugin'
+
+repositories {
+	// The plugin depends on the graphql-maven-plugin plugin logic module, which is in mavenCentral (for releases), and in mavenLocal 
+	// when working on the plugin development.
+	mavenCentral()
+	mavenLocal()		// Only if you work on the plugin development
+}
+
+dependencies {
+	// The graphql-java-client-dependencies module agregates all dependencies for the generated code
+    compile 'com.graphql-java-generator:graphql-java-server-dependencies:local-SNAPSHOT'
+    // This project uses some custom scalars from the graphql-java-extended-scalars module
+    compile 'com.graphql-java:graphql-java-extended-scalars:1.0.1'
+    compile 'net.sf.dozer:dozer:5.5.1'
+    
+    // Gives a GraphQL test UI available at http://localhost:8180/graphiql 
+    runtime 'com.graphql-java-kickstart:graphiql-spring-boot-starter:6.0.1'
+
+	// Dependencies for tests
+	testImplementation 'org.springframework:spring-test:5.2.5.RELEASE'
+	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.0'
+	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.5.0'
+	//testRuntimeOnly 'org.apache.logging.log4j:log4j-slf4j-impl:2.11.2'
+}
+
+
+// Of course, we need to generate the GraphQL's java code before compiling the project:
+compileJava.dependsOn graphqlGenerateCode
+
+/*
+task printName() {
+	doLast {
+		println "I'm ${project.name}. My folder is ${project.path}"
+		println "copy from: " + System.properties['graphqlGradlePlugin.graphqlMavenPluginProject.path'] +'/graphql-maven-plugin-samples/' + project.name.replace('gradle', 'maven')
+		println "copy into: ${project.projectDir}"
+		println "Current version is ${version}, ${project.version}, ${GraphQLPluginVersion}, ${project.GraphQLPluginVersion}"
+		println 'Current version2 is ${version}, ${project.version}'
+	}
+}
+*/
+
+// Let's configure the GraphQL Gradle Plugin
+graphql {
+	mode = 'server'  //This line is here only clarity, as client is the default mode
+	packageName = 'org.allGraphQLCases.server'
+	customScalars = [ [
+			graphQLTypeName: "Date",
+			javaType: "java.util.Date",
+			graphQLScalarTypeStaticField: "com.graphql_java_generator.customscalars.GraphQLScalarTypeDate.Date"
+		], [
+			graphQLTypeName: "else",
+			javaType: "java.lang.String",
+			graphQLScalarTypeGetter: "org.allGraphQLCases.server.impl.GraphQLScalarTypeElse.getElseScalar()"
+		], [
+			graphQLTypeName: "Long",
+			javaType: "java.lang.Long",
+			graphQLScalarTypeStaticField: "graphql.Scalars.GraphQLLong"
+		], [
+			graphQLTypeName: "NonNegativeInt",
+			javaType: "java.lang.Integer",
+			graphQLScalarTypeStaticField: "graphql.scalars.ExtendedScalars.NonNegativeInt"
+	] ]
+}

@@ -1,19 +1,8 @@
-//buildscript {
-//	//	dependencies {
-//	//		classpath group: 'de.dynamicfiles.projects.gradle.plugins', name: 'javafx-gradle-plugin', version: "${gradle.javafxGradlePluginVersion}"
-//	//	}
-//	repositories {
-//		mavenLocal()
-//		mavenCentral()
-//		maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
-//
-//	}
-//	apply plugin: 'java'
-//}
 
-
+apply plugin: 'java-gradle-plugin'
 apply plugin: 'java'
 apply plugin: 'maven'
+apply plugin: 'maven-publish'
 
 apply from: '../common_conf.gradle'
 
@@ -23,6 +12,13 @@ repositories {
 	mavenCentral()
 }
 
+publishing {
+	//
+    repositories {
+        mavenLocal()
+    }
+}
+
 dependencies {
 
 	implementation gradleApi()
@@ -30,18 +26,9 @@ dependencies {
 	// Let's reuse the logic already implemented in our maven plugin
 	compile "${project.group}:graphql-maven-plugin-logic:${project.version}"
 
-	// Logging with log4j2
-	compile 'org.apache.logging.log4j:log4j-api:2.11.2'
-	compile 'org.apache.logging.log4j:log4j-core:2.11.2'
-
 	// Use JUnit test framework
 	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.0'
 	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.5.0'
 	testRuntimeOnly 'org.apache.logging.log4j:log4j-jul:2.11.2'
 }
 
-test {
-	// We're using JUnit 5
-	useJUnitPlatform()
-	systemProperty 'java.util.logging.manager', 'org.apache.logging.log4j.jul.LogManager'
-}

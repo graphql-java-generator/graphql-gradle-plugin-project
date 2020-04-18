@@ -5,6 +5,8 @@ package com.graphql_java_generator.gradleplugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -20,6 +22,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.support.AbstractApplicationContext;
 
 import com.graphql_java_generator.plugin.CodeGenerator;
+import com.graphql_java_generator.plugin.CustomScalarDefinition;
 import com.graphql_java_generator.plugin.DocumentParser;
 import com.graphql_java_generator.plugin.Logger;
 import com.graphql_java_generator.plugin.Packaging;
@@ -33,10 +36,10 @@ import com.graphql_java_generator.plugin.PluginMode;
  */
 public class GraphqlGenerateCodeTask extends DefaultTask implements PluginConfiguration {
 
-	final Project project;
-
 	/** The Gradle extension, to read the plugin parameters from the script */
 	private transient GraphqlExtension graphqlExtension = null;
+
+	final Project project;
 
 	/**
 	 * @param project
@@ -48,66 +51,6 @@ public class GraphqlGenerateCodeTask extends DefaultTask implements PluginConfig
 	public GraphqlGenerateCodeTask(Project project, GraphqlExtension graphqlExtension) {
 		this.project = project;
 		this.graphqlExtension = graphqlExtension;
-	}
-
-	@Override
-	@Input
-	public String getPackageName() {
-		return graphqlExtension.getPackageName();
-	}
-
-	@Override
-	public Logger getLog() {
-		return graphqlExtension.getLog();
-	}
-
-	@Override
-	@Input
-	public PluginMode getMode() {
-		return graphqlExtension.getMode();
-	}
-
-	@Override
-	@Input
-	public Packaging getPackaging() {
-		return graphqlExtension.getPackaging();
-	}
-
-	@Override
-	@Input
-	public File getMainResourcesFolder() {
-		return graphqlExtension.getMainResourcesFolder();
-	}
-
-	@Override
-	@Input
-	public String getSchemaFilePattern() {
-		return graphqlExtension.getSchemaFilePattern();
-	}
-
-	@Override
-	@InputFile
-	@Optional
-	public File getSchemaPersonalizationFile() {
-		return graphqlExtension.getSchemaPersonalizationFile();
-	}
-
-	@Override
-	@Input
-	public String getSourceEncoding() {
-		return graphqlExtension.getSourceEncoding();
-	}
-
-	@Override
-	@OutputDirectory
-	public File getTargetClassFolder() {
-		return graphqlExtension.getTargetClassFolder();
-	}
-
-	@Override
-	@OutputDirectory
-	public File getTargetSourceFolder() {
-		return graphqlExtension.getTargetSourceFolder();
 	}
 
 	@TaskAction
@@ -146,6 +89,90 @@ public class GraphqlGenerateCodeTask extends DefaultTask implements PluginConfig
 		} catch (IOException e) {
 			throw new UncheckedIOException(e.getMessage(), e);
 		}
+	}
+
+	@Override
+	public List<CustomScalarDefinition> getCustomScalars() {
+		return graphqlExtension.getCustomScalars();
+	}
+
+	@Override
+	public Logger getLog() {
+		return graphqlExtension.getLog();
+	}
+
+	@Override
+	@Input
+	public PluginMode getMode() {
+		return graphqlExtension.getMode();
+	}
+
+	@Override
+	@Input
+	public String getPackageName() {
+		return graphqlExtension.getPackageName();
+	}
+
+	@Override
+	@Input
+	public Packaging getPackaging() {
+		return graphqlExtension.getPackaging();
+	}
+
+	@Override
+	public File getSchemaFileFolder() {
+		return graphqlExtension.getSchemaFileFolder();
+	}
+
+	@Override
+	@Input
+	public String getSchemaFilePattern() {
+		return graphqlExtension.getSchemaFilePattern();
+	}
+
+	@Override
+	@InputFile
+	@Optional
+	public File getSchemaPersonalizationFile() {
+		return graphqlExtension.getSchemaPersonalizationFile();
+	}
+
+	@Override
+	@Input
+	public String getSourceEncoding() {
+		return graphqlExtension.getSourceEncoding();
+	}
+
+	@Override
+	@OutputDirectory
+	public File getTargetClassFolder() {
+		return graphqlExtension.getTargetClassFolder();
+	}
+
+	@Override
+	@OutputDirectory
+	public File getTargetSourceFolder() {
+		return graphqlExtension.getTargetSourceFolder();
+	}
+
+	@Override
+	public Map<String, String> getTemplates() {
+		return graphqlExtension.getTemplates();
+	}
+
+	@Override
+	public boolean isCopyRuntimeSources() {
+		return graphqlExtension.isCopyRuntimeSources();
+	}
+
+	@Override
+	public boolean isGenerateJPAAnnotation() {
+		return graphqlExtension.isGenerateJPAAnnotation();
+	}
+
+	@Override
+	public boolean isSeparateUtilityClasses() {
+		return graphqlExtension.isSeparateUtilityClasses();
 	}
 
 }
