@@ -7,42 +7,7 @@ plugins {
 // Let's get the group and version for this project
 apply from: 'common_conf.gradle'
 
-
-allprojects {
-	
-
-
-/*
-	Apparently, constraint doesn't with maven dependencies!
-	
-	Gradle IS REALLY A MESS!
-	:(
-	
-	dependencies {
-	    constraints {
-			// Internal plugin dependencies
-		    implementation("com.graphql-java-generator:graphql-java-client-dependencies:${project.version}")
-		    implementation("com.graphql-java-generator:graphql-java-server-dependencies:${project.version}")
-		    
-		    // GraphQL dependencies
-		    implementation 'com.graphql-java:graphql-java-extended-scalars:1.0.1'
-		
-			// Dependencies for tests
-			testImplementation 'org.springframework:spring-test:5.2.5.RELEASE'
-			testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.0'
-			testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.5.0'
-			testRuntimeOnly 'org.apache.logging.log4j:log4j-slf4j-impl:2.11.2'
-	    }
-	}
-*/
-
-}
-
-
 subprojects {
-	
-	// Let's get the group and version for this project
-	apply from: '../common_conf.gradle'
 	
 	// Dependency management
 	ext {
@@ -52,6 +17,12 @@ subprojects {
 		log4jVersion = '2.11.2'		
 	}
 	
+	/**
+	 * For samples project, we add the copySamplesFromMavenPlugin task.
+	 *
+	 * This tasks allows to copy the code (main and test, java and resources) from the maven module of the same name into the gradle one.
+	 * This allow to test the gradle plugin in the same way, as the maven plugin is.
+	 */
 	if (project.name.contains('samples') && System.properties['graphqlGradlePlugin.graphqlMavenPluginProject.path'] != null) {
 
 		task copySamplesFromMavenPlugin(type: Copy) {
@@ -75,5 +46,6 @@ subprojects {
 		    into "${project.projectDir}"
 		}
 	}
+
 }
 

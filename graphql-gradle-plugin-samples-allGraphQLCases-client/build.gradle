@@ -25,6 +25,9 @@ repositories {
 	mavenLocal()
 }
 
+// Let's get the group and version for this project
+apply from: '../common_conf.gradle'
+
 dependencies {
 	// The graphql-java-client-dependencies module agregates all dependencies for the generated code
     implementation "com.graphql-java-generator:graphql-java-client-dependencies:${project.version}"
@@ -35,8 +38,7 @@ dependencies {
 	testImplementation "org.springframework:spring-test:${springTestVersion}"
 	testImplementation "org.junit.jupiter:junit-jupiter-api:${junitJupiterVersion}"
 	testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}"
-	testRuntimeOnly "org.apache.logging.log4j:log4j-slf4j-impl:${log4jVersion}"
-    
+	testRuntimeOnly "org.apache.logging.log4j:log4j-slf4j-impl:${log4jVersion}"    
 }
 
 

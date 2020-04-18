@@ -27,6 +27,9 @@ apply plugin: 'java-library'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'com.graphql_java_generator.graphql-gradle-plugin'
 
+// Let's get the group and version for this project
+apply from: '../common_conf.gradle'
+
 repositories {
 	// The plugin depends on the graphql-maven-plugin plugin logic module, which is in mavenCentral (for releases), and in mavenLocal 
 	// when working on the plugin development.
