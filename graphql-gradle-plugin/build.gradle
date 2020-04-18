@@ -27,8 +27,7 @@ dependencies {
 	compile "${project.group}:graphql-maven-plugin-logic:${project.version}"
 
 	// Use JUnit test framework
-	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.0'
-	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.5.0'
-	testRuntimeOnly 'org.apache.logging.log4j:log4j-jul:2.11.2'
+	testImplementation "org.junit.jupiter:junit-jupiter-api:${junitJupiterVersion}"
+	testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}"
 }
 

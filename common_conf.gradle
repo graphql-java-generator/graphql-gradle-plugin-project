@@ -1,2 +1,12 @@
 group = 'com.graphql-java-generator'
 version = 'local-SNAPSHOT'
+
+// This configuration block declares local project variable, with all versions for common dependencies
+ext {
+	dozerVersion = '5.5.1'
+	junitJupiterVersion = '5.5.0'
+	graphiqlSpringBootStarterVersion = '6.0.1' 
+	graphqlJavaExtendedScalarsVersion = '1.0.1'
+	log4jVersion = '2.11.2'		
+	springTestVersion = '5.2.5.RELEASE'
+}

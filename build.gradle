@@ -9,14 +9,6 @@ apply from: 'common_conf.gradle'
 
 subprojects {
 	
-	// Dependency management
-	ext {
-		graphqlJavaExtendedScalarsVersion = '1.0.1'
-		springTestVersion = '5.2.5.RELEASE'
-		junitJupiterVersion = '5.5.0'
-		log4jVersion = '2.11.2'		
-	}
-	
 	/**
 	 * For samples project, we add the copySamplesFromMavenPlugin task.
 	 *

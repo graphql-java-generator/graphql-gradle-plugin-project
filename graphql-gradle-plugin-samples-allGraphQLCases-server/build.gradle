@@ -1,9 +1,5 @@
 
 buildscript {
-	//If the next line is uncommented the 'com.graphql_java_generator.graphql-gradle-plugin' is not found
-	// (with both the 'local-SNAPSHOT' and the '${version} versions)
- 	//apply from: '../common_conf.gradle'
- 	
     repositories {
         mavenCentral()
 		// The plugin depends on the graphql-maven-plugin, whose snapshot versions are on the local maven repository.
@@ -39,40 +35,26 @@ repositories {
 
 dependencies {
 	// The graphql-java-client-dependencies module agregates all dependencies for the generated code
-    compile 'com.graphql-java-generator:graphql-java-server-dependencies:local-SNAPSHOT'
+    compile "com.graphql-java-generator:graphql-java-server-dependencies:local-SNAPSHOT"
     // This project uses some custom scalars from the graphql-java-extended-scalars module
-    compile 'com.graphql-java:graphql-java-extended-scalars:1.0.1'
-    compile 'net.sf.dozer:dozer:5.5.1'
+    compile "com.graphql-java:graphql-java-extended-scalars:${graphqlJavaExtendedScalarsVersion}"
+    compile "net.sf.dozer:dozer:${dozerVersion}"
     
     // Gives a GraphQL test UI available at http://localhost:8180/graphiql 
-    runtime 'com.graphql-java-kickstart:graphiql-spring-boot-starter:6.0.1'
+    runtime "com.graphql-java-kickstart:graphiql-spring-boot-starter:${graphiqlSpringBootStarterVersion}"
 
 	// Dependencies for tests
-	testImplementation 'org.springframework:spring-test:5.2.5.RELEASE'
-	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.0'
-	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.5.0'
-	//testRuntimeOnly 'org.apache.logging.log4j:log4j-slf4j-impl:2.11.2'
+	testImplementation "org.springframework:spring-test:${springTestVersion}"
+	testImplementation "org.junit.jupiter:junit-jupiter-api:${junitJupiterVersion}"
+	testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}"
 }
-
 
 // Of course, we need to generate the GraphQL's java code before compiling the project:
 compileJava.dependsOn graphqlGenerateCode
 
-/*
-task printName() {
-	doLast {
-		println "I'm ${project.name}. My folder is ${project.path}"
-		println "copy from: " + System.properties['graphqlGradlePlugin.graphqlMavenPluginProject.path'] +'/graphql-maven-plugin-samples/' + project.name.replace('gradle', 'maven')
-		println "copy into: ${project.projectDir}"
-		println "Current version is ${version}, ${project.version}, ${GraphQLPluginVersion}, ${project.GraphQLPluginVersion}"
-		println 'Current version2 is ${version}, ${project.version}'
-	}
-}
-*/
-
 // Let's configure the GraphQL Gradle Plugin
 graphql {
-	mode = 'server'  //This line is here only clarity, as client is the default mode
+	mode = 'server'
 	packageName = 'org.allGraphQLCases.server'
 	customScalars = [ [
 			graphQLTypeName: "Date",
