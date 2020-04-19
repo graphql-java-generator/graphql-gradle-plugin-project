@@ -37,6 +37,7 @@ subprojects {
 		    }
 		    into "${project.projectDir}"
 		}
+
 	}
 
 }
