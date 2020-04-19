@@ -19,7 +19,7 @@ buildscript {
     
 }
 
-apply plugin: 'java-library'
+apply plugin: 'java'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'com.graphql_java_generator.graphql-gradle-plugin'
 
@@ -44,7 +44,7 @@ dependencies {
     runtime "com.graphql-java-kickstart:graphiql-spring-boot-starter:${graphiqlSpringBootStarterVersion}"
 
 	// Dependencies for tests
-	testImplementation "org.springframework:spring-test:${springTestVersion}"
+	testImplementation "org.springframework:spring-test:${springFrameworkVersion}"
 	testImplementation "org.junit.jupiter:junit-jupiter-api:${junitJupiterVersion}"
 	testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}"
 }

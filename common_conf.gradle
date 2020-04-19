@@ -7,6 +7,8 @@ ext {
 	junitJupiterVersion = '5.5.0'
 	graphiqlSpringBootStarterVersion = '6.0.1' 
 	graphqlJavaExtendedScalarsVersion = '1.0.1'
-	log4jVersion = '2.11.2'		
-	springTestVersion = '5.2.5.RELEASE'
+	h2databaseVersion = '1.4.199'
+	log4jVersion = '2.11.2'
+	springBootVersion = '2.2.6.RELEASE'		
+	springFrameworkVersion = '5.2.5.RELEASE'
 }

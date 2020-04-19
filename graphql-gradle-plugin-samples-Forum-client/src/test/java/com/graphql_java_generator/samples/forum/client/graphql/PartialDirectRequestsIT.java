@@ -1,20 +1,21 @@
 package com.graphql_java_generator.samples.forum.client.graphql;
 
 import org.junit.jupiter.api.BeforeEach;
-
-import com.graphql_java_generator.samples.forum.client.graphql.DirectQueries;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 /**
  * As it is suffixed by "IT", this is an integration test. Thus, it allows us to start the GraphQL StatWars server, see
  * the pom.xml file for details.
  * 
- * @author EtienneSF
+ * @author etienne-sf
  */
-class DirectQueriesIT extends AbstractTest {
+@Execution(ExecutionMode.CONCURRENT)
+class PartialDirectRequestsIT extends AbstractIT {
 
 	@BeforeEach
 	void setUp() throws Exception {
-		queries = new DirectQueries();
+		queries = new PartialDirectRequests();
 	}
 
 }

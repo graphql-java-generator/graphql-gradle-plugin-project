@@ -12,13 +12,6 @@ repositories {
 	mavenCentral()
 }
 
-publishing {
-	//
-    repositories {
-        mavenLocal()
-    }
-}
-
 dependencies {
 
 	implementation gradleApi()

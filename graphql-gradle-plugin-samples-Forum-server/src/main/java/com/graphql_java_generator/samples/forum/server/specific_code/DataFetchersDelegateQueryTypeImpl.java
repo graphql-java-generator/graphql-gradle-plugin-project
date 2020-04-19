@@ -9,9 +9,9 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Component;
 
+import com.graphql_java_generator.GraphqlUtils;
 import com.graphql_java_generator.samples.forum.server.Board;
-import com.graphql_java_generator.samples.forum.server.GraphQLUtil;
-import com.graphql_java_generator.samples.forum.server.QueryTypeDataFetchersDelegate;
+import com.graphql_java_generator.samples.forum.server.DataFetchersDelegateQueryType;
 import com.graphql_java_generator.samples.forum.server.Topic;
 import com.graphql_java_generator.samples.forum.server.jpa.BoardRepository;
 import com.graphql_java_generator.samples.forum.server.jpa.TopicRepository;
@@ -19,10 +19,10 @@ import com.graphql_java_generator.samples.forum.server.jpa.TopicRepository;
 import graphql.schema.DataFetchingEnvironment;
 
 /**
- * @author EtienneSF
+ * @author etienne-sf
  */
 @Component
-public class QueryTypeDataFetchersDelegateImpl implements QueryTypeDataFetchersDelegate {
+public class DataFetchersDelegateQueryTypeImpl implements DataFetchersDelegateQueryType {
 
 	@Resource
 	BoardRepository boardRepository;
@@ -30,11 +30,16 @@ public class QueryTypeDataFetchersDelegateImpl implements QueryTypeDataFetchersD
 	TopicRepository topicRepository;
 
 	@Resource
-	GraphQLUtil graphQLUtil;
+	GraphqlUtils graphqlUtils;
 
 	@Override
 	public List<Board> boards(DataFetchingEnvironment dataFetchingEnvironment) {
-		return graphQLUtil.iterableToList(boardRepository.findAll());
+		return graphqlUtils.iterableToList(boardRepository.findAll());
+	}
+
+	@Override
+	public Integer nbBoards(DataFetchingEnvironment dataFetchingEnvironment) {
+		return (int) boardRepository.count();
 	}
 
 	@Override

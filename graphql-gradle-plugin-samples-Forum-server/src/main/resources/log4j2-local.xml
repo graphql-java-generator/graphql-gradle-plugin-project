@@ -22,6 +22,7 @@
 		<Logger name="org.hibernate.SQL" level="info" /> <!-- Logs each SQL query execution -->
 		<Logger name="org.hibernate.type.descriptor.sql" level="info" /> <!-- Logs each SQL query execution, with the bind values -->
 		<Root level="info">
+			<AppenderRef ref="Console" />
 			<AppenderRef ref="File" />
 		</Root>
 	</Loggers>

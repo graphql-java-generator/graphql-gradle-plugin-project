@@ -1,7 +1,1 @@
-/*
- * This file allows to build the plugin alone, without the other modules
- */
-
 rootProject.name = 'graphql-gradle-plugin'
-
-

@@ -14,6 +14,7 @@ import org.gradle.api.DefaultTask;
 import org.gradle.api.Project;
 import org.gradle.api.UncheckedIOException;
 import org.gradle.api.tasks.Input;
+import org.gradle.api.tasks.InputDirectory;
 import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputDirectory;
@@ -92,6 +93,7 @@ public class GraphqlGenerateCodeTask extends DefaultTask implements PluginConfig
 	}
 
 	@Override
+	@Input
 	public List<CustomScalarDefinition> getCustomScalars() {
 		return graphqlExtension.getCustomScalars();
 	}
@@ -120,6 +122,8 @@ public class GraphqlGenerateCodeTask extends DefaultTask implements PluginConfig
 	}
 
 	@Override
+	@InputDirectory
+	@Optional
 	public File getSchemaFileFolder() {
 		return graphqlExtension.getSchemaFileFolder();
 	}
@@ -156,21 +160,25 @@ public class GraphqlGenerateCodeTask extends DefaultTask implements PluginConfig
 	}
 
 	@Override
+	@Input
 	public Map<String, String> getTemplates() {
 		return graphqlExtension.getTemplates();
 	}
 
 	@Override
+	@Input
 	public boolean isCopyRuntimeSources() {
 		return graphqlExtension.isCopyRuntimeSources();
 	}
 
 	@Override
+	@Input
 	public boolean isGenerateJPAAnnotation() {
 		return graphqlExtension.isGenerateJPAAnnotation();
 	}
 
 	@Override
+	@Input
 	public boolean isSeparateUtilityClasses() {
 		return graphqlExtension.isSeparateUtilityClasses();
 	}

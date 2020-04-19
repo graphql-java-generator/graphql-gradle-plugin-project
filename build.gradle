@@ -16,6 +16,16 @@ subprojects {
 	 * This allow to test the gradle plugin in the same way, as the maven plugin is.
 	 */
 	if (project.name.contains('samples') && System.properties['graphqlGradlePlugin.graphqlMavenPluginProject.path'] != null) {
+	
+		task cleanSamplesCode() {
+			group = "Preparation"
+			description = "Delete the src folder (to allow fresh copy of the sources from the GraphQL maven sample code)"
+
+			// The action for this task is to delete the src folder
+			doLast {
+				delete 'src'
+			}
+		}
 
 		task copySamplesFromMavenPlugin(type: Copy) {
 			group = "Preparation"
@@ -36,6 +46,9 @@ subprojects {
 		    	include "/src/test/**"
 		    }
 		    into "${project.projectDir}"
+		    
+		    dependsOn cleanSamplesCode
+		    mustRunAfter cleanSamplesCode
 		}
 
 	}
