@@ -46,7 +46,7 @@ public class GraphqlGenerateCodeTask extends DefaultTask implements PluginConfig
 	/**
 	 * @param project
 	 *            The current Gradle project
-	 * @param extension
+	 * @param graphqlExtension
 	 *            The GraphQL extension, which contains all parameters found in the build script
 	 */
 	@Inject

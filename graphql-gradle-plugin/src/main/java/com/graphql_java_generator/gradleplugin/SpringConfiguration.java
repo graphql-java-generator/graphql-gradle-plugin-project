@@ -37,10 +37,12 @@ public class SpringConfiguration {
 	}
 
 	/**
-	 * Loads the schema from the graphqls files. This method uses the {@link GraphQLJavaToolsAutoConfiguration} from the
-	 * 
+	 * Loads the schema from the graphqls files. This method uses the GraphQLJavaToolsAutoConfiguration from the
 	 * project, to load the schema from the graphqls files
 	 * 
+	 * @param schemaStringProvider
+	 *            The String Provider
+	 * @return the {@link Document}s to read
 	 * @throws GradleScriptException
 	 *             When an error occurs while reading or parsing the graphql definition files
 	 */
