@@ -1,7 +1,17 @@
-
+/*
+ * This is the port on Gradle of the graphql-java-generator plugin.
+ *
+ * It's "just" a wrapper over the plugin logic which is available in this maven module: 
+ * com.graphql-java-generator:graphql-maven-plugin-logic
+ *
+ * All unit tests can be found in the com.graphql-java-generator:graphql-maven-plugin-logic.
+ * Integration tests are in this GIT project, that also hosts this plugin: 
+ * https://github.com/graphql-java-generator/graphql-gradle-plugin-project
+ * 
+ */
 plugins {
-	id "com.gradle.plugin-publish" version "0.11.0"
-    id 'java-gradle-plugin'
+  id "com.gradle.plugin-publish" version "0.11.0"
+  id "java-gradle-plugin"
 }
 
 apply from: '../common_conf.gradle'
@@ -15,32 +25,20 @@ repositories {
 }
 
 dependencies {
-
-	// Let's reuse the logic already implemented in our maven plugin
-	compile "${project.group}:graphql-maven-plugin-logic:${project.version}"
-
-	// Use JUnit test framework
-	testImplementation "org.junit.jupiter:junit-jupiter-api:${junitJupiterVersion}"
-	testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}"
+	// This plugin is a wrapper of the logic already implemented in our maven plugin
+	compile "com.graphql-java-generator:graphql-maven-plugin-logic:${project.version}"
 }
 
-/*
-// The below configuration will document the plugin, once it is in the https://plugins.gradle.org portal
 pluginBundle {
 	website = 'https://github.com/graphql-java-generator/graphql-gradle-plugin-project'
 	vcsUrl = 'git@github.com:graphql-java-generator/graphql-gradle-plugin-project.git'
-	description = 'graphql-gradle-plugin is a Gradle Plugin for GraphQL, based on graphql-java. '
-		+ 'It accelerates the development for both the client and the server, by generating the Java code. '
-		+ 'It allows a quicker development when in contract-first approach, by avoiding to code the boilerplate code.'
+	description = 'graphql-gradle-plugin is a Gradle Plugin for GraphQL, based on graphql-java. It accelerates the development for both the client and the server, by generating the Java code.  It allows a quicker development when in contract-first approach, by avoiding to code the boilerplate code.'
 	tags = ['graphql', 'graphql-java', 'graphql-java-generator', 'java', 'codegeneration', 'code generation', 'code-generation', 'generation', 'generate', 'template', 'templates']
 	
 	plugins {
-		graphqlJavaGeneratorPlugin {
-			// id is captured from java-gradle-plugin configuration
-			displayName = 'graphql-gradle-plugin is a Gradle Plugin for GraphQL, based on graphql-java. '
-		+ 'It accelerates the development for both the client and the server, by generating the Java code. '
-		+ 'It allows a quicker development when in contract-first approach, by avoiding to code the boilerplate code.'
+		graphqlPlugin {
+			id = 'com.graphql_java_generator.graphql-gradle-plugin'
+			displayName = 'graphql-gradle-plugin'
 		}
 	}
 }
-*/
