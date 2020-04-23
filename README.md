@@ -79,6 +79,43 @@ Note: The client projects for these samples contain integration tests. They are 
 
 ### Client mode
 
+You'll have to put the GraphQL schema in a graphqls file. The default folder is /src/main/resources, but a plugin parameter allows to change that.
+
+Then, write the _build.gradle_ file. Here is a small sample:
+
+```Groovy
+plugins {
+    id 'java-library'
+    // Loading the GraphQL Gradle plugin
+    id 'com.graphql_java_generator.graphql-gradle-plugin' version '1.6.1'
+}
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+	// The graphql-java-client-dependencies module agregates all dependencies for the generated code
+	// It's only "external" dependencies (spring, jackson...). No dependencies linked to graphql-java-generator
+    implementation "com.graphql-java-generator:graphql-java-client-dependencies:1.6.1"
+}
+
+// The next lines makes the GraphQL plugin be executed before Java compiles, so that all sources are generated on time
+compileJava.dependsOn graphqlGenerateCode
+
+// Let's configure the GraphQL Gradle Plugin
+graphql {
+	mode = "client"  //This line is here only for the demo, as client is the default mode
+	packageName = "graphql.gradle.forum.client.generated"
+	customScalars = [ [
+			graphQLTypeName: "Date",
+			javaType: "java.util.Date",
+			graphQLScalarTypeStaticField: "com.graphql_java_generator.customscalars.GraphQLScalarTypeDate.Date"
+	] ]
+}
+```
+
+
 When in _client_ mode, you can query the server with just one line of code.
 
 For instance :
@@ -124,7 +161,47 @@ When in server mode, the plugin generates:
     * You can customize these annotations, with the Schema Personalization file (see below for details)
 * All the necessary runtime is actually attached as source code into your project: the generated code is stand-alone. So, your project, when it runs, doesn't depend on any external dependency from graphql-java-generator.
 
-Once all this is generated, your only work is to implement the DataFetchersDelegate interfaces. They are the link between the GraphQL schema and your data storage. As such, they are specific to your use case. A DataFetchersDelegate implementation looks like this:
+
+
+You'll have to put the GraphQL schema in a graphqls file. The default folder is /src/main/resources, but a plugin parameter allows to change that.
+
+Then, write the _build.gradle_ file. Here is a small sample:
+
+```Groovy
+plugins {
+    id 'java-library'
+    // Loading the GraphQL Gradle plugin
+    id 'com.graphql_java_generator.graphql-gradle-plugin' version '1.6.1'
+}
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+	// The graphql-java-client-dependencies module agregates all dependencies for the generated code
+	// It's only "external" dependencies (spring, jackson...). No dependencies linked to graphql-java-generator
+    implementation "com.graphql-java-generator:graphql-java-client-dependencies:1.6.1"
+}
+
+// The next lines makes the GraphQL plugin be executed before Java compiles, so that all sources are generated on time
+compileJava.dependsOn graphqlGenerateCode
+
+// Let's configure the GraphQL Gradle Plugin
+graphql {
+	mode = "client"  //This line is here only for the demo, as client is the default mode
+	packageName = "graphql.gradle.forum.client.generated"
+	customScalars = [ [
+			graphQLTypeName: "Date",
+			javaType: "java.util.Date",
+			graphQLScalarTypeStaticField: "com.graphql_java_generator.customscalars.GraphQLScalarTypeDate.Date"
+	] ]
+}
+```
+
+
+
+Once all this is generated, after the first _gradle build_ command, your only work is to implement the DataFetchersDelegate interfaces. They are the link between the GraphQL schema and your data storage. As such, they are specific to your use case. A DataFetchersDelegate implementation looks like this:
 
 ```Java
 package com.graphql_java_generator.samples.forum.server.specific_code;
