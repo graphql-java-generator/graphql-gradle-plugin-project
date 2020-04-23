@@ -44,7 +44,9 @@ The aim of this project is to:
 
 You'll find below a quick presentation of the plugin.
 
-For all the available information, please go to the [project website](https://graphql-maven-plugin-project.graphql-java-generator.com/README.html)
+For all the available information, please go to the [project website](https://graphql-maven-plugin-project.graphql-java-generator.com/README.html). This doc is the doc for the maven plugin. A more specific doc for the Gradle plugin is in progress.
+
+Please take a look at the _build.gradle_ samples below, and in the samples provided within the git project.
 
 
 ### Plugin documentation
