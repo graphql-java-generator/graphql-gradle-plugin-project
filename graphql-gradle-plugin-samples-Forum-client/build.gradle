@@ -10,7 +10,7 @@ buildscript {
     	// will replace this declaration. But this dummy declaration is needed!
     	//
     	// Of course, for a real use of the plugin in your project, you'll have to replace by the last plugin's version
-        classpath "com.graphql-java-generator:graphql-gradle-plugin:local-SNAPSHOT"
+        classpath "com.graphql-java-generator:graphql-gradle-plugin:1.7.0"
     }
 }
 
@@ -31,6 +31,13 @@ dependencies {
 	// The graphql-java-client-dependencies module agregates all dependencies for the generated code
     implementation "com.graphql-java-generator:graphql-java-client-dependencies:${project.version}"
 
+	// Dependencies for Web Socket. In the next version, they will be integratd into the graphql-java-client-dependencies module
+	implementation "javax.websocket:javax.websocket-api:1.1"
+	implementation "org.eclipse.jetty:jetty-webapp:9.4.27.v20200227"
+	implementation "org.eclipse.jetty:jetty-server:9.4.27.v20200227"
+	implementation "org.eclipse.jetty.websocket:javax-websocket-server-impl:9.4.27.v20200227"
+	implementation "org.eclipse.jetty:jetty-annotations:9.4.27.v20200227"
+	
 	// Dependencies for tests
 	testImplementation "org.springframework:spring-test:${springFrameworkVersion}"
 	testImplementation "org.junit.jupiter:junit-jupiter-api:${junitJupiterVersion}"

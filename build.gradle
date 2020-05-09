@@ -1,6 +1,7 @@
 
 
 plugins {
+	// Let's set the asciidoctor version for the docs module
 	id 'org.asciidoctor.convert' version '1.5.6' apply false
 }
 
@@ -50,8 +51,21 @@ subprojects {
 		    dependsOn cleanSamplesCode
 		    mustRunAfter cleanSamplesCode
 		}
-
 	}
-
 }
 
+
+
+/*
+//Let's include the documentation in the distribution archive
+distZip {
+    from project(':graphql-gradle-plugin-docs').asciidoctor, { 
+        into "${project.name}-${version}"
+    }
+}
+distTar {
+    from project(':graphql-gradle-plugin-docs').asciidoctor, {
+        into "${project.name}-${version}"
+    }
+}
+*/

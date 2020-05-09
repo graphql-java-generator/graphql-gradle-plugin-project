@@ -35,10 +35,13 @@ repositories {
 
 dependencies {
 	// The graphql-java-client-dependencies module agregates all dependencies for the generated code
-    compile "com.graphql-java-generator:graphql-java-server-dependencies:${project.version}"
-    compile "net.sf.dozer:dozer:${dozerVersion}"
-    compile "org.springframework.boot:spring-boot-starter-data-jpa:${springBootVersion}"
+    implementation "com.graphql-java-generator:graphql-java-server-dependencies:${project.version}"
+    implementation "net.sf.dozer:dozer:${dozerVersion}"
+    implementation "org.springframework.boot:spring-boot-starter-data-jpa:${springBootVersion}"
     runtime "com.h2database:h2:${h2databaseVersion}"
+	
+	// Needed for Reactive implementation, to support the Subscription
+	implementation "io.reactivex.rxjava2:rxjava:2.2.19"
     
     // Gives a GraphQL test UI available at http://localhost:8180/graphiql 
     runtime "com.graphql-java-kickstart:graphiql-spring-boot-starter:${graphiqlSpringBootStarterVersion}"
