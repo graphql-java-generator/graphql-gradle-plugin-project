@@ -29,7 +29,11 @@ The generator is currently available both as a Maven plugin and as a Gradle plug
 
 ## Full documentation
 
-The [Full documentation](https://graphql-maven-plugin-project.graphql-java-generator.com/) is [available here](https://graphql-maven-plugin-project.graphql-java-generator.com/) , for both the Gradle and the Maven plugin.
+The Gradle plugin is a wrapper for the plugin logic. This plugin logic is published in both a Gradle and a Maven plugin.
+
+So the only activity in this project, is when releasing a new version. All the work is in the plugin logic, stored in tha Maven plugin project.
+
+In the way, the [Full documentation](https://graphql-maven-plugin-project.graphql-java-generator.com/) is [available here](https://graphql-maven-plugin-project.graphql-java-generator.com/) , for both the Gradle and the Maven plugin.
 
 ## Aim of this project
 
