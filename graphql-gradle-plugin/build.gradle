@@ -14,7 +14,7 @@ plugins {
   id "java-gradle-plugin"
 }
 
-apply from: '../common_conf.gradle'
+apply from: 'common_conf.gradle'
 
 repositories {
 	jcenter()

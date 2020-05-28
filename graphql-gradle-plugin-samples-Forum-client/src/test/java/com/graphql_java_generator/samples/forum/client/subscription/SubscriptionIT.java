@@ -72,7 +72,7 @@ class SubscriptionIT {
 				"Board name 1");
 
 		logger.debug("Creating the post, for which we should receice the notification");
-		CompletableFuture<Post> createdPostASync = new CompletableFuture<Post>().completeAsync(() -> {
+		CompletableFuture<Post> createdPostASync = CompletableFuture.supplyAsync(() -> {
 			try {
 				// We need to wait a little, to be sure the subscription is done, before creating the post.
 				// But we wait as little as possible
@@ -103,9 +103,10 @@ class SubscriptionIT {
 		assertNotNull(postSubscriptionCallback.lastReceivedMessage, "We should have received a post");
 
 		Post createdPost = createdPostASync.get();
-		assertEquals(createdPost.getId(), postSubscriptionCallback.lastReceivedMessage.getId(), "Is it 'our' new Post?");
+		assertEquals(createdPost.getId(), postSubscriptionCallback.lastReceivedMessage.getId(),
+				"Is it 'our' new Post?");
 		assertEquals(new GregorianCalendar(2020, 11 - 1, 21).getTime(),
-				postSubscriptionCallback.lastReceivedMessage.getDate(), "Check of a custom scalar");
+				postSubscriptionCallback.lastReceivedMessage.getDate(), "Check of a custom scalar date");
 
 		// We must free the server resource at the end
 		client.unsubscribe();

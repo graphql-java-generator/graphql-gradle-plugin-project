@@ -1,15 +1,14 @@
 /**
  * 
  */
-package com.graphql_java_generator.samples.forum.server.jpa;
+package org.forum.server.jpa;
 
 import java.util.List;
 import java.util.UUID;
 
+import org.forum.server.graphql.Member;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
-
-import com.graphql_java_generator.samples.forum.server.Member;
 
 /**
  * @author etienne-sf

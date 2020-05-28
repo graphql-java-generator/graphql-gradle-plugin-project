@@ -124,6 +124,12 @@ public class GraphqlGenerateCodeTask extends DefaultTask implements PluginConfig
 	}
 
 	@Override
+	@Input
+	public String getScanBasePackages() {
+		return graphqlExtension.getScanBasePackages();
+	}
+
+	@Override
 	@InputDirectory
 	@Optional
 	public File getSchemaFileFolder() {
@@ -171,6 +177,12 @@ public class GraphqlGenerateCodeTask extends DefaultTask implements PluginConfig
 	@Input
 	public boolean isCopyRuntimeSources() {
 		return graphqlExtension.isCopyRuntimeSources();
+	}
+
+	@Override
+	@Input
+	public boolean isGenerateDeprecatedRequestResponse() {
+		return graphqlExtension.isGenerateDeprecatedRequestResponse();
 	}
 
 	@Override

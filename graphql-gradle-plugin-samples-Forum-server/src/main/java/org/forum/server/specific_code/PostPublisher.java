@@ -1,14 +1,13 @@
 /**
  * 
  */
-package com.graphql_java_generator.samples.forum.server.specific_code;
+package org.forum.server.specific_code;
 
+import org.forum.server.graphql.Post;
 import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-
-import com.graphql_java_generator.samples.forum.server.Post;
 
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Observer;

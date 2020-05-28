@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.graphql_java_generator.samples.forum.server.specific_code;
+package org.forum.server.specific_code;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -13,18 +13,18 @@ import java.util.concurrent.CompletableFuture;
 import javax.annotation.Resource;
 
 import org.dataloader.DataLoader;
+import org.forum.server.graphql.DataFetchersDelegateTopic;
+import org.forum.server.graphql.Member;
+import org.forum.server.graphql.Post;
+import org.forum.server.graphql.Topic;
+import org.forum.server.jpa.MemberRepository;
+import org.forum.server.jpa.PostRepository;
+import org.forum.server.jpa.TopicRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.GraphqlUtils;
-import com.graphql_java_generator.samples.forum.server.DataFetchersDelegateTopic;
-import com.graphql_java_generator.samples.forum.server.Member;
-import com.graphql_java_generator.samples.forum.server.Post;
-import com.graphql_java_generator.samples.forum.server.Topic;
-import com.graphql_java_generator.samples.forum.server.jpa.MemberRepository;
-import com.graphql_java_generator.samples.forum.server.jpa.PostRepository;
-import com.graphql_java_generator.samples.forum.server.jpa.TopicRepository;
 
 import graphql.schema.DataFetchingEnvironment;
 

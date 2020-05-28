@@ -90,6 +90,25 @@ public class GraphqlExtension implements PluginConfiguration, Serializable {
 	private List<CustomScalarDefinition> customScalars = new ArrayList<>();
 
 	/**
+	 * <P>
+	 * <I>Since 1.7.1 version</I>
+	 * </P>
+	 * <P>
+	 * Generates a XxxxResponse class for each query/mutation/subscription, and (if separateUtilityClasses is true) Xxxx
+	 * classes in the util subpackage. This allows to keep compatibility with code Developed with the 1.x versions of
+	 * the plugin.
+	 * </P>
+	 * <P>
+	 * The best way to use the plugin is to directly use the Xxxx query/mutation/subscription classes, where Xxxx is the
+	 * query/mutation/subscription name defined in the GraphQL schema.
+	 * </P>
+	 * <P>
+	 * <B><I>Default value is true</I></B>
+	 * </P>
+	 */
+	private boolean generateDeprecatedRequestResponse = PluginConfiguration.DEFAULT_GENERATE_DEPRECATED_REQUEST_RESPONSE
+			.equals("true");
+	/**
 	 * Indicates whether the plugin should generate the JPA annotations, for generated objects, when in server mode.
 	 */
 	private boolean generateJPAAnnotation = PluginConfiguration.DEFAULT_GENERATE_JPA_ANNOTATION.equals("true");
@@ -106,6 +125,23 @@ public class GraphqlExtension implements PluginConfiguration, Serializable {
 	private String packageName = PluginConfiguration.DEFAULT_PACKAGE_NAME;
 
 	private final Project project;
+
+	/**
+	 * <P>
+	 * (only for server mode) A comma separated list of package names, <B>without</B> double quotes, that will also be
+	 * parsed by Spring, to discover Spring beans, Spring repositories and JPA entities when the server starts. You
+	 * should use this parameter only for packages that are not subpackage of the package defined in the _packageName_
+	 * parameter and not subpackage of <I>com.graphql_java_generator</I>
+	 * </P>
+	 * <P>
+	 * This allows for instance, to set <I>packageName</I> to <I>your.app.package.graphql</I>, and to define your Spring
+	 * beans, like the
+	 * <A HREF="https://graphql-maven-plugin-project.graphql-java-generator.com/server.html">DataFetcherDelegates</A> or
+	 * your Spring data repositories in any other folder, by setting for instance scanBasePackages to
+	 * <I>your.app.package.impl, your.app.package.graphql</I>, or just <I>your.app.package</I>
+	 * </P>
+	 */
+	private String scanBasePackages = PluginConfiguration.DEFAULT_SCAN_BASE_PACKAGES;
 
 	/** The folder where the graphql schema file(s) will be searched. The default schema is the main resource folder. */
 	private String schemaFileFolder = PluginConfiguration.DEFAULT_SCHEMA_FILE_FOLDER;
@@ -184,31 +220,26 @@ public class GraphqlExtension implements PluginConfiguration, Serializable {
 		this.logger = new GradleLogger(project);
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public List<CustomScalarDefinition> getCustomScalars() {
 		return customScalars;
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public Logger getLog() {
 		return logger;
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public PluginMode getMode() {
 		return mode;
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public String getPackageName() {
 		return packageName;
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public Packaging getPackaging() {
 		// We calculate as late as possible this packaging. So no precaculation on creation, we wait for a call on this
@@ -216,72 +247,67 @@ public class GraphqlExtension implements PluginConfiguration, Serializable {
 		return (project.getTasksByName("war", false).size() >= 1) ? Packaging.war : Packaging.jar;
 	}
 
-	/** {@inheritDoc} */
+	@Override
+	public String getScanBasePackages() {
+		return scanBasePackages;
+	}
+
 	@Override
 	public File getSchemaFileFolder() {
 		return project.file(schemaFileFolder);
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public String getSchemaFilePattern() {
 		return schemaFilePattern;
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public File getSchemaPersonalizationFile() {
 		return (PluginConfiguration.DEFAULT_SCHEMA_PERSONALIZATION_FILE.equals(schemaPersonalizationFile)) ? null
 				: project.file(schemaPersonalizationFile);
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public String getSourceEncoding() {
 		return sourceEncoding;
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public File getTargetClassFolder() {
 		// TODO Understand why project.file("$buildDir/classes") doesn't work
 		return project.file("build/classes");
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public File getTargetSourceFolder() {
 		// TODO Understand why project.file("$buildDir/classes") doesn't work
 		return project.file("build/generated/" + GraphqlPlugin.GRAPHQL_GENERATE_CODE_TASK_NAME);
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public Map<String, String> getTemplates() {
 		return templates;
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public boolean isCopyRuntimeSources() {
 		return copyRuntimeSources;
 	}
 
-	/** {@inheritDoc} */
+	@Override
+	public boolean isGenerateDeprecatedRequestResponse() {
+		return generateDeprecatedRequestResponse;
+	}
+
 	@Override
 	public boolean isGenerateJPAAnnotation() {
 		return generateJPAAnnotation;
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public boolean isSeparateUtilityClasses() {
 		return separateUtilityClasses;
-	}
-
-	/** {@inheritDoc} */
-	public void setPackageName(String packageName) {
-		this.packageName = packageName;
 	}
 
 	public void setCopyRuntimeSources(boolean copyRuntimeSources) {
@@ -290,6 +316,10 @@ public class GraphqlExtension implements PluginConfiguration, Serializable {
 
 	public void setCustomScalars(CustomScalarDefinition[] customScalars) {
 		this.customScalars = Arrays.asList(customScalars);
+	}
+
+	public void setGenerateDeprecatedRequestResponse(boolean generateDeprecatedRequestResponse) {
+		this.generateDeprecatedRequestResponse = generateDeprecatedRequestResponse;
 	}
 
 	public void setGenerateJPAAnnotation(boolean generateJPAAnnotation) {
@@ -302,6 +332,14 @@ public class GraphqlExtension implements PluginConfiguration, Serializable {
 
 	public void setMode(PluginMode mode) {
 		this.mode = mode;
+	}
+
+	public void setPackageName(String packageName) {
+		this.packageName = packageName;
+	}
+
+	public void setScanBasePackages(String scanBasePackages) {
+		this.scanBasePackages = scanBasePackages;
 	}
 
 	public void setSchemaFileFolder(File schemaFileFolder) {

@@ -1,23 +1,22 @@
 /**
  * 
  */
-package com.graphql_java_generator.samples.forum.server.specific_code;
+package org.forum.server.specific_code;
 
 import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.forum.server.graphql.Board;
+import org.forum.server.graphql.DataFetchersDelegateMutationType;
+import org.forum.server.graphql.Post;
+import org.forum.server.graphql.PostInput;
+import org.forum.server.graphql.Topic;
+import org.forum.server.graphql.TopicInput;
+import org.forum.server.jpa.BoardRepository;
+import org.forum.server.jpa.PostRepository;
+import org.forum.server.jpa.TopicRepository;
 import org.springframework.stereotype.Component;
-
-import com.graphql_java_generator.samples.forum.server.Board;
-import com.graphql_java_generator.samples.forum.server.DataFetchersDelegateMutationType;
-import com.graphql_java_generator.samples.forum.server.Post;
-import com.graphql_java_generator.samples.forum.server.PostInput;
-import com.graphql_java_generator.samples.forum.server.Topic;
-import com.graphql_java_generator.samples.forum.server.TopicInput;
-import com.graphql_java_generator.samples.forum.server.jpa.BoardRepository;
-import com.graphql_java_generator.samples.forum.server.jpa.PostRepository;
-import com.graphql_java_generator.samples.forum.server.jpa.TopicRepository;
 
 import graphql.schema.DataFetchingEnvironment;
 import io.reactivex.subjects.Subject;
@@ -43,7 +42,8 @@ public class DataFetchersDelegateMutationTypeImpl implements DataFetchersDelegat
 	PostPublisher postPublisher;
 
 	@Override
-	public Board createBoard(DataFetchingEnvironment dataFetchingEnvironment, String name, Boolean publiclyAvailable) {
+	public Board createBoard(
+			DataFetchingEnvironment dataFetchingEnvironment, String name, Boolean publiclyAvailable) {
 		Board board = new Board();
 		board.setName(name);
 		if (publiclyAvailable != null) {

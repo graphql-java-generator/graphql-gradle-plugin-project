@@ -10,7 +10,7 @@ buildscript {
     	// will replace this declaration. But this dummy declaration is needed!
     	//
     	// Of course, for a real use of the plugin in your project, you'll have to replace by the last plugin's version
-        classpath "com.graphql-java-generator:graphql-gradle-plugin:1.7.0"
+        classpath 'com.graphql-java-generator:graphql-gradle-plugin:dummy'
     }
 }
 
@@ -25,7 +25,7 @@ repositories {
 }
 
 // Let's get the group and version for this project
-apply from: '../common_conf.gradle'
+apply from: '../graphql-gradle-plugin/common_conf.gradle'
 
 dependencies {
 	// The graphql-java-client-dependencies module agregates all dependencies for the generated code

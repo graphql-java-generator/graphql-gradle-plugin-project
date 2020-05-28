@@ -1,20 +1,19 @@
 /**
  * 
  */
-package com.graphql_java_generator.samples.forum.server.specific_code;
+package org.forum.server.specific_code;
 
 import javax.annotation.Resource;
 
+import org.forum.server.graphql.DataFetchersDelegateSubscriptionType;
+import org.forum.server.graphql.Post;
+import org.forum.server.jpa.BoardRepository;
+import org.forum.server.jpa.PostRepository;
+import org.forum.server.jpa.TopicRepository;
 import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-
-import com.graphql_java_generator.samples.forum.server.DataFetchersDelegateSubscriptionType;
-import com.graphql_java_generator.samples.forum.server.Post;
-import com.graphql_java_generator.samples.forum.server.jpa.BoardRepository;
-import com.graphql_java_generator.samples.forum.server.jpa.PostRepository;
-import com.graphql_java_generator.samples.forum.server.jpa.TopicRepository;
 
 import graphql.schema.DataFetchingEnvironment;
 import io.reactivex.subjects.Subject;

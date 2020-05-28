@@ -24,7 +24,7 @@ apply plugin: 'org.springframework.boot'
 apply plugin: 'com.graphql_java_generator.graphql-gradle-plugin'
 
 // Let's get the group and version for this project
-apply from: '../common_conf.gradle'
+apply from: '../graphql-gradle-plugin/common_conf.gradle'
 
 repositories {
 	// The plugin depends on the graphql-maven-plugin plugin logic module, which is in mavenCentral (for releases), and in mavenLocal 
@@ -38,7 +38,7 @@ dependencies {
     compile "com.graphql-java-generator:graphql-java-server-dependencies:${project.version}"
     // This project uses some custom scalars from the graphql-java-extended-scalars module
     compile "com.graphql-java:graphql-java-extended-scalars:${graphqlJavaExtendedScalarsVersion}"
-    compile "net.sf.dozer:dozer:${dozerVersion}"
+    compile "com.github.dozermapper:dozer-core:${dozerVersion}"
     
     // Gives a GraphQL test UI available at http://localhost:8180/graphiql 
     runtime "com.graphql-java-kickstart:graphiql-spring-boot-starter:${graphiqlSpringBootStarterVersion}"

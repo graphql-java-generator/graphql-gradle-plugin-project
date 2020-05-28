@@ -6,7 +6,7 @@ plugins {
 }
 
 // Let's get the group and version for this project
-apply from: 'common_conf.gradle'
+apply from: 'graphql-gradle-plugin/common_conf.gradle'
 
 subprojects {
 	

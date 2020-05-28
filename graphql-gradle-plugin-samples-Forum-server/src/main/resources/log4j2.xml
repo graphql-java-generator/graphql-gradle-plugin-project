@@ -13,7 +13,8 @@
 	</Appenders>
 
 	<Loggers>
-		<Logger name="com.graphql-java-generator" level="debug" />
+		<Logger name="com.graphql_java_generator" level="debug" />
+		<Logger name="org.springframework.web" level="debug" />
 		<Logger name="graphql" level="info" />
 		<Logger name="graphql.execution" level="info" />
 		<Logger name="org.dbunit" level="info" />
@@ -22,6 +23,7 @@
 		<Logger name="org.hibernate.SQL" level="info" /> <!-- Logs each SQL query execution -->
 		<Logger name="org.hibernate.type.descriptor.sql" level="info" /> <!-- Logs each SQL query execution, with the bind values -->
 		<Root level="info">
+			<AppenderRef ref="Console" />
 			<AppenderRef ref="File" />
 		</Root>
 	</Loggers>

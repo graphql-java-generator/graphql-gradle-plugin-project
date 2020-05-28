@@ -24,7 +24,7 @@ apply plugin: 'org.springframework.boot'
 apply plugin: 'com.graphql_java_generator.graphql-gradle-plugin'
 
 // Let's get the group and version for this project
-apply from: '../common_conf.gradle'
+apply from: '../graphql-gradle-plugin/common_conf.gradle'
 
 repositories {
 	// The plugin depends on the graphql-maven-plugin plugin logic module, which is in mavenCentral (for releases), and in mavenLocal 
@@ -36,8 +36,9 @@ repositories {
 dependencies {
 	// The graphql-java-client-dependencies module agregates all dependencies for the generated code
     implementation "com.graphql-java-generator:graphql-java-server-dependencies:${project.version}"
-    implementation "net.sf.dozer:dozer:${dozerVersion}"
-    implementation "org.springframework.boot:spring-boot-starter-data-jpa:${springBootVersion}"
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa:${springBootVersion}") {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+    }
     runtime "com.h2database:h2:${h2databaseVersion}"
 	
 	// Needed for Reactive implementation, to support the Subscription
@@ -59,7 +60,8 @@ compileJava.dependsOn graphqlGenerateCode
 graphql {
 	mode = "server"
 	generateJPAAnnotation = true
-	packageName = "com.graphql_java_generator.samples.forum.server"
+	packageName = "org.forum.server.graphql"
+	scanBasePackages = "org.forum.server.jpa ,  org.forum.server.specific_code"
 	schemaPersonalizationFile = "src/main/graphql/forum_personalization.json"
 	customScalars = [ [
 			graphQLTypeName: "Date",

@@ -1,17 +1,16 @@
-package com.graphql_java_generator.samples.forum.server.specific_code;
+package org.forum.server.specific_code;
 
 import java.util.List;
 import java.util.UUID;
 
 import javax.annotation.Resource;
 
+import org.forum.server.graphql.DataFetchersDelegateMember;
+import org.forum.server.graphql.Member;
+import org.forum.server.jpa.MemberRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-
-import com.graphql_java_generator.samples.forum.server.DataFetchersDelegateMember;
-import com.graphql_java_generator.samples.forum.server.Member;
-import com.graphql_java_generator.samples.forum.server.jpa.MemberRepository;
 
 @Component
 public class DataFetchersDelegateMemberImpl implements DataFetchersDelegateMember {

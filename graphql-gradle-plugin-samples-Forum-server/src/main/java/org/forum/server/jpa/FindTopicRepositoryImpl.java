@@ -1,14 +1,14 @@
 /**
  * 
  */
-package com.graphql_java_generator.samples.forum.server.jpa;
+package org.forum.server.jpa;
 
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import com.graphql_java_generator.samples.forum.server.Topic;
+import org.forum.server.graphql.Topic;
 
 /**
  * @author etienne-sf
