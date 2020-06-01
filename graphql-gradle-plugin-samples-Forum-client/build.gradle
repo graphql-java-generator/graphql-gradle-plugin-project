@@ -45,8 +45,11 @@ dependencies {
 	testRuntimeOnly "org.apache.logging.log4j:log4j-slf4j-impl:${log4jVersion}"    
 }
 
-// The next lines makes the GraphQL plugin be executed before Java compiles, so that all sources are generated on time
+// The line below makes the GraphQL plugin be executed before Java compiles, so that all sources are generated on time
 compileJava.dependsOn graphqlGenerateCode
+
+// The line below adds the generated sources as a java source folder
+sourceSets.main.java.srcDirs += '/build/generated/graphqlGenerateCode'
 
 // Let's configure the GraphQL Gradle Plugin
 graphql {
