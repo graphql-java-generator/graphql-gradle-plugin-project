@@ -27,13 +27,25 @@ The generator is currently available both as a Maven plugin and as a Gradle plug
 * The __Maven plugin__ is available in the project ([graphql-maven-plugin-project](https://github.com/graphql-java-generator/graphql-maven-plugin-project)) 
 * A __Gradle plugin__ is available in the project [graphql-gradle-plugin-project](https://github.com/graphql-java-generator/graphql-gradle-plugin-project). It offers exactly the same functionalities.
 
-## Full documentation
+## Documentation
 
-The Gradle plugin is a wrapper for the plugin logic. This plugin logic is published in both a Gradle and a Maven plugin.
+### This README
 
-So the only activity in this project, is when releasing a new version. All the work is in the plugin logic, stored in tha Maven plugin project.
+This README gives you a quick overview of what this plugin offers
 
-In the way, the [Full documentation](https://graphql-maven-plugin-project.graphql-java-generator.com/) is [available here](https://graphql-maven-plugin-project.graphql-java-generator.com/) , for both the Gradle and the Maven plugin.
+### The tutorials
+
+Two tutorials are available for the Maven plugin:
+* The Client tutorial describes how to use this plugin, when building a GraphQL client. It's in the [GraphQL-Forum-Maven-Sample-client subproject](https://github.com/graphql-java-generator/GraphQL-Forum-Maven-Sample/tree/master/GraphQL-Forum-Maven-Sample-client).
+* The Server tutorial describes how to build a GraphQL server in the [GraphQL-Forum-Maven-Sample-server subproject](https://github.com/graphql-java-generator/GraphQL-Forum-Maven-Sample/tree/master/GraphQL-Forum-Maven-Sample-server).
+
+The same two tutorials exist for the Gradle plugin:
+* The Client tutorial describes how to use this plugin, when building a GraphQL client. It's in the [GraphQL-Forum-Gradle-Tutorial-client](https://github.com/graphql-java-generator/GraphQL-Forum-Gradle-Tutorial-client).
+* The Server tutorial describes how to build a GraphQL server in the [GraphQL-Forum-Gradle-Tutorial-server](https://github.com/graphql-java-generator/GraphQL-Forum-Gradle-Tutorial-server).
+
+### The full project documentation
+
+The [Full documentation](https://graphql-maven-plugin-project.graphql-java-generator.com/) is [available here](https://graphql-maven-plugin-project.graphql-java-generator.com/) , for both the Gradle and the Maven plugin.
 
 ## Aim of this project
 
