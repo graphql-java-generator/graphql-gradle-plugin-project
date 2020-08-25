@@ -23,12 +23,12 @@ import org.gradle.api.tasks.TaskAction;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 
-import com.graphql_java_generator.plugin.CodeGenerator;
 import com.graphql_java_generator.plugin.CustomScalarDefinition;
-import com.graphql_java_generator.plugin.DocumentParser;
+import com.graphql_java_generator.plugin.GraphQLCodeGenerator;
+import com.graphql_java_generator.plugin.GraphQLConfiguration;
+import com.graphql_java_generator.plugin.GraphQLDocumentParser;
 import com.graphql_java_generator.plugin.Logger;
 import com.graphql_java_generator.plugin.Packaging;
-import com.graphql_java_generator.plugin.PluginConfiguration;
 import com.graphql_java_generator.plugin.PluginMode;
 
 /**
@@ -36,7 +36,7 @@ import com.graphql_java_generator.plugin.PluginMode;
  * 
  * @author EtienneSF
  */
-public class GraphqlGenerateCodeTask extends DefaultTask implements PluginConfiguration {
+public class GraphqlGenerateCodeTask extends DefaultTask implements GraphQLConfiguration {
 
 	/** The Gradle extension, to read the plugin parameters from the script */
 	private transient GraphqlExtension graphqlExtension = null;
@@ -66,13 +66,13 @@ public class GraphqlGenerateCodeTask extends DefaultTask implements PluginConfig
 			AbstractApplicationContext ctx = new AnnotationConfigApplicationContext(SpringConfiguration.class);
 
 			// Let's log the current configuration (this will do something only when in debug mode)
-			PluginConfiguration pluginConfiguration = ctx.getBean(PluginConfiguration.class);
+			GraphQLConfiguration pluginConfiguration = ctx.getBean(GraphQLConfiguration.class);
 			pluginConfiguration.logConfiguration();
 
-			DocumentParser documentParser = ctx.getBean(DocumentParser.class);
+			GraphQLDocumentParser documentParser = ctx.getBean(GraphQLDocumentParser.class);
 			documentParser.parseDocuments();
 
-			CodeGenerator codeGenerator = ctx.getBean(CodeGenerator.class);
+			GraphQLCodeGenerator codeGenerator = ctx.getBean(GraphQLCodeGenerator.class);
 			int nbGeneratedClasses = codeGenerator.generateCode();
 
 			ctx.close();
@@ -127,6 +127,12 @@ public class GraphqlGenerateCodeTask extends DefaultTask implements PluginConfig
 	@Input
 	public String getScanBasePackages() {
 		return graphqlExtension.getScanBasePackages();
+	}
+
+	@Override
+	@Internal
+	public String getQuotedScanBasePackages() {
+		return ((GraphQLConfiguration) this).getQuotedScanBasePackages();
 	}
 
 	@Override

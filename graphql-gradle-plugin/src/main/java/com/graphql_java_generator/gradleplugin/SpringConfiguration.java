@@ -10,7 +10,9 @@ import java.util.stream.Collectors;
 import org.gradle.api.GradleScriptException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.FilterType;
 
 import com.graphql_java_generator.plugin.ResourceSchemaStringProvider;
 
@@ -22,7 +24,9 @@ import graphql.parser.Parser;
  */
 @Configuration
 // @Import({ JacksonAutoConfiguration.class })
-@ComponentScan(basePackages = { "com.graphql_java_generator" })
+@ComponentScan(basePackages = { "com.graphql_java_generator" }, excludeFilters = {
+		@Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateRelaySchema.*"),
+		@Filter(type = FilterType.REGEX, pattern = ".*\\.Merge.*") })
 public class SpringConfiguration {
 
 	/**

@@ -11,9 +11,9 @@ import java.util.Map;
 import org.gradle.api.Project;
 
 import com.graphql_java_generator.plugin.CustomScalarDefinition;
+import com.graphql_java_generator.plugin.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.Logger;
 import com.graphql_java_generator.plugin.Packaging;
-import com.graphql_java_generator.plugin.PluginConfiguration;
 import com.graphql_java_generator.plugin.PluginMode;
 
 import graphql.schema.GraphQLScalarType;
@@ -24,7 +24,7 @@ import graphql.schema.GraphQLScalarType;
  * @author EtienneSF
  *
  */
-public class GraphqlExtension implements PluginConfiguration, Serializable {
+public class GraphqlExtension implements GraphQLConfiguration, Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -47,7 +47,7 @@ public class GraphqlExtension implements PluginConfiguration, Serializable {
 	 * to check the compatibility with all the next versions.
 	 * </P>
 	 */
-	private boolean copyRuntimeSources = PluginConfiguration.DEFAULT_COPY_RUNTIME_SOURCES.equals("true");
+	private boolean copyRuntimeSources = GraphQLConfiguration.DEFAULT_COPY_RUNTIME_SOURCES.equals("true");
 
 	/**
 	 * <P>
@@ -106,12 +106,12 @@ public class GraphqlExtension implements PluginConfiguration, Serializable {
 	 * <B><I>Default value is true</I></B>
 	 * </P>
 	 */
-	private boolean generateDeprecatedRequestResponse = PluginConfiguration.DEFAULT_GENERATE_DEPRECATED_REQUEST_RESPONSE
+	private boolean generateDeprecatedRequestResponse = GraphQLConfiguration.DEFAULT_GENERATE_DEPRECATED_REQUEST_RESPONSE
 			.equals("true");
 	/**
 	 * Indicates whether the plugin should generate the JPA annotations, for generated objects, when in server mode.
 	 */
-	private boolean generateJPAAnnotation = PluginConfiguration.DEFAULT_GENERATE_JPA_ANNOTATION.equals("true");
+	private boolean generateJPAAnnotation = GraphQLConfiguration.DEFAULT_GENERATE_JPA_ANNOTATION.equals("true");
 
 	private GradleLogger logger;
 
@@ -119,10 +119,10 @@ public class GraphqlExtension implements PluginConfiguration, Serializable {
 	 * The generation mode: either <I>client</I> or <I>server</I>. Choose client to generate the code which can query a
 	 * graphql server or server to generate a code for the server side.
 	 */
-	private PluginMode mode = PluginMode.valueOf(PluginConfiguration.DEFAULT_MODE);
+	private PluginMode mode = PluginMode.valueOf(GraphQLConfiguration.DEFAULT_MODE);
 
 	/** The packageName in which the generated classes will be created */
-	private String packageName = PluginConfiguration.DEFAULT_PACKAGE_NAME;
+	private String packageName = GraphQLConfiguration.DEFAULT_PACKAGE_NAME;
 
 	private final Project project;
 
@@ -141,17 +141,17 @@ public class GraphqlExtension implements PluginConfiguration, Serializable {
 	 * <I>your.app.package.impl, your.app.package.graphql</I>, or just <I>your.app.package</I>
 	 * </P>
 	 */
-	private String scanBasePackages = PluginConfiguration.DEFAULT_SCAN_BASE_PACKAGES;
+	private String scanBasePackages = GraphQLConfiguration.DEFAULT_SCAN_BASE_PACKAGES;
 
 	/** The folder where the graphql schema file(s) will be searched. The default schema is the main resource folder. */
-	private String schemaFileFolder = PluginConfiguration.DEFAULT_SCHEMA_FILE_FOLDER;
+	private String schemaFileFolder = GraphQLConfiguration.DEFAULT_SCHEMA_FILE_FOLDER;
 
 	/**
 	 * The pattern to find the graphql schema file(s). The default value is "/*.graphqls" meaning that the maven plugin
 	 * will search all graphqls files in the "/src/main/resources" folder (please check also the <I>schemaFileFolder</I>
 	 * plugin parameter).
 	 */
-	private String schemaFilePattern = PluginConfiguration.DEFAULT_SCHEMA_FILE_PATTERN;
+	private String schemaFilePattern = GraphQLConfiguration.DEFAULT_SCHEMA_FILE_PATTERN;
 
 	/**
 	 * <P>
@@ -166,7 +166,7 @@ public class GraphqlExtension implements PluginConfiguration, Serializable {
 	 * /src/main/resources folders).
 	 * </P>
 	 */
-	private String schemaPersonalizationFile = PluginConfiguration.DEFAULT_SCHEMA_PERSONALIZATION_FILE;
+	private String schemaPersonalizationFile = GraphQLConfiguration.DEFAULT_SCHEMA_PERSONALIZATION_FILE;
 
 	/**
 	 * <P>
@@ -186,10 +186,10 @@ public class GraphqlExtension implements PluginConfiguration, Serializable {
 	 * all the utility classes are generated in the <I>util</I> subpackage of this package.
 	 * </P>
 	 */
-	private boolean separateUtilityClasses = PluginConfiguration.DEFAULT_SEPARATE_UTIL_CLASSES.equals("true");
+	private boolean separateUtilityClasses = GraphQLConfiguration.DEFAULT_SEPARATE_UTIL_CLASSES.equals("true");
 
 	/** The encoding for the generated source files */
-	private String sourceEncoding = PluginConfiguration.DEFAULT_SOURCE_ENCODING;
+	private String sourceEncoding = GraphQLConfiguration.DEFAULT_SOURCE_ENCODING;
 
 	/**
 	 * <P>
@@ -264,7 +264,7 @@ public class GraphqlExtension implements PluginConfiguration, Serializable {
 
 	@Override
 	public File getSchemaPersonalizationFile() {
-		return (PluginConfiguration.DEFAULT_SCHEMA_PERSONALIZATION_FILE.equals(schemaPersonalizationFile)) ? null
+		return (GraphQLConfiguration.DEFAULT_SCHEMA_PERSONALIZATION_FILE.equals(schemaPersonalizationFile)) ? null
 				: project.file(schemaPersonalizationFile);
 	}
 
