@@ -18,7 +18,7 @@ apply from: 'common_conf.gradle'
 
 repositories {
 	jcenter()
-	mavenCentral()
+	//mavenCentral()
 	//  mavenLocal is used on development site, to get snapshot of the com.graphql-java-generator maven plugin, 
 	// and relatives dependencies
 	mavenLocal()

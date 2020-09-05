@@ -24,7 +24,7 @@ import graphql.schema.GraphQLScalarType;
  * @author EtienneSF
  *
  */
-public class GraphqlExtension implements GraphQLConfiguration, Serializable {
+public class GraphQLExtension implements GraphQLConfiguration, Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -215,7 +215,7 @@ public class GraphqlExtension implements GraphQLConfiguration, Serializable {
 	 */
 	private Map<String, String> templates = new HashMap<>();
 
-	public GraphqlExtension(Project project) {
+	public GraphQLExtension(Project project) {
 		this.project = project;
 		this.logger = new GradleLogger(project);
 	}
@@ -282,7 +282,7 @@ public class GraphqlExtension implements GraphQLConfiguration, Serializable {
 	@Override
 	public File getTargetSourceFolder() {
 		// TODO Understand why project.file("$buildDir/classes") doesn't work
-		return project.file("build/generated/" + GraphqlPlugin.GRAPHQL_GENERATE_CODE_TASK_NAME);
+		return project.file("build/generated/" + GraphQLPlugin.GRAPHQL_GENERATE_CODE_TASK_NAME);
 	}
 
 	@Override
@@ -342,8 +342,8 @@ public class GraphqlExtension implements GraphQLConfiguration, Serializable {
 		this.scanBasePackages = scanBasePackages;
 	}
 
-	public void setSchemaFileFolder(File schemaFileFolder) {
-		this.schemaFileFolder = schemaFileFolder.getAbsolutePath();
+	public void setSchemaFileFolder(String schemaFileFolder) {
+		this.schemaFileFolder = schemaFileFolder;
 	}
 
 	public void setSchemaFilePattern(String schemaFilePattern) {

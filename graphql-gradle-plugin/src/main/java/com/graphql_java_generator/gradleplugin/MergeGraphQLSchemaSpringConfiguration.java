@@ -26,18 +26,18 @@ import graphql.parser.Parser;
 // @Import({ JacksonAutoConfiguration.class })
 @ComponentScan(basePackages = { "com.graphql_java_generator" }, excludeFilters = {
 		@Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateRelaySchema.*"),
-		@Filter(type = FilterType.REGEX, pattern = ".*\\.Merge.*") })
-public class SpringConfiguration {
+		@Filter(type = FilterType.REGEX, pattern = ".*\\.GraphQL.*") })
+public class MergeGraphQLSchemaSpringConfiguration {
 
 	/**
 	 * The current GraphQL extension, that contains the plugin configuration. It is set by the
-	 * {@link GraphqlGenerateCodeTask} task, before it starts the Spring context
+	 * {@link MergeGraphQLSchemaTask} task, before it starts the Spring context
 	 */
-	static GraphqlExtension graphqlExtension = null;
+	static MergeGraphQLSchemaExtension mergeGraphQLSchemaExtension = null;
 
 	@Bean
-	GraphqlExtension graphqlExtension() {
-		return graphqlExtension;
+	MergeGraphQLSchemaExtension mergeGraphQLSchemaExtension() {
+		return mergeGraphQLSchemaExtension;
 	}
 
 	/**

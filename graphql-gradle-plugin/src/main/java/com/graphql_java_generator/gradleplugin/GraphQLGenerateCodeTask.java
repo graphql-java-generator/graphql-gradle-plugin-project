@@ -36,10 +36,10 @@ import com.graphql_java_generator.plugin.PluginMode;
  * 
  * @author EtienneSF
  */
-public class GraphqlGenerateCodeTask extends DefaultTask implements GraphQLConfiguration {
+public class GraphQLGenerateCodeTask extends DefaultTask implements GraphQLConfiguration {
 
 	/** The Gradle extension, to read the plugin parameters from the script */
-	private transient GraphqlExtension graphqlExtension = null;
+	private transient GraphQLExtension graphqlExtension = null;
 
 	final Project project;
 
@@ -50,7 +50,7 @@ public class GraphqlGenerateCodeTask extends DefaultTask implements GraphQLConfi
 	 *            The GraphQL extension, which contains all parameters found in the build script
 	 */
 	@Inject
-	public GraphqlGenerateCodeTask(Project project, GraphqlExtension graphqlExtension) {
+	public GraphQLGenerateCodeTask(Project project, GraphQLExtension graphqlExtension) {
 		this.project = project;
 		this.graphqlExtension = graphqlExtension;
 	}
@@ -62,8 +62,8 @@ public class GraphqlGenerateCodeTask extends DefaultTask implements GraphQLConfi
 			getLog().debug("Starting generation of java classes from graphqls files");
 
 			// We'll use Spring IoC
-			SpringConfiguration.graphqlExtension = graphqlExtension;
-			AbstractApplicationContext ctx = new AnnotationConfigApplicationContext(SpringConfiguration.class);
+			GraphQLGenerateCodeSpringConfiguration.graphqlExtension = graphqlExtension;
+			AbstractApplicationContext ctx = new AnnotationConfigApplicationContext(GraphQLGenerateCodeSpringConfiguration.class);
 
 			// Let's log the current configuration (this will do something only when in debug mode)
 			GraphQLConfiguration pluginConfiguration = ctx.getBean(GraphQLConfiguration.class);
