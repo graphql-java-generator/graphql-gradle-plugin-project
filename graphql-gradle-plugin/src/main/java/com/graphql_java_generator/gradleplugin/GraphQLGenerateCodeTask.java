@@ -63,7 +63,8 @@ public class GraphQLGenerateCodeTask extends DefaultTask implements GraphQLConfi
 
 			// We'll use Spring IoC
 			GraphQLGenerateCodeSpringConfiguration.graphqlExtension = graphqlExtension;
-			AbstractApplicationContext ctx = new AnnotationConfigApplicationContext(GraphQLGenerateCodeSpringConfiguration.class);
+			AbstractApplicationContext ctx = new AnnotationConfigApplicationContext(
+					GraphQLGenerateCodeSpringConfiguration.class);
 
 			// Let's log the current configuration (this will do something only when in debug mode)
 			GraphQLConfiguration pluginConfiguration = ctx.getBean(GraphQLConfiguration.class);
@@ -177,6 +178,11 @@ public class GraphQLGenerateCodeTask extends DefaultTask implements GraphQLConfi
 	@Input
 	public Map<String, String> getTemplates() {
 		return graphqlExtension.getTemplates();
+	}
+
+	@Override
+	public boolean isAddRelayConnections() {
+		return graphqlExtension.isAddRelayConnections();
 	}
 
 	@Override

@@ -20,15 +20,15 @@ import org.springframework.context.support.AbstractApplicationContext;
 
 import com.graphql_java_generator.plugin.Logger;
 import com.graphql_java_generator.plugin.Merge;
-import com.graphql_java_generator.plugin.MergeConfiguration;
 import com.graphql_java_generator.plugin.MergeDocumentParser;
+import com.graphql_java_generator.plugin.MergeSchemaConfiguration;
 
 /**
  * Generates the code from the given GraphQL schema.
  * 
  * @author EtienneSF
  */
-public class MergeGraphQLSchemaTask extends DefaultTask implements MergeConfiguration {
+public class MergeGraphQLSchemaTask extends DefaultTask implements MergeSchemaConfiguration {
 
 	/** The Gradle extension, to read the plugin parameters from the script */
 	private transient MergeGraphQLSchemaExtension mergeGraphQLSchemaExtension = null;
@@ -58,14 +58,14 @@ public class MergeGraphQLSchemaTask extends DefaultTask implements MergeConfigur
 				MergeGraphQLSchemaSpringConfiguration.class);
 
 		// Let's log the current configuration (this will do something only when in debug mode)
-		MergeConfiguration pluginConfiguration = ctx.getBean(MergeConfiguration.class);
+		MergeSchemaConfiguration pluginConfiguration = ctx.getBean(MergeSchemaConfiguration.class);
 		pluginConfiguration.logConfiguration();
 
 		MergeDocumentParser documentParser = ctx.getBean(MergeDocumentParser.class);
 		documentParser.parseDocuments();
 
 		Merge merge = ctx.getBean(Merge.class);
-		merge.generateRelaySchema();
+		merge.generateGraphQLSchema();
 
 		ctx.close();
 
@@ -121,4 +121,8 @@ public class MergeGraphQLSchemaTask extends DefaultTask implements MergeConfigur
 		return mergeGraphQLSchemaExtension.getTemplates();
 	}
 
+	@Override
+	public boolean isAddRelayConnections() {
+		return mergeGraphQLSchemaExtension.isAddRelayConnections();
+	}
 }
