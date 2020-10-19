@@ -7,9 +7,9 @@ import java.util.Map;
 
 import org.gradle.api.Project;
 
-import com.graphql_java_generator.plugin.CommonConfiguration;
-import com.graphql_java_generator.plugin.Logger;
-import com.graphql_java_generator.plugin.MergeSchemaConfiguration;
+import com.graphql_java_generator.plugin.conf.CommonConfiguration;
+import com.graphql_java_generator.plugin.conf.GenerateGraphQLSchemaConfiguration;
+import com.graphql_java_generator.plugin.conf.Logger;
 
 /**
  * Parameters for the GraphQL Gradle plugin.
@@ -17,7 +17,7 @@ import com.graphql_java_generator.plugin.MergeSchemaConfiguration;
  * @author EtienneSF
  *
  */
-public class MergeGraphQLSchemaExtension implements MergeSchemaConfiguration, Serializable {
+public class MergeGraphQLSchemaExtension implements GenerateGraphQLSchemaConfiguration, Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -87,20 +87,20 @@ public class MergeGraphQLSchemaExtension implements MergeSchemaConfiguration, Se
 	public boolean addRelayConnections = CommonConfiguration.DEFAULT_ADD_RELAY_CONNECTIONS.equals("true");
 
 	/** The encoding for the generated resource files */
-	String resourceEncoding = MergeSchemaConfiguration.DEFAULT_RESOURCE_ENCODING;
+	String resourceEncoding = GenerateGraphQLSchemaConfiguration.DEFAULT_RESOURCE_ENCODING;
 
 	/** The folder where the graphql schema file(s) will be searched. The default schema is the main resource folder. */
-	private String schemaFileFolder = MergeSchemaConfiguration.DEFAULT_SCHEMA_FILE_FOLDER;
+	private String schemaFileFolder = GenerateGraphQLSchemaConfiguration.DEFAULT_SCHEMA_FILE_FOLDER;
 
 	/**
 	 * The pattern to find the graphql schema file(s). The default value is "/*.graphqls" meaning that the maven plugin
 	 * will search all graphqls files in the "/src/main/resources" folder (please check also the <I>schemaFileFolder</I>
 	 * plugin parameter).
 	 */
-	private String schemaFilePattern = MergeSchemaConfiguration.DEFAULT_SCHEMA_FILE_PATTERN;
+	private String schemaFilePattern = GenerateGraphQLSchemaConfiguration.DEFAULT_SCHEMA_FILE_PATTERN;
 
 	/** The folder where the generated GraphQL schema will be stored */
-	private String targetFolder = MergeSchemaConfiguration.DEFAULT_TARGET_FOLDER;
+	private String targetFolder = GenerateGraphQLSchemaConfiguration.DEFAULT_TARGET_FOLDER;
 
 	/**
 	 * The name of the target filename, in which the schema is generated. This file is stored in the folder, defined in
@@ -138,7 +138,7 @@ public class MergeGraphQLSchemaExtension implements MergeSchemaConfiguration, Se
 	}
 
 	@Override
-	public Logger getLog() {
+	public Logger getPluginLogger() {
 		return logger;
 	}
 

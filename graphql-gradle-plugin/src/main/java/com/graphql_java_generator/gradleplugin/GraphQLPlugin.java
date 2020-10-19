@@ -41,7 +41,7 @@ public class GraphQLPlugin implements Plugin<Project> {
 		project.getTasks().register(GRAPHQL_GENERATE_CODE_TASK_NAME, GraphQLGenerateCodeTask.class, project,
 				graphQLExtension);
 
-		graphQLExtension.getLog().debug("Applying GraphQL Plugin");
+		graphQLExtension.getPluginLogger().debug("Applying GraphQL Plugin");
 
 		// Apply the java plugin, then add the generated source
 		project.getPlugins().apply(JavaPlugin.class);
@@ -52,7 +52,7 @@ public class GraphQLPlugin implements Plugin<Project> {
 
 		// Check of the files added into the compileJava task
 		for (File f : ((JavaCompile) project.getTasks().getByName("compileJava")).getSource()) {
-			graphQLExtension.getLog()
+			graphQLExtension.getPluginLogger()
 					.debug("[After adding GraphQL sources] javaCompile contains: " + f.getAbsolutePath());
 		}
 

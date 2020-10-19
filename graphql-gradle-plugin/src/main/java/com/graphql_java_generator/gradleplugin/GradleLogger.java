@@ -5,7 +5,7 @@ package com.graphql_java_generator.gradleplugin;
 
 import org.gradle.api.Project;
 
-import com.graphql_java_generator.plugin.Logger;
+import com.graphql_java_generator.plugin.conf.Logger;
 
 /**
  * @author EtienneSF

@@ -23,13 +23,13 @@ import org.gradle.api.tasks.TaskAction;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 
-import com.graphql_java_generator.plugin.CustomScalarDefinition;
-import com.graphql_java_generator.plugin.GraphQLCodeGenerator;
-import com.graphql_java_generator.plugin.GraphQLConfiguration;
-import com.graphql_java_generator.plugin.GraphQLDocumentParser;
-import com.graphql_java_generator.plugin.Logger;
-import com.graphql_java_generator.plugin.Packaging;
-import com.graphql_java_generator.plugin.PluginMode;
+import com.graphql_java_generator.plugin.GenerateCodeDocumentParser;
+import com.graphql_java_generator.plugin.GenerateCodeGenerator;
+import com.graphql_java_generator.plugin.conf.CustomScalarDefinition;
+import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
+import com.graphql_java_generator.plugin.conf.Logger;
+import com.graphql_java_generator.plugin.conf.Packaging;
+import com.graphql_java_generator.plugin.conf.PluginMode;
 
 /**
  * Generates the code from the given GraphQL schema.
@@ -59,7 +59,7 @@ public class GraphQLGenerateCodeTask extends DefaultTask implements GraphQLConfi
 	public void execute() {
 		try {
 
-			getLog().debug("Starting generation of java classes from graphqls files");
+			getPluginLogger().debug("Starting generation of java classes from graphqls files");
 
 			// We'll use Spring IoC
 			GraphQLGenerateCodeSpringConfiguration.graphqlExtension = graphqlExtension;
@@ -70,15 +70,15 @@ public class GraphQLGenerateCodeTask extends DefaultTask implements GraphQLConfi
 			GraphQLConfiguration pluginConfiguration = ctx.getBean(GraphQLConfiguration.class);
 			pluginConfiguration.logConfiguration();
 
-			GraphQLDocumentParser documentParser = ctx.getBean(GraphQLDocumentParser.class);
+			GenerateCodeDocumentParser documentParser = ctx.getBean(GenerateCodeDocumentParser.class);
 			documentParser.parseDocuments();
 
-			GraphQLCodeGenerator codeGenerator = ctx.getBean(GraphQLCodeGenerator.class);
+			GenerateCodeGenerator codeGenerator = ctx.getBean(GenerateCodeGenerator.class);
 			int nbGeneratedClasses = codeGenerator.generateCode();
 
 			ctx.close();
 
-			getLog().info(nbGeneratedClasses + " java classes have been generated from the schema(s) '"
+			getPluginLogger().info(nbGeneratedClasses + " java classes have been generated from the schema(s) '"
 					+ pluginConfiguration.getSchemaFilePattern() + "' in the package '"
 					+ pluginConfiguration.getPackageName() + "'");
 
@@ -87,7 +87,7 @@ public class GraphQLGenerateCodeTask extends DefaultTask implements GraphQLConfi
 			// project.getConvention().getPlugin(JavaPluginConvention.class).getSourceSets().getByName("main").getJava()
 			// .getSrcDirs().add(pluginConfiguration.getTargetSourceFolder());
 
-			getLog().debug("Finished generation of java classes from graphqls files (5)");
+			getPluginLogger().debug("Finished generation of java classes from graphqls files (5)");
 
 		} catch (IOException e) {
 			throw new UncheckedIOException(e.getMessage(), e);
@@ -102,8 +102,8 @@ public class GraphQLGenerateCodeTask extends DefaultTask implements GraphQLConfi
 
 	@Override
 	@Internal
-	public Logger getLog() {
-		return graphqlExtension.getLog();
+	public Logger getPluginLogger() {
+		return graphqlExtension.getPluginLogger();
 	}
 
 	@Override

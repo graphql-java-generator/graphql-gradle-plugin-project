@@ -4,6 +4,7 @@
 package com.graphql_java_generator.gradleplugin;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -18,17 +19,17 @@ import org.gradle.api.tasks.TaskAction;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 
-import com.graphql_java_generator.plugin.Logger;
-import com.graphql_java_generator.plugin.Merge;
-import com.graphql_java_generator.plugin.MergeDocumentParser;
-import com.graphql_java_generator.plugin.MergeSchemaConfiguration;
+import com.graphql_java_generator.plugin.GenerateGraphQLSchema;
+import com.graphql_java_generator.plugin.GenerateGraphQLSchemaDocumentParser;
+import com.graphql_java_generator.plugin.conf.GenerateGraphQLSchemaConfiguration;
+import com.graphql_java_generator.plugin.conf.Logger;
 
 /**
  * Generates the code from the given GraphQL schema.
  * 
  * @author EtienneSF
  */
-public class MergeGraphQLSchemaTask extends DefaultTask implements MergeSchemaConfiguration {
+public class MergeGraphQLSchemaTask extends DefaultTask implements GenerateGraphQLSchemaConfiguration {
 
 	/** The Gradle extension, to read the plugin parameters from the script */
 	private transient MergeGraphQLSchemaExtension mergeGraphQLSchemaExtension = null;
@@ -48,9 +49,9 @@ public class MergeGraphQLSchemaTask extends DefaultTask implements MergeSchemaCo
 	}
 
 	@TaskAction
-	public void execute() {
+	public void execute() throws IOException {
 
-		getLog().debug("Starting merging of the given GraphQL schemas");
+		getPluginLogger().debug("Starting merging of the given GraphQL schemas");
 
 		// We'll use Spring IoC
 		MergeGraphQLSchemaSpringConfiguration.mergeGraphQLSchemaExtension = mergeGraphQLSchemaExtension;
@@ -58,24 +59,24 @@ public class MergeGraphQLSchemaTask extends DefaultTask implements MergeSchemaCo
 				MergeGraphQLSchemaSpringConfiguration.class);
 
 		// Let's log the current configuration (this will do something only when in debug mode)
-		MergeSchemaConfiguration pluginConfiguration = ctx.getBean(MergeSchemaConfiguration.class);
+		GenerateGraphQLSchemaConfiguration pluginConfiguration = ctx.getBean(GenerateGraphQLSchemaConfiguration.class);
 		pluginConfiguration.logConfiguration();
 
-		MergeDocumentParser documentParser = ctx.getBean(MergeDocumentParser.class);
+		GenerateGraphQLSchemaDocumentParser documentParser = ctx.getBean(GenerateGraphQLSchemaDocumentParser.class);
 		documentParser.parseDocuments();
 
-		Merge merge = ctx.getBean(Merge.class);
+		GenerateGraphQLSchema merge = ctx.getBean(GenerateGraphQLSchema.class);
 		merge.generateGraphQLSchema();
 
 		ctx.close();
 
-		getLog().debug("Finished generation of the merged schema");
+		getPluginLogger().debug("Finished generation of the merged schema");
 	}
 
 	@Override
 	@Internal
-	public Logger getLog() {
-		return mergeGraphQLSchemaExtension.getLog();
+	public Logger getPluginLogger() {
+		return mergeGraphQLSchemaExtension.getPluginLogger();
 	}
 
 	@Override
