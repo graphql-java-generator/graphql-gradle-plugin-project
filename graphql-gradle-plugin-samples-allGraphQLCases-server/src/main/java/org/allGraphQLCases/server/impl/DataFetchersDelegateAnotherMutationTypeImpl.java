@@ -4,14 +4,15 @@
 package org.allGraphQLCases.server.impl;
 
 import java.util.List;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 
 import org.allGraphQLCases.server.AllFieldCases;
 import org.allGraphQLCases.server.AllFieldCasesInput;
-import org.allGraphQLCases.server.DataFetchersDelegateAnotherMutationType;
 import org.allGraphQLCases.server.Human;
 import org.allGraphQLCases.server.HumanInput;
+import org.allGraphQLCases.server.util.DataFetchersDelegateAnotherMutationType;
 import org.springframework.stereotype.Component;
 
 import graphql.language.Argument;
@@ -62,5 +63,11 @@ public class DataFetchersDelegateAnotherMutationTypeImpl implements DataFetchers
 				return d;
 		}
 		return null;
+	}
+
+	@Override
+	public Boolean deleteSnacks(DataFetchingEnvironment dataFetchingEnvironment, List<UUID> id) {
+		// We're happy. This beautiful nothing-to-do job didn't raise any error :)
+		return true;
 	}
 }

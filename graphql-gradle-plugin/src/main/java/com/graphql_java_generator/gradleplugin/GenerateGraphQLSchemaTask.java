@@ -29,23 +29,23 @@ import com.graphql_java_generator.plugin.conf.Logger;
  * 
  * @author EtienneSF
  */
-public class MergeGraphQLSchemaTask extends DefaultTask implements GenerateGraphQLSchemaConfiguration {
+public class GenerateGraphQLSchemaTask extends DefaultTask implements GenerateGraphQLSchemaConfiguration {
 
 	/** The Gradle extension, to read the plugin parameters from the script */
-	private transient MergeGraphQLSchemaExtension mergeGraphQLSchemaExtension = null;
+	private transient GenerateGraphQLSchemaExtension generateGraphQLSchemaExtension = null;
 
 	final Project project;
 
 	/**
 	 * @param project
 	 *            The current Gradle project
-	 * @param mergeGraphQLSchemaExtension
+	 * @param generateGraphQLSchemaExtension
 	 *            The Gradle extension, which contains all parameters found in the build script
 	 */
 	@Inject
-	public MergeGraphQLSchemaTask(Project project, MergeGraphQLSchemaExtension mergeGraphQLSchemaExtension) {
+	public GenerateGraphQLSchemaTask(Project project, GenerateGraphQLSchemaExtension generateGraphQLSchemaExtension) {
 		this.project = project;
-		this.mergeGraphQLSchemaExtension = mergeGraphQLSchemaExtension;
+		this.generateGraphQLSchemaExtension = generateGraphQLSchemaExtension;
 	}
 
 	@TaskAction
@@ -54,9 +54,9 @@ public class MergeGraphQLSchemaTask extends DefaultTask implements GenerateGraph
 		getPluginLogger().debug("Starting merging of the given GraphQL schemas");
 
 		// We'll use Spring IoC
-		MergeGraphQLSchemaSpringConfiguration.mergeGraphQLSchemaExtension = mergeGraphQLSchemaExtension;
+		GenerateGraphQLSchemaSpringConfiguration.generateGraphQLSchemaExtension = generateGraphQLSchemaExtension;
 		AbstractApplicationContext ctx = new AnnotationConfigApplicationContext(
-				MergeGraphQLSchemaSpringConfiguration.class);
+				GenerateGraphQLSchemaSpringConfiguration.class);
 
 		// Let's log the current configuration (this will do something only when in debug mode)
 		GenerateGraphQLSchemaConfiguration pluginConfiguration = ctx.getBean(GenerateGraphQLSchemaConfiguration.class);
@@ -76,54 +76,49 @@ public class MergeGraphQLSchemaTask extends DefaultTask implements GenerateGraph
 	@Override
 	@Internal
 	public Logger getPluginLogger() {
-		return mergeGraphQLSchemaExtension.getPluginLogger();
-	}
-
-	@Override
-	@Input
-	public String getPackageName() {
-		return mergeGraphQLSchemaExtension.getPackageName();
+		return generateGraphQLSchemaExtension.getPluginLogger();
 	}
 
 	@Override
 	@Input
 	public String getResourceEncoding() {
-		return mergeGraphQLSchemaExtension.getResourceEncoding();
+		return generateGraphQLSchemaExtension.getResourceEncoding();
 	}
 
 	@Override
 	@InputDirectory
 	@Optional
 	public File getSchemaFileFolder() {
-		return mergeGraphQLSchemaExtension.getSchemaFileFolder();
+		return generateGraphQLSchemaExtension.getSchemaFileFolder();
 	}
 
 	@Override
 	@Input
 	public String getSchemaFilePattern() {
-		return mergeGraphQLSchemaExtension.getSchemaFilePattern();
+		return generateGraphQLSchemaExtension.getSchemaFilePattern();
 	}
 
 	@Override
 	@InputDirectory
 	public File getTargetFolder() {
-		return mergeGraphQLSchemaExtension.getTargetFolder();
+		return generateGraphQLSchemaExtension.getTargetFolder();
 	}
 
 	@Override
 	@Input
 	public String getTargetSchemaFileName() {
-		return mergeGraphQLSchemaExtension.getTargetSchemaFileName();
+		return generateGraphQLSchemaExtension.getTargetSchemaFileName();
 	}
 
 	@Override
 	@Input
 	public Map<String, String> getTemplates() {
-		return mergeGraphQLSchemaExtension.getTemplates();
+		return generateGraphQLSchemaExtension.getTemplates();
 	}
 
 	@Override
 	public boolean isAddRelayConnections() {
-		return mergeGraphQLSchemaExtension.isAddRelayConnections();
+		return generateGraphQLSchemaExtension.isAddRelayConnections();
 	}
+
 }

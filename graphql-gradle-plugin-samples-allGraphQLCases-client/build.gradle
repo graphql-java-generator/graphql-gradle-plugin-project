@@ -47,26 +47,27 @@ dependencies {
 	testRuntimeOnly "org.apache.logging.log4j:log4j-slf4j-impl:${log4jVersion}"    
 }
 
-// In this sample, the GraphQL code generation works on the merged schema.
-graphqlGenerateCode.dependsOn mergeSchemaTask
+// In this sample, the GraphQL code generation works on the generated schema.
+generateClientCode.dependsOn generateGraphQLSchema
 // The line below makes the GraphQL plugin be executed before Java compiles, so that all sources are generated on time
-compileJava.dependsOn graphqlGenerateCode
+compileJava.dependsOn generateClientCode
 
 // The line below adds the generated sources as a java source folder
 sourceSets.main.java.srcDirs += '/build/generated/graphqlGenerateCode'
 
 //Let's configure the GraphQL Gradle Plugin, for the merge task
-mergeSchema {
+generateGraphQLSchemaConf {
 	schemaFileFolder = 'src/graphqls/'
 	targetFolder = "$buildDir/generated-resources/graphql-merge"
 	targetSchemaFileName = 'merged_schemas.graphqls'
 }
 
 // Let's configure the GraphQL Gradle Plugin, for the code generation
-graphql {
-	mode = 'client'  //This line is here only clarity, as client is the default mode
+generateClientCodeConf {
+	addRelayConnections = true
 	packageName = 'org.allGraphQLCases.client'
 	schemaFileFolder = "$buildDir/generated-resources/graphql-merge" // Let's read the merged GraphQL schema
+	separateUtilityClasses = true
 	customScalars = [ [
 			graphQLTypeName: "Date",
 			javaType: "java.util.Date",

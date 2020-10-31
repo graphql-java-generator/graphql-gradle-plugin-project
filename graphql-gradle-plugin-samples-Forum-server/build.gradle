@@ -60,6 +60,7 @@ compileJava.dependsOn graphqlGenerateCode
 graphql {
 	mode = "server"
 	generateJPAAnnotation = true
+	javaTypeForIDType = "java.lang.Long"
 	packageName = "org.forum.server.graphql"
 	scanBasePackages = "org.forum.server.jpa ,  org.forum.server.specific_code"
 	schemaPersonalizationFile = "src/main/graphql/forum_personalization.json"

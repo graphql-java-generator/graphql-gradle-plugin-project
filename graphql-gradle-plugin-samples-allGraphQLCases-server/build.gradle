@@ -50,12 +50,13 @@ dependencies {
 }
 
 // Of course, we need to generate the GraphQL's java code before compiling the project:
-compileJava.dependsOn graphqlGenerateCode
+compileJava.dependsOn generateServerCode
 
 // Let's configure the GraphQL Gradle Plugin
-graphql {
-	mode = 'server'
+generateServerCodeConf {
+	addRelayConnections = true
 	packageName = 'org.allGraphQLCases.server'
+	separateUtilityClasses = true
 	customScalars = [ [
 			graphQLTypeName: "Date",
 			javaType: "java.util.Date",

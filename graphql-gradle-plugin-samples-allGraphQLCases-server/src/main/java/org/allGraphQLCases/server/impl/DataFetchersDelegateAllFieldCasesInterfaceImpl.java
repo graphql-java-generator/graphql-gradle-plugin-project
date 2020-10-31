@@ -11,10 +11,13 @@ import org.allGraphQLCases.server.AllFieldCasesInterface;
 import org.allGraphQLCases.server.AllFieldCasesInterfaceType;
 import org.allGraphQLCases.server.AllFieldCasesWithIdSubtype;
 import org.allGraphQLCases.server.AllFieldCasesWithoutIdSubtype;
-import org.allGraphQLCases.server.DataFetchersDelegateAllFieldCasesInterface;
 import org.allGraphQLCases.server.Episode;
 import org.allGraphQLCases.server.FieldParameterInput;
 import org.allGraphQLCases.server.Human;
+import org.allGraphQLCases.server.HumanConnection;
+import org.allGraphQLCases.server.HumanEdge;
+import org.allGraphQLCases.server.PageInfo;
+import org.allGraphQLCases.server.util.DataFetchersDelegateAllFieldCasesInterface;
 import org.dataloader.DataLoader;
 import org.springframework.stereotype.Component;
 
@@ -22,6 +25,8 @@ import graphql.schema.DataFetchingEnvironment;
 
 @Component
 public class DataFetchersDelegateAllFieldCasesInterfaceImpl implements DataFetchersDelegateAllFieldCasesInterface {
+
+	final String BAD_CURSOR = "TODO : implement a sample cursor capability. It's specific to each implementation";
 
 	@Resource
 	DataGenerator generator;
@@ -59,16 +64,19 @@ public class DataFetchersDelegateAllFieldCasesInterfaceImpl implements DataFetch
 	}
 
 	@Override
-	public List<Human> friends(DataFetchingEnvironment dataFetchingEnvironment, AllFieldCasesInterface source) {
-		Human human = new Human();
-		human.setId(UUID.randomUUID());
-		human.setName("a name");
-		human.setAppearsIn(new ArrayList<Episode>());
+	public HumanConnection friends(DataFetchingEnvironment dataFetchingEnvironment, AllFieldCasesInterface source) {
+		Human human = Human.builder().withId(UUID.randomUUID()).withName("a name")
+				.withAppearsIn(new ArrayList<Episode>()).build();
+		//
+		HumanEdge edge = HumanEdge.builder().withNode(human).withCursor(BAD_CURSOR).build();
+		//
+		List<HumanEdge> edges = new ArrayList<>();
+		edges.add(edge);
 
-		List<Human> ret = new ArrayList<>();
-		ret.add(human);
+		PageInfo pageInfo = PageInfo.builder().withEndCursor(BAD_CURSOR).withHasNextPage(false)
+				.withHasPreviousPage(false).withStartCursor(BAD_CURSOR).build();
 
-		return ret;
+		return HumanConnection.builder().withEdges(edges).withPageInfo(pageInfo).build();
 	}
 
 	@Override

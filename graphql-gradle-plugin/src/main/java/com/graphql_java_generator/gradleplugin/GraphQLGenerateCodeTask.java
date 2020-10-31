@@ -82,11 +82,6 @@ public class GraphQLGenerateCodeTask extends DefaultTask implements GraphQLConfi
 					+ pluginConfiguration.getSchemaFilePattern() + "' in the package '"
 					+ pluginConfiguration.getPackageName() + "'");
 
-			// getLog().debug("Source dir added to the main.java.srcDirs: "
-			// + pluginConfiguration.getTargetSourceFolder().getAbsolutePath());
-			// project.getConvention().getPlugin(JavaPluginConvention.class).getSourceSets().getByName("main").getJava()
-			// .getSrcDirs().add(pluginConfiguration.getTargetSourceFolder());
-
 			getPluginLogger().debug("Finished generation of java classes from graphqls files (5)");
 
 		} catch (IOException e) {
@@ -98,6 +93,12 @@ public class GraphQLGenerateCodeTask extends DefaultTask implements GraphQLConfi
 	@Input
 	public List<CustomScalarDefinition> getCustomScalars() {
 		return graphqlExtension.getCustomScalars();
+	}
+
+	@Override
+	@Input
+	public String getJavaTypeForIDType() {
+		return graphqlExtension.javaTypeForIDType;
 	}
 
 	@Override

@@ -1,29 +1,35 @@
+/**
+ * 
+ */
 package com.graphql_java_generator.gradleplugin;
 
 import java.io.File;
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.gradle.api.Project;
 
 import com.graphql_java_generator.plugin.conf.CommonConfiguration;
-import com.graphql_java_generator.plugin.conf.GenerateGraphQLSchemaConfiguration;
+import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.conf.Logger;
 
 /**
- * Parameters for the GraphQL Gradle plugin.
+ * <P>
+ * This class contain the parameters that are common to all Gradle Extensions for this plugin, that is the parameters
+ * that are common to all the tasks of this plugin.
+ * </P>
+ * <P>
+ * This avoids to redeclare each common parameter in each Extension, including its comment. When a comment is updated,
+ * only one update is necessary, instead of updating it in each Extension.
+ * </P>
  * 
- * @author EtienneSF
- *
+ * @author etienne-sf
  */
-public class MergeGraphQLSchemaExtension implements GenerateGraphQLSchemaConfiguration, Serializable {
-
-	private static final long serialVersionUID = 1L;
+public class CommonExtension implements CommonConfiguration {
 
 	private GradleLogger logger;
 
-	private final Project project;
+	protected final Project project;
 
 	/**
 	 * <P>
@@ -86,27 +92,15 @@ public class MergeGraphQLSchemaExtension implements GenerateGraphQLSchemaConfigu
 	 */
 	public boolean addRelayConnections = CommonConfiguration.DEFAULT_ADD_RELAY_CONNECTIONS.equals("true");
 
-	/** The encoding for the generated resource files */
-	String resourceEncoding = GenerateGraphQLSchemaConfiguration.DEFAULT_RESOURCE_ENCODING;
-
 	/** The folder where the graphql schema file(s) will be searched. The default schema is the main resource folder. */
-	private String schemaFileFolder = GenerateGraphQLSchemaConfiguration.DEFAULT_SCHEMA_FILE_FOLDER;
+	private String schemaFileFolder = GraphQLConfiguration.DEFAULT_SCHEMA_FILE_FOLDER;
 
 	/**
 	 * The pattern to find the graphql schema file(s). The default value is "/*.graphqls" meaning that the maven plugin
 	 * will search all graphqls files in the "/src/main/resources" folder (please check also the <I>schemaFileFolder</I>
 	 * plugin parameter).
 	 */
-	private String schemaFilePattern = GenerateGraphQLSchemaConfiguration.DEFAULT_SCHEMA_FILE_PATTERN;
-
-	/** The folder where the generated GraphQL schema will be stored */
-	private String targetFolder = GenerateGraphQLSchemaConfiguration.DEFAULT_TARGET_FOLDER;
-
-	/**
-	 * The name of the target filename, in which the schema is generated. This file is stored in the folder, defined in
-	 * the <I>targetFolder</I> plugin parameter.
-	 */
-	private String targetSchemaFileName;
+	private String schemaFilePattern = GraphQLConfiguration.DEFAULT_SCHEMA_FILE_PATTERN;
 
 	/**
 	 * <P>
@@ -132,7 +126,7 @@ public class MergeGraphQLSchemaExtension implements GenerateGraphQLSchemaConfigu
 	 */
 	private Map<String, String> templates = new HashMap<>();
 
-	public MergeGraphQLSchemaExtension(Project project) {
+	public CommonExtension(Project project) {
 		this.project = project;
 		this.logger = new GradleLogger(project);
 	}
@@ -152,19 +146,12 @@ public class MergeGraphQLSchemaExtension implements GenerateGraphQLSchemaConfigu
 	}
 
 	@Override
-	public String getPackageName() {
-		// No action (this property should not exist here, will be removed in the future)
-		return "not used, but may not be null!";
-	}
-
-	@Override
-	public String getResourceEncoding() {
-		return resourceEncoding;
-	}
-
-	@Override
 	public File getSchemaFileFolder() {
 		return project.file(schemaFileFolder);
+	}
+
+	public void setSchemaFileFolder(String schemaFileFolder) {
+		this.schemaFileFolder = schemaFileFolder;
 	}
 
 	@Override
@@ -172,14 +159,8 @@ public class MergeGraphQLSchemaExtension implements GenerateGraphQLSchemaConfigu
 		return schemaFilePattern;
 	}
 
-	@Override
-	public File getTargetFolder() {
-		return project.file(targetFolder);
-	}
-
-	@Override
-	public String getTargetSchemaFileName() {
-		return targetSchemaFileName;
+	public void setSchemaFilePattern(String schemaFilePattern) {
+		this.schemaFilePattern = schemaFilePattern;
 	}
 
 	@Override
@@ -187,39 +168,12 @@ public class MergeGraphQLSchemaExtension implements GenerateGraphQLSchemaConfigu
 		return templates;
 	}
 
-	public void setLogger(GradleLogger logger) {
-		this.logger = logger;
-	}
-
-	public void setPackageName(String packageName) {
-		// No action (this property should not exist here, will be removed in the future)
-	}
-
-	public void setResourceEncoding(String resourceEncoding) {
-		this.resourceEncoding = resourceEncoding;
-	}
-
-	public void setSchemaFileFolder(String schemaFileFolder) {
-		this.schemaFileFolder = schemaFileFolder;
-	}
-
-	public void setSchemaFilePattern(String schemaFilePattern) {
-		this.schemaFilePattern = schemaFilePattern;
-	}
-
-	public void setTargetFolder(String targetFolder) {
-		// Let's create the folder now, so that it exists when if any other task needs it, during configuration time
-		project.file(targetFolder).mkdirs();
-
-		this.targetFolder = targetFolder;
-	}
-
-	public void setTargetSchemaFileName(String targetSchemaFileName) {
-		this.targetSchemaFileName = targetSchemaFileName;
-	}
-
 	public void setTemplates(Map<String, String> templates) {
 		this.templates = templates;
 	}
 
+	@Override
+	public void logConfiguration() {
+		logCommonConfiguration();
+	}
 }

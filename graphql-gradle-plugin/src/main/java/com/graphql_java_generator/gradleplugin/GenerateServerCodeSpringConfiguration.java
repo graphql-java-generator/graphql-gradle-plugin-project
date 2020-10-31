@@ -27,18 +27,18 @@ import graphql.parser.Parser;
 @ComponentScan(basePackages = { "com.graphql_java_generator" }, excludeFilters = {
 		@Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateClientCode.*"),
 		@Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateGraphQLSchema.*"),
-		@Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateServerCode.*") })
-public class GraphQLGenerateCodeSpringConfiguration {
+		@Filter(type = FilterType.REGEX, pattern = ".*\\.GraphQL.*") })
+public class GenerateServerCodeSpringConfiguration {
 
 	/**
 	 * The current GraphQL extension, that contains the plugin configuration. It is set by the
-	 * {@link GraphQLGenerateCodeTask} task, before it starts the Spring context
+	 * {@link GenerateServerCodeTask} task, before it starts the Spring context
 	 */
-	static GraphQLExtension graphqlExtension = null;
+	static GenerateServerCodeExtension generateServerCodeExtension = null;
 
 	@Bean
-	GraphQLExtension graphqlExtension() {
-		return graphqlExtension;
+	GenerateServerCodeExtension GenerateServerCodeExtension() {
+		return generateServerCodeExtension;
 	}
 
 	/**

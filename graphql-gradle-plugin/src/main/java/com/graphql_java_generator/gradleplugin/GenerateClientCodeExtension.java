@@ -1,21 +1,14 @@
 package com.graphql_java_generator.gradleplugin;
 
-import java.io.Serializable;
+import java.io.File;
 
 import org.gradle.api.Project;
 
+import com.graphql_java_generator.plugin.conf.GenerateClientCodeConfiguration;
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.conf.PluginMode;
 
-/**
- * Parameters for the GraphQL Gradle plugin.
- * 
- * @author EtienneSF
- *
- */
-public class GraphQLExtension extends GenerateServerCodeExtension implements GraphQLConfiguration, Serializable {
-
-	private static final long serialVersionUID = 1L;
+public class GenerateClientCodeExtension extends GenerateCodeCommon implements GenerateClientCodeConfiguration {
 
 	/**
 	 * <P>
@@ -37,13 +30,7 @@ public class GraphQLExtension extends GenerateServerCodeExtension implements Gra
 	private boolean generateDeprecatedRequestResponse = GraphQLConfiguration.DEFAULT_GENERATE_DEPRECATED_REQUEST_RESPONSE
 			.equals("true");
 
-	/**
-	 * The generation mode: either <I>client</I> or <I>server</I>. Choose client to generate the code which can query a
-	 * graphql server or server to generate a code for the server side.
-	 */
-	private PluginMode mode = PluginMode.valueOf(GraphQLConfiguration.DEFAULT_MODE);
-
-	public GraphQLExtension(Project project) {
+	public GenerateClientCodeExtension(Project project) {
 		super(project);
 	}
 
@@ -56,13 +43,15 @@ public class GraphQLExtension extends GenerateServerCodeExtension implements Gra
 		this.generateDeprecatedRequestResponse = generateDeprecatedRequestResponse;
 	}
 
+	/** The mode is forced to {@link PluginMode#client} */
 	@Override
 	public PluginMode getMode() {
-		return mode;
+		return PluginMode.client;
 	}
 
-	public void setMode(PluginMode mode) {
-		this.mode = mode;
+	@Override
+	public File getTargetSourceFolder() {
+		// TODO Understand why project.file("$buildDir/classes") doesn't work
+		return project.file("build/generated/" + GraphQLPlugin.GENERATE_CLIENT_CODE_TASK_NAME);
 	}
-
 }
