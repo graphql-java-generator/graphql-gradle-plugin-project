@@ -182,6 +182,7 @@ public class GraphQLGenerateCodeTask extends DefaultTask implements GraphQLConfi
 	}
 
 	@Override
+	@Input
 	public boolean isAddRelayConnections() {
 		return graphqlExtension.isAddRelayConnections();
 	}

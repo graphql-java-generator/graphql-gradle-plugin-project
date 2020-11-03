@@ -35,7 +35,7 @@ public class GenerateClientCodeTask extends DefaultTask implements GenerateClien
 	/**
 	 * @param project
 	 *            The current Gradle project
-	 * @param generateGraphQLSchemaExtension
+	 * @param generateClientCodeExtension
 	 *            The Gradle extension, which contains all parameters found in the build script
 	 */
 	@Inject
@@ -135,6 +135,7 @@ public class GenerateClientCodeTask extends DefaultTask implements GenerateClien
 	}
 
 	@Override
+	@Input
 	public boolean isAddRelayConnections() {
 		return generateClientCodeExtension.isAddRelayConnections();
 	}
@@ -146,6 +147,7 @@ public class GenerateClientCodeTask extends DefaultTask implements GenerateClien
 	}
 
 	@Override
+	@Input
 	public boolean isGenerateDeprecatedRequestResponse() {
 		return generateClientCodeExtension.isGenerateDeprecatedRequestResponse();
 	}

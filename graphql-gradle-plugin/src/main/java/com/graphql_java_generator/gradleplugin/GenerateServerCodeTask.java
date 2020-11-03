@@ -38,7 +38,7 @@ public class GenerateServerCodeTask extends DefaultTask implements GenerateServe
 	/**
 	 * @param project
 	 *            The current Gradle project
-	 * @param generateGraphQLSchemaExtension
+	 * @param generateServerCodeExtension
 	 *            The Gradle extension, which contains all parameters found in the build script
 	 */
 	@Inject
@@ -169,6 +169,7 @@ public class GenerateServerCodeTask extends DefaultTask implements GenerateServe
 	}
 
 	@Override
+	@Input
 	public boolean isAddRelayConnections() {
 		return generateServerCodeExtension.isAddRelayConnections();
 	}

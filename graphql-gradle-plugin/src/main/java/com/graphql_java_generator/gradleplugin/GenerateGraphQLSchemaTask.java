@@ -117,6 +117,7 @@ public class GenerateGraphQLSchemaTask extends DefaultTask implements GenerateGr
 	}
 
 	@Override
+	@Input
 	public boolean isAddRelayConnections() {
 		return generateGraphQLSchemaExtension.isAddRelayConnections();
 	}
