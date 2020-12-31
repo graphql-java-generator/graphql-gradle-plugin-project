@@ -7,6 +7,13 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 * generateDeprecatedRequestResponse: false
 * separateUtilityClasses: true
 
+
+# 1.11.01
+
+Both mode (client and server):
+* The binary version of the plugin would only be compatible with Java 13 and newer (it's now compatible with Java version 8 and newer)
+
+
 # 1.11
 
 Both modes (client and server):

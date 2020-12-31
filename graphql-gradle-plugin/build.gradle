@@ -29,6 +29,11 @@ dependencies {
 	compile "com.graphql-java-generator:graphql-maven-plugin-logic:${project.version}"
 }
 
+compileJava {
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+}
+
 pluginBundle {
 	website = 'https://github.com/graphql-java-generator/graphql-gradle-plugin-project'
 	vcsUrl = 'https://github.com/graphql-java-generator/graphql-gradle-plugin-project'
