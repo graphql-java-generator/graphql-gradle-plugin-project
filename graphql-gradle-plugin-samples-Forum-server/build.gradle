@@ -14,7 +14,7 @@ buildscript {
     	// Of course, for a real use of the plugin in your project, you'll have to replace by the last plugin's version
         classpath 'com.graphql-java-generator:graphql-gradle-plugin:dummy'
         
-        classpath 'org.springframework.boot:spring-boot-gradle-plugin:2.2.6.RELEASE'
+        classpath 'org.springframework.boot:spring-boot-gradle-plugin:2.4.0'
     }
     
 }
