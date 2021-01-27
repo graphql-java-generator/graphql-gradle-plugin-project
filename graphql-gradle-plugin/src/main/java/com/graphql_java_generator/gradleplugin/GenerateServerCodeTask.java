@@ -163,6 +163,12 @@ public class GenerateServerCodeTask extends DefaultTask implements GenerateServe
 	}
 
 	@Override
+	@OutputDirectory
+	public File getTargetResourceFolder() {
+		return generateServerCodeExtension.getTargetResourceFolder();
+	}
+
+	@Override
 	@Input
 	public Map<String, String> getTemplates() {
 		return generateServerCodeExtension.getTemplates();
@@ -178,6 +184,12 @@ public class GenerateServerCodeTask extends DefaultTask implements GenerateServe
 	@Input
 	public boolean isCopyRuntimeSources() {
 		return generateServerCodeExtension.isCopyRuntimeSources();
+	}
+
+	@Override
+	@Input
+	public boolean isGenerateBatchLoaderEnvironment() {
+		return generateServerCodeExtension.isGenerateBatchLoaderEnvironment();
 	}
 
 	@Override

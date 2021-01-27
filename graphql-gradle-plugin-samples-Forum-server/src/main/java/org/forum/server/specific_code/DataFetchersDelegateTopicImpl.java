@@ -11,6 +11,7 @@ import java.util.concurrent.CompletableFuture;
 
 import javax.annotation.Resource;
 
+import org.dataloader.BatchLoaderEnvironment;
 import org.dataloader.DataLoader;
 import org.forum.server.graphql.DataFetchersDelegateTopic;
 import org.forum.server.graphql.Member;
@@ -23,7 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import com.graphql_java_generator.GraphqlUtils;
+import com.graphql_java_generator.util.GraphqlUtils;
 
 import graphql.schema.DataFetchingEnvironment;
 
@@ -59,11 +60,24 @@ public class DataFetchersDelegateTopicImpl implements DataFetchersDelegateTopic 
 		return dataLoader.load(source.getAuthorId());
 	}
 
+	/**
+	 * This method should not be called. The {@link DataFetchersDelegateMemberImpl#batchLoader(List)} should be called
+	 * instead. The name returned by this method is marked by "[SL] ", to check that in integration tests.
+	 */
 	@Override
 	public Member author(DataFetchingEnvironment dataFetchingEnvironment, Topic origin) {
 		logger.debug("Loading author of topic {}", origin.getId());
-		Optional<Member> ret = memberRepository.findById(origin.getAuthorId());
-		return (ret.isPresent()) ? ret.get() : null;
+		Optional<Member> opt = memberRepository.findById(origin.getAuthorId());
+
+		if (opt.isPresent()) {
+			// Let's mark all the entries retrieved here by [SL] (Single Loader), to check this in integration tests
+			// These tests are in the graphql-maven-plugin-samples-Forum-client project
+			Member m = opt.get();
+			m.setName("[SL] " + m.getName());
+			return m;
+		} else {
+			return null;
+		}
 	}
 
 	@Override
@@ -111,7 +125,7 @@ public class DataFetchersDelegateTopicImpl implements DataFetchersDelegateTopic 
 	}
 
 	@Override
-	public List<Topic> batchLoader(List<Long> keys) {
+	public List<Topic> batchLoader(List<Long> keys, BatchLoaderEnvironment env) {
 		logger.debug("Batch loading {} topics", keys.size());
 		return topicRepository.findByIds(keys);
 	}

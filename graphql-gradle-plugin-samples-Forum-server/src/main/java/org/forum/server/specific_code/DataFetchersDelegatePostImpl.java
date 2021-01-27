@@ -9,6 +9,7 @@ import java.util.concurrent.CompletableFuture;
 
 import javax.annotation.Resource;
 
+import org.dataloader.BatchLoaderEnvironment;
 import org.dataloader.DataLoader;
 import org.forum.server.graphql.DataFetchersDelegatePost;
 import org.forum.server.graphql.Member;
@@ -42,15 +43,29 @@ public class DataFetchersDelegatePostImpl implements DataFetchersDelegatePost {
 	}
 
 	@Override
-	public List<Post> batchLoader(List<Long> keys) {
+	public List<Post> batchLoader(List<Long> keys, BatchLoaderEnvironment env) {
 		logger.debug("Batch loading {} posts", keys.size());
 		return postRepository.findByIds(keys);
 	}
 
+	/**
+	 * This method should not be called. The {@link DataFetchersDelegateMemberImpl#batchLoader(List)} should be called
+	 * instead. The name returned by this method is marked by "[SL] ", to check that in integration tests.
+	 */
 	@Override
 	public Member author(DataFetchingEnvironment dataFetchingEnvironment, Post origin) {
 		logger.debug("Loading author for post ", origin.getId());
-		Optional<Member> ret = memberRepository.findById(origin.getAuthorId());
-		return (ret.isPresent()) ? ret.get() : null;
+
+		Optional<Member> opt = memberRepository.findById(origin.getAuthorId());
+
+		if (opt.isPresent()) {
+			// Let's mark all the entries retrieved here by [SL] (Single Loader), to check this in integration tests
+			// These tests are in the graphql-maven-plugin-samples-Forum-client project
+			Member m = opt.get();
+			m.setName("[SL] " + m.getName());
+			return m;
+		} else {
+			return null;
+		}
 	}
 }

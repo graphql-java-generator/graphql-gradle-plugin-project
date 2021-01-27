@@ -1,0 +1,48 @@
+
+buildscript {
+    repositories {
+        mavenCentral()
+		// The plugin depends on the graphql-maven-plugin, whose snapshot versions are on the local maven repository.
+		// So, for development reason, we need to access to the local maven repository. It's useless for standard use of the plugin
+        mavenLocal()
+    }
+    
+    dependencies {
+    	// The version number is not used in this multi-module project: the included build of graphql-gradle-plugin
+    	// will replace this declaration. But this dummy declaration is needed!
+    	//
+    	// Of course, for a real use of the plugin in your project, you'll have to replace by the last plugin's version
+        classpath 'com.graphql-java-generator:graphql-gradle-plugin:dummy'
+        
+        classpath 'org.springframework.boot:spring-boot-gradle-plugin:2.4.0'
+    }
+    
+}
+
+apply plugin: 'java'
+apply plugin: 'org.springframework.boot'
+
+// Let's get the group and version for this project
+apply from: '../graphql-gradle-plugin/common_conf.gradle'
+
+repositories {
+	// The plugin depends on the graphql-maven-plugin plugin logic module, which is in mavenCentral (for releases), and in mavenLocal 
+	// when working on the plugin development.
+	mavenCentral()
+	mavenLocal()		// Only if you work on the plugin development
+}
+
+dependencies {
+    compile "org.springframework.boot:spring-boot-starter-jdbc:${springBootVersion}"
+    compile "org.springframework.boot:spring-boot-starter-security:${springBootVersion}"
+    compile "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
+    compile "org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.1.2.RELEASE"
+    runtime "com.h2database:h2:1.4.199"
+    // Gives a GraphQL test UI available at http://localhost:8180/graphiql 
+    runtime "com.graphql-java-kickstart:graphiql-spring-boot-starter:${graphiqlSpringBootStarterVersion}"
+
+	// Dependencies for tests
+	testImplementation "org.springframework:spring-test:${springFrameworkVersion}"
+	testImplementation "org.junit.jupiter:junit-jupiter-api:${junitJupiterVersion}"
+	testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}"
+}

@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.allGraphQLCases.PartialQueries;
+import org.allGraphQLCases.SpringTestConfig;
 import org.allGraphQLCases.client.AllFieldCases;
 import org.allGraphQLCases.client.AllFieldCasesInput;
 import org.allGraphQLCases.client.Character;
@@ -21,9 +22,12 @@ import org.allGraphQLCases.client.FieldParameterInput;
 import org.allGraphQLCases.client.Human;
 import org.allGraphQLCases.client._extends;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutor;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
@@ -40,6 +44,23 @@ abstract class AbstractIT {
 	MyQueryTypeExecutor queryType;
 	PartialQueries partialQueries;
 
+	protected ApplicationContext ctx;
+
+	@BeforeEach
+	void setup() {
+		ctx = new AnnotationConfigApplicationContext(SpringTestConfig.class);
+
+		queryType = ctx.getBean(MyQueryTypeExecutor.class);
+		assertNotNull(queryType);
+
+		partialQueries = getQueries();
+		assertNotNull(partialQueries);
+	}
+
+	/** Get the class that will execute the queries. This is a particular class, for each test */
+	protected abstract PartialQueries getQueries();
+
+	@Execution(ExecutionMode.CONCURRENT)
 	@Test
 	void test_withoutParameters() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		List<Character> list = partialQueries.withoutParameters();
@@ -51,6 +72,7 @@ abstract class AbstractIT {
 		}
 	}
 
+	@Execution(ExecutionMode.CONCURRENT)
 	@Test
 	void test_withOneOptionalParam() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
@@ -77,6 +99,7 @@ abstract class AbstractIT {
 		assertEquals(6, c.getFriends().size());// See DataFetchersDelegateHumanImpl.friends
 	}
 
+	@Execution(ExecutionMode.CONCURRENT)
 	@Test
 	void test_withOneMandatoryParam_nullParameter()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
@@ -86,6 +109,7 @@ abstract class AbstractIT {
 		assertTrue(e.getMessage().contains("character"));
 	}
 
+	@Execution(ExecutionMode.CONCURRENT)
 	@Test
 	void test_withOneMandatoryParam_OK() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// With a non null parameter
@@ -109,6 +133,7 @@ abstract class AbstractIT {
 		assertEquals(5, c.getFriends().size());// See DataFetchersDelegateDroidImpl.friends
 	}
 
+	@Execution(ExecutionMode.CONCURRENT)
 	@Test
 	void test_withEnum() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
@@ -121,6 +146,7 @@ abstract class AbstractIT {
 		assertEquals(Episode.JEDI.name(), c.getName()); // See server code for more info
 	}
 
+	@Execution(ExecutionMode.CONCURRENT)
 	@Test
 	void test_withList() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// Preparation
@@ -157,6 +183,7 @@ abstract class AbstractIT {
 		assertTrue(ret.get(i) instanceof Human);
 	}
 
+	@Execution(ExecutionMode.CONCURRENT)
 	@Test
 	void test_allFieldCases() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
@@ -199,6 +226,7 @@ abstract class AbstractIT {
 
 	}
 
+	@Execution(ExecutionMode.CONCURRENT)
 	@Test
 	void test_error() {
 		GraphQLRequestExecutionException e = assertThrows(GraphQLRequestExecutionException.class,
@@ -207,6 +235,7 @@ abstract class AbstractIT {
 				"'" + e.getMessage() + "' should contain 'This is an expected error'");
 	}
 
+	@Execution(ExecutionMode.CONCURRENT)
 	@Test
 	void test_aBreak() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		assertEquals(_extends.FLOAT, partialQueries.aBreak(_extends.FLOAT, null).getCase());

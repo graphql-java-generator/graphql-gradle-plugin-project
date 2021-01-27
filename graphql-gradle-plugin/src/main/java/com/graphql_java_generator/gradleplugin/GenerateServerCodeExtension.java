@@ -4,7 +4,9 @@
 package com.graphql_java_generator.gradleplugin;
 
 import java.io.File;
+import java.util.Map;
 
+import org.dataloader.BatchLoaderEnvironment;
 import org.gradle.api.Project;
 
 import com.graphql_java_generator.plugin.conf.GenerateServerCodeConfiguration;
@@ -16,6 +18,56 @@ import com.graphql_java_generator.plugin.conf.PluginMode;
  * @author etienne-sf
  */
 public class GenerateServerCodeExtension extends GenerateCodeCommon implements GenerateServerCodeConfiguration {
+
+	/**
+	 * <P>
+	 * (only for server mode) Indicates if the plugin should generate add the {@link BatchLoaderEnvironment} parameter
+	 * to the <I>batchLoader</I> methods, in DataFetchersDelegate. This parameter allows to get the context of the Batch
+	 * Loader, including the context associated to the id, when using the id has been added by the
+	 * {@link org.dataloader.DataLoader#load(Object, Object)} method.
+	 * </P>
+	 * <P>
+	 * For instance, if you have the method below, for a field named <I>oneWithIdSubType</I> in a DataFetcherDelegate:
+	 * </P>
+	 * 
+	 * <PRE>
+	 * &#64;Override
+	 * public CompletableFuture<AllFieldCasesWithIdSubtype> oneWithIdSubType(
+	 * 		DataFetchingEnvironment dataFetchingEnvironment, DataLoader<UUID, AllFieldCasesWithIdSubtype> dataLoader,
+	 * 		AllFieldCases source, Boolean uppercase) {
+	 * 	return dataLoader.load(UUID.randomUUID());
+	 * }
+	 * </PRE>
+	 * <P>
+	 * then, in the <I>AllFieldCasesWithIdSubtype</I> DataFetcherDelegate, you can retrieve the uppercase this way:
+	 * </P>
+	 * 
+	 * <PRE>
+	 * &#64;Override
+	 * public List<AllFieldCasesWithIdSubtype> batchLoader(List<UUID> keys, BatchLoaderEnvironment environment) {
+	 * 	List<AllFieldCasesWithIdSubtype> list = new ArrayList<>(keys.size());
+	 * 	for (UUID id : keys) {
+	 * 		// Let's manage the uppercase parameter, that was associated with this key
+	 * 		Boolean uppercase = (Boolean) environment.getKeyContexts().get(id);
+	 * 		if (uppercase != null && uppercase) {
+	 * 			item.setName(item.getName().toUpperCase());
+	 * 		}
+	 * 
+	 * 		// Do something with the id and the uppercase value
+	 * 	}
+	 * 	return list;
+	 * }
+	 * </PRE>
+	 * <P>
+	 * For more complex cases, you can store a {@link Map} with all the needed values, instead of just the parameter
+	 * value.
+	 * </P>
+	 * <P>
+	 * <B><I>Default value is false</I></B>
+	 * </P>
+	 */
+	private boolean generateBatchLoaderEnvironment = GraphQLConfiguration.DEFAULT_GENERATE_BATCH_LOADER_ENVIRONMENT
+			.equals("true");
 
 	/**
 	 * Indicates whether the plugin should generate the JPA annotations, for generated objects, when in server mode.
@@ -81,6 +133,15 @@ public class GenerateServerCodeExtension extends GenerateCodeCommon implements G
 
 	public GenerateServerCodeExtension(Project project) {
 		super(project);
+	}
+
+	@Override
+	public boolean isGenerateBatchLoaderEnvironment() {
+		return generateBatchLoaderEnvironment;
+	}
+
+	public void setGenerateBatchLoaderEnvironment(boolean generateBatchLoaderEnvironment) {
+		this.generateBatchLoaderEnvironment = generateBatchLoaderEnvironment;
 	}
 
 	@Override

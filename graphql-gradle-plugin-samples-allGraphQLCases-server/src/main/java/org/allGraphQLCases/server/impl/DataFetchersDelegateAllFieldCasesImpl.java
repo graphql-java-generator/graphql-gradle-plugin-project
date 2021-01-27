@@ -17,6 +17,7 @@ import org.allGraphQLCases.server.AllFieldCasesWithoutIdSubtype;
 import org.allGraphQLCases.server.FieldParameterInput;
 import org.allGraphQLCases.server.Human;
 import org.allGraphQLCases.server.util.DataFetchersDelegateAllFieldCases;
+import org.dataloader.BatchLoaderEnvironment;
 import org.dataloader.DataLoader;
 import org.springframework.stereotype.Component;
 
@@ -77,20 +78,20 @@ public class DataFetchersDelegateAllFieldCasesImpl implements DataFetchersDelega
 	}
 
 	@Override
-	public List<AllFieldCases> batchLoader(List<UUID> keys) {
+	public List<AllFieldCases> batchLoader(List<UUID> keys, BatchLoaderEnvironment environment) {
 		return generator.generateInstanceList(AllFieldCases.class, keys.size());
 	}
 
 	@Override
 	public CompletableFuture<AllFieldCasesWithIdSubtype> oneWithIdSubType(
 			DataFetchingEnvironment dataFetchingEnvironment, DataLoader<UUID, AllFieldCasesWithIdSubtype> dataLoader,
-			AllFieldCases source) {
-		return dataLoader.load(UUID.randomUUID());
+			AllFieldCases source, Boolean uppercase) {
+		return dataLoader.load(UUID.randomUUID(), uppercase);
 	}
 
 	@Override
 	public AllFieldCasesWithIdSubtype oneWithIdSubType(DataFetchingEnvironment dataFetchingEnvironment,
-			AllFieldCases origin) {
+			AllFieldCases origin, Boolean uppercase) {
 		return generator.generateInstance(AllFieldCasesWithIdSubtype.class);
 	}
 
@@ -143,6 +144,24 @@ public class DataFetchersDelegateAllFieldCasesImpl implements DataFetchersDelega
 	@Override
 	public List<Date> dates(DataFetchingEnvironment dataFetchingEnvironment, AllFieldCases source) {
 		return generator.generateInstanceList(Date.class, 5);
+	}
+
+	@Override
+	public List<AllFieldCasesWithoutIdSubtype> issue65(DataFetchingEnvironment dataFetchingEnvironment,
+			AllFieldCases origin, List<FieldParameterInput> inputs) {
+
+		List<AllFieldCasesWithoutIdSubtype> ret = generator.generateInstanceList(AllFieldCasesWithoutIdSubtype.class,
+				inputs.size());
+
+		// Let's put in uppercase the name, for items in the return list that match the inputs that have uppercase set
+		// to true
+		for (int i = 0; i < inputs.size(); i += 1) {
+			AllFieldCasesWithoutIdSubtype item = ret.get(i);
+			if (inputs.get(i).getUppercase()) {
+				item.setName(item.getName().toUpperCase());
+			}
+		}
+		return ret;
 	}
 
 }

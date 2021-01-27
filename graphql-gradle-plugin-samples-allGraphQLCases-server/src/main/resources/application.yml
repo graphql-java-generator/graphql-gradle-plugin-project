@@ -3,12 +3,20 @@ server:
   port: 8180
 
 
-#spring:
-#  security:
-#    oauth2:
-#      resourceserver:
-#        opaque:
-#          introspection-uri: http://localhost:8180/simulated_oauth_authorization_server/token/introspect
-#          introspection-client-id: barClient
-#          introspection-client-secret: barClientSecret
-#
+
+# https://docs.spring.io/spring-security-oauth2-boot/docs/current/reference/html5/#oauth2-boot-resource-server-token-info
+security:
+  oauth2:
+    client:
+      client-id: clientId
+      client-secret: secret
+    resource:
+#      user-info-uri: http://localhost:8181/profile/me
+      introspection-uri: http://localhost:8181/oauth/check_token
+#      introspection-client-id: clientId
+#      introspection-client-secret: secret
+
+spring:
+  jackson:
+    serialization:
+      INDENT_OUTPUT: true

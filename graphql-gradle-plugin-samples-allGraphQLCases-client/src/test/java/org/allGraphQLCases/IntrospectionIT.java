@@ -4,6 +4,7 @@
 package org.allGraphQLCases;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
@@ -15,9 +16,12 @@ import org.allGraphQLCases.client.__Field;
 import org.allGraphQLCases.client.__Schema;
 import org.allGraphQLCases.client.__Type;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutor;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
@@ -31,13 +35,24 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 @Execution(ExecutionMode.CONCURRENT)
 public class IntrospectionIT {
 
-	MyQueryTypeExecutor myQuery = new MyQueryTypeExecutor(Main.GRAPHQL_ENDPOINT);
-
 	static String[] AllFieldCases_FIELDS = { "id", "name", "forname", "age", "aFloat", "date", "dates", "nbComments",
 			"comments", "booleans", "aliases", "planets", "friends", "matrix", "oneWithIdSubType", "listWithIdSubTypes",
-			"oneWithoutIdSubType", "listWithoutIdSubTypes" };
+			"oneWithoutIdSubType", "listWithoutIdSubTypes", "issue65" };
 	static List<String> AllFieldCases_FIELDNAMES = Arrays.asList(AllFieldCases_FIELDS);
 
+	MyQueryTypeExecutor myQuery;
+	ApplicationContext ctx;
+
+	@BeforeEach
+	void setup() {
+		ctx = new AnnotationConfigApplicationContext(SpringTestConfig.class);
+
+		// For some tests, we need to execute additional partialQueries
+		myQuery = ctx.getBean(MyQueryTypeExecutor.class);
+		assertNotNull(myQuery);
+	}
+
+	@Execution(ExecutionMode.CONCURRENT)
 	@Test
 	void testSchema() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
@@ -55,6 +70,7 @@ public class IntrospectionIT {
 		}
 	}
 
+	@Execution(ExecutionMode.CONCURRENT)
 	@Test
 	void testType() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
@@ -72,27 +88,25 @@ public class IntrospectionIT {
 		}
 	}
 
+	@Execution(ExecutionMode.CONCURRENT)
 	@Test
 	void test__datatype_allFieldCases() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		// Verification
-		MyQueryTypeExecutor queryType = new MyQueryTypeExecutor(Main.GRAPHQL_ENDPOINT);
 
 		// Go, go, go
 		// AllFieldCases ret = queryType.allFieldCases("{allFieldCases {id __typename}}", null);
-		AllFieldCases ret = queryType.allFieldCases("{id __typename}", null);
+		AllFieldCases ret = myQuery.allFieldCases("{id __typename}", null);
 
 		// Verification
 		assertEquals("AllFieldCases", ret.get__typename());
 	}
 
+	@Execution(ExecutionMode.CONCURRENT)
 	@Test
 	void test__datatype_withoutParameters()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		// Verification
-		MyQueryTypeExecutor queryType = new MyQueryTypeExecutor(Main.GRAPHQL_ENDPOINT);
 
 		// Go, go, go
-		List<Character> ret = queryType.withoutParameters(" {id __typename}");
+		List<Character> ret = myQuery.withoutParameters(" {id __typename}");
 
 		// Verification
 		assertTrue(ret.size() >= 10);

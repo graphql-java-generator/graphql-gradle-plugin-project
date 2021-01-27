@@ -1,45 +1,63 @@
-package com.graphql_java_generator.samples.forum.client;
+package com.graphql_java_generator.samples.forum;
 
 import java.util.Calendar;
 
+import org.springframework.boot.CommandLineRunner;
+
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
+import com.graphql_java_generator.samples.forum.client.Queries;
 import com.graphql_java_generator.samples.forum.client.graphql.PartialDirectRequests;
-import com.graphql_java_generator.samples.forum.client.graphql.PartialPreparedRequests;
+import com.graphql_java_generator.samples.forum.client.subscription.SubscriptionRequests;
 
 /**
- * The main class, which executes the same queries, built by three different methods. See {@link PartialDirectRequests},
- * {@link PartialPreparedRequests}, {@link WithBuilder}
+ * A standard client app (non spring)
  * 
  * @author etienne-sf
  */
-public class Main {
+public class NonSpringMain implements CommandLineRunner {
 
-	public static String GRAPHQL_ENDPOINT_URL = "http://localhost:8180/graphql";
+	PartialDirectRequests partialDirectRequests;
+	SubscriptionRequests subscriptionRequests;
 
-	public static void main(String[] args) throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+	public static void main(String[] args) throws Exception {
+		NonSpringMain main = new NonSpringMain();
+		String url = "http://localhost:8180/graphql";
+		String subscriptionUrl = "http://localhost:8180/graphql/subscription";
+		main.partialDirectRequests = new PartialDirectRequests(url);
+		main.subscriptionRequests = new SubscriptionRequests(url, subscriptionUrl);
 
+		main.run(args);
+	}
+
+	/**
+	 * This method is started by Spring, once the Spring context has been loaded. This is run, as this class implements
+	 * {@link CommandLineRunner}
+	 */
+	@Override
+	public void run(String... args) throws Exception {
 		System.out.println("");
 		System.out.println("============================================================================");
 		System.out.println("======= SIMPLEST WAY: DIRECT QUERIES =======================================");
 		System.out.println("============================================================================");
-		exec(new PartialDirectRequests(), null);
+		exec(partialDirectRequests, null);
 
 		System.out.println("");
 		System.out.println("============================================================================");
-		System.out.println("======= MOST SECURE WAY: PREPARED QUERIES ==================================");
+		System.out.println("======= LET'S EXECUTE A SUBSCRIPTION      ==================================");
 		System.out.println("============================================================================");
-		exec(new PartialPreparedRequests(), null);
+		subscriptionRequests.execSubscription();
 
 		System.out.println("");
 		System.out.println("");
 		System.out.println("Sample application finished ... enjoy !    :)");
 		System.out.println("");
-		System.out.println("(please take a look at the other samples, for other use cases)");
+		System.out.println("Please take a look at the other samples, for other use cases");
+		System.out.println(
+				"You'll find more information on the plugin's web site: https://graphql-maven-plugin-project.graphql-java-generator.com/");
 	}
 
-	static void exec(Queries client, String name)
-			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+	void exec(Queries client, String name) throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		try {
 
 			System.out.println("----------------------------------------------------------------------------");

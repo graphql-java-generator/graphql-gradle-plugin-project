@@ -129,6 +129,12 @@ public class GenerateClientCodeTask extends DefaultTask implements GenerateClien
 	}
 
 	@Override
+	@OutputDirectory
+	public File getTargetResourceFolder() {
+		return generateClientCodeExtension.getTargetResourceFolder();
+	}
+
+	@Override
 	@Input
 	public Map<String, String> getTemplates() {
 		return generateClientCodeExtension.getTemplates();

@@ -103,7 +103,7 @@ import com.graphql_java_generator.gradle_task.StartApp
 import com.graphql_java_generator.gradle_task.StopApp
 
 
-task startWebApp(type: StartApp) {
+task startResourceServer(type: StartApp) {
 	// Let's start the server that matches the current client project
 	jarFile = file("../${project.name}/build/libs/${project.name}-${project.version}.jar".replaceAll('client', 'server'))
 	url = 'http://localhost:8180/graphiql'
@@ -112,13 +112,34 @@ task startWebApp(type: StartApp) {
 	dependsOn ":${project.name}:bootJar".replaceAll('client', 'server')
 
 	// The stopWebApp must be attached here. And must run after tests
-	finalizedBy 'stopWebApp'
+	finalizedBy 'stopResourceServer'
 }
 
-task stopWebApp(type: StopApp) {
+task stopResourceServer(type: StopApp) {
 	// The line blow is executed during configuration phase. So the process is unknown. 
 	// We just define the Task object. The StopApp task will read the process id at execution time
-	startAppTask = tasks["startWebApp"]
+	startAppTask = tasks["startResourceServer"]
+
+	// The stopWebApp is attached to startWebApp, and must run after tests
+	mustRunAfter test
+}
+
+task startAuthorizationServer(type: StartApp) {
+	// Let's start the server that matches the current client project
+	jarFile = file("../graphql-gradle-plugin-samples-OAuth-authorization-server/build/libs/graphql-gradle-plugin-samples-OAuth-authorization-server-${project.version}.jar")
+	url = 'http://localhost:8181/helloworld.html'
+
+	// The next lines insures that the relevant server project is built before starting the integration test from this client module.
+	dependsOn ":graphql-gradle-plugin-samples-OAuth-authorization-server:bootJar"
+
+	// The stopWebApp must be attached here. And must run after tests
+	finalizedBy 'stopAuthorizationServer'
+}
+
+task stopAuthorizationServer(type: StopApp) {
+	// The line blow is executed during configuration phase. So the process is unknown. 
+	// We just define the Task object. The StopApp task will read the process id at execution time
+	startAppTask = tasks["startAuthorizationServer"]
 
 	// The stopWebApp is attached to startWebApp, and must run after tests
 	mustRunAfter test
@@ -126,4 +147,5 @@ task stopWebApp(type: StopApp) {
 
 // The next lines insures that the Basic-server is built before starting the integration test from the client.
 // Using mustRunAfter instead of dependsOn allows to manually start the server, then just execute the test task.
-test.dependsOn startWebApp
+test.dependsOn startAuthorizationServer
+test.dependsOn startResourceServer

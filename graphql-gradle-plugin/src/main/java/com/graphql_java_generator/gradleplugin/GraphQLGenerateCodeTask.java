@@ -176,6 +176,12 @@ public class GraphQLGenerateCodeTask extends DefaultTask implements GraphQLConfi
 	}
 
 	@Override
+	@OutputDirectory
+	public File getTargetResourceFolder() {
+		return graphqlExtension.getTargetResourceFolder();
+	}
+
+	@Override
 	@Input
 	public Map<String, String> getTemplates() {
 		return graphqlExtension.getTemplates();
@@ -191,6 +197,12 @@ public class GraphQLGenerateCodeTask extends DefaultTask implements GraphQLConfi
 	@Input
 	public boolean isCopyRuntimeSources() {
 		return graphqlExtension.isCopyRuntimeSources();
+	}
+
+	@Override
+	@Input
+	public boolean isGenerateBatchLoaderEnvironment() {
+		return graphqlExtension.isGenerateBatchLoaderEnvironment();
 	}
 
 	@Override

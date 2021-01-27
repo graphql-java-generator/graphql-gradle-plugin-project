@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>
+
+	<!-- to use this logging configuration, please execute : -->
+	<!-- java -Dlogging.config=classpath:logback-local.xml -jar target\graphql-maven-plugin-samples-allGraphQLCases-server-local-SNAPSHOT.jar -->
+
+	<appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+		</encoder>
+	</appender>
+	<appender name="File" class="ch.qos.logback.core.FileAppender">
+		<file>target/server.log</file>
+		<encoder>
+			<pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n</pattern>
+		</encoder>
+	</appender>
+
+
+	<logger name="com.graphql_java_generator" level="trace" />
+	<logger name="org.springframework" level="debug" />
+	<root level="info">
+		<appender-ref ref="File" />
+		<appender-ref ref="Console" />
+	</root>
+
+</configuration>

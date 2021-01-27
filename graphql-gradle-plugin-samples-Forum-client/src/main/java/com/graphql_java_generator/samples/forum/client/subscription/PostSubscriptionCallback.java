@@ -3,19 +3,18 @@
  */
 package com.graphql_java_generator.samples.forum.client.subscription;
 
-import javax.websocket.ClientEndpoint;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.graphql_java_generator.client.SubscriptionCallback;
+import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Post;
 
 /**
  * @author etienne-sf
  */
 // The class that'll receive the notification from the GraphQL subscription
-@ClientEndpoint
-public class PostSubscriptionCallback<T> implements SubscriptionCallback<T> {
+
+public class PostSubscriptionCallback implements SubscriptionCallback<Post> {
 
 	/** The logger for this class */
 	static protected Logger logger = LoggerFactory.getLogger(PostSubscriptionCallback.class);
@@ -23,20 +22,27 @@ public class PostSubscriptionCallback<T> implements SubscriptionCallback<T> {
 	/** Indicates whether the Web Socket is connected or not */
 	boolean connected = false;
 
-	T lastReceivedMessage = null;
+	Post lastReceivedMessage = null;
 	String lastReceivedClose = null;
 	Throwable lastReceivedError = null;
 
 	@Override
 	public void onConnect() {
-		connected = true;
+		this.connected = true;
+		System.out.println(
+				"The 'subscribeToNewPostWithBindValues' subscription is now active (the web socket is connected)");
 	}
 
 	@Override
-	public void onMessage(T t) {
+	public void onMessage(Post t) {
 		this.lastReceivedMessage = t;
-		logger.debug("Received {} {}", t.getClass().getSimpleName(), t);
-		SubscriptionIT.currentThread.interrupt();
+		// Do something useful with it
+		logger.debug(
+				"Received a notification from the 'subscribeToNewPostWithBindValues' subscription, for this post {} ",
+				t);
+		System.out.println(
+				"Received a notification from the 'subscribeToNewPostWithBindValues' subscription, for this post: "
+						+ t.toString());
 	}
 
 	@Override

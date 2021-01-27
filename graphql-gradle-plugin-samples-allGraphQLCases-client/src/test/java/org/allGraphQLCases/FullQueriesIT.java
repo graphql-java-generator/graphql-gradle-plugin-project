@@ -8,25 +8,32 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.allGraphQLCases.client.AnotherMutationType;
 import org.allGraphQLCases.client.Character;
 import org.allGraphQLCases.client.Episode;
 import org.allGraphQLCases.client.Human;
 import org.allGraphQLCases.client.HumanInput;
-import org.allGraphQLCases.client.util.AnotherMutationTypeResponse;
+import org.allGraphQLCases.client.MyQueryType;
+import org.allGraphQLCases.client.util.AnotherMutationTypeExecutor;
 import org.allGraphQLCases.client.util.GraphQLRequest;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutor;
-import org.allGraphQLCases.client.util.MyQueryTypeResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import com.graphql_java_generator.client.GraphQLConfiguration;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
 @Execution(ExecutionMode.CONCURRENT)
 class FullQueriesIT {
+
+	ApplicationContext ctx;
+
+	MyQueryTypeExecutor myQuery;
+	AnotherMutationTypeExecutor mutationType;
 
 	GraphQLRequest mutationWithDirectiveRequest;
 	GraphQLRequest mutationWithoutDirectiveRequest;
@@ -35,24 +42,26 @@ class FullQueriesIT {
 
 	@BeforeEach
 	void setup() throws GraphQLRequestPreparationException {
-
-		// We have only one GraphQL server. So we just set the default configuration.
-		GraphQLRequest.setStaticConfiguration(new GraphQLConfiguration(Main.GRAPHQL_ENDPOINT));
+		ctx = new AnnotationConfigApplicationContext(SpringTestConfig.class);
+		myQuery = ctx.getBean(MyQueryTypeExecutor.class);
+		assertNotNull(myQuery);
+		mutationType = ctx.getBean(AnotherMutationTypeExecutor.class);
+		assertNotNull(mutationType);
 
 		// The response preparation should be somewhere in the application initialization code.
-		mutationWithDirectiveRequest = new GraphQLRequest(//
+		mutationWithDirectiveRequest = mutationType.getGraphQLRequest(//
 				"mutation{createHuman (human: &humanInput) @testDirective(value:&value, anotherValue:?anotherValue)   "//
 						+ "{id name appearsIn friends {id name}}}"//
 		);
 
-		mutationWithoutDirectiveRequest = new GraphQLRequest(//
+		mutationWithoutDirectiveRequest = mutationType.getGraphQLRequest(//
 				"mutation{createHuman (human: &humanInput) {id name appearsIn friends {id name}}}"//
 		);
 
-		withDirectiveTwoParametersRequest = new GraphQLRequest(
+		withDirectiveTwoParametersRequest = mutationType.getGraphQLRequest(
 				"query{directiveOnQuery (uppercase: false) @testDirective(value:&value, anotherValue:?anotherValue)}");
 
-		multipleQueriesRequest = new GraphQLRequest("{"//
+		multipleQueriesRequest = myQuery.getGraphQLRequest("{"//
 				+ " directiveOnQuery (uppercase: false) @testDirective(value:&value, anotherValue:?anotherValue)"//
 				+ " withOneOptionalParam {id name appearsIn friends {id name}}"//
 				+ " withoutParameters {appearsIn @skip(if: &skipAppearsIn) name @skip(if: &skipName) }"//
@@ -60,14 +69,13 @@ class FullQueriesIT {
 
 	}
 
+	@Execution(ExecutionMode.CONCURRENT)
 	@Test
 	void noDirective() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		// Preparation
-		MyQueryTypeExecutor queryType = new MyQueryTypeExecutor(Main.GRAPHQL_ENDPOINT);
 
 		// Go, go, go
-		MyQueryTypeResponse resp = queryType.exec("{directiveOnQuery}"); // Direct queries should be used only for very
-																			// simple cases
+		MyQueryType resp = myQuery.exec("{directiveOnQuery}"); // Direct queries should be used only for very
+																// simple cases
 
 		// Verifications
 		assertNotNull(resp);
@@ -76,15 +84,14 @@ class FullQueriesIT {
 		assertEquals(0, ret.size());
 	}
 
+	@Execution(ExecutionMode.CONCURRENT)
 	@Test
 	void withDirectiveOneParameter() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		// Preparation
-		MyQueryTypeExecutor queryType = new MyQueryTypeExecutor(Main.GRAPHQL_ENDPOINT);
 
 		// Go, go, go
 
 		// Direct queries should be used only for very simple cases, but you can do what you want... :)
-		MyQueryTypeResponse resp = queryType.exec("{directiveOnQuery  (uppercase: true) @testDirective(value:&value)}", //
+		MyQueryType resp = myQuery.exec("{directiveOnQuery  (uppercase: true) @testDirective(value:&value)}", //
 				"value", "the value", "skip", Boolean.FALSE);
 
 		// Verifications
@@ -96,11 +103,12 @@ class FullQueriesIT {
 		assertEquals("THE VALUE", ret.get(0));
 	}
 
+	@Execution(ExecutionMode.CONCURRENT)
 	@Test
 	void withDirectiveTwoParameters() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
 		// Go, go, go
-		MyQueryTypeResponse resp = withDirectiveTwoParametersRequest.execQuery( //
+		MyQueryType resp = withDirectiveTwoParametersRequest.execQuery( //
 				"value", "the value", "anotherValue", "the other value", "skip", Boolean.TRUE);
 
 		// Verifications
@@ -113,6 +121,7 @@ class FullQueriesIT {
 		assertEquals("the other value", ret.get(1));
 	}
 
+	@Execution(ExecutionMode.CONCURRENT)
 	@Test
 	void mutation() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// Preparation
@@ -128,7 +137,7 @@ class FullQueriesIT {
 		// WITHOUT DIRECTIVE
 
 		// Go, go, go
-		AnotherMutationTypeResponse resp = mutationWithoutDirectiveRequest.execMutation("humanInput", input);
+		AnotherMutationType resp = mutationWithoutDirectiveRequest.execMutation("humanInput", input);
 
 		// Verifications
 		assertNotNull(resp);
@@ -163,6 +172,7 @@ class FullQueriesIT {
 	 * }
 	 * </PRE>
 	 */
+	@Execution(ExecutionMode.CONCURRENT)
 	@Test
 	void multipleQueriesResponse() throws GraphQLRequestExecutionException {
 		/*
@@ -177,7 +187,7 @@ class FullQueriesIT {
 		// Let's skip appearsIn but not name
 
 		// Go, go, go
-		MyQueryTypeResponse resp = multipleQueriesRequest.execQuery( //
+		MyQueryType resp = multipleQueriesRequest.execQuery( //
 				"value", "An expected returned string", //
 				"skipAppearsIn", true, //
 				"skipName", false);

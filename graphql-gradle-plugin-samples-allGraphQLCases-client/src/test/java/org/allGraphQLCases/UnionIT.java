@@ -17,17 +17,23 @@ import org.allGraphQLCases.client.Episode;
 import org.allGraphQLCases.client.Human;
 import org.allGraphQLCases.client.HumanInput;
 import org.allGraphQLCases.client.util.GraphQLRequest;
+import org.allGraphQLCases.client.util.MyQueryTypeExecutor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import com.graphql_java_generator.client.GraphQLConfiguration;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
 @Execution(ExecutionMode.CONCURRENT)
 class UnionIT {
+
+	ApplicationContext ctx;
+
+	MyQueryTypeExecutor myQuery;
 
 	HumanInput humanInput1;
 	HumanInput humanInput2;
@@ -37,8 +43,9 @@ class UnionIT {
 
 	@BeforeEach
 	void setup() {
-		// Default configuration for GraphQLRequest
-		GraphQLRequest.setStaticConfiguration(new GraphQLConfiguration(Main.GRAPHQL_ENDPOINT));
+		ctx = new AnnotationConfigApplicationContext(SpringTestConfig.class);
+		myQuery = ctx.getBean(MyQueryTypeExecutor.class);
+		assertNotNull(myQuery);
 
 		// A useful init for some tests
 		humanInput1 = new HumanInput();
@@ -79,11 +86,12 @@ class UnionIT {
 		params.put("uppercaseTrue", true);
 	}
 
+	@Execution(ExecutionMode.CONCURRENT)
 	@Test
 	void test_unionTest_withAFragmentForEachMember()
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Preparation
-		GraphQLRequest graphQLRequest = new GraphQLRequest(""//
+		GraphQLRequest graphQLRequest = myQuery.getGraphQLRequest(""//
 				+ "query{unionTest(human1:?human1,droid1:?droid1,human2:?human2,droid2:?droid2) {" //
 				+ "    ... on Character { ...id appearsIn } " //
 				+ "    ... on Droid {  primaryFunction ... on Character {name(uppercase: ?uppercaseTrue) friends {name}}  } " //
@@ -141,11 +149,12 @@ class UnionIT {
 		assertEquals("name droid2", droid2.getName(), "to uppercase field parameter set to false");
 	}
 
+	@Execution(ExecutionMode.CONCURRENT)
 	@Test
 	void test_unionTest_withMissingFragments()
 			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
 		// Preparation
-		GraphQLRequest graphQLRequest_withoutFragmentForHuman = new GraphQLRequest(""//
+		GraphQLRequest graphQLRequest_withoutFragmentForHuman = myQuery.getGraphQLRequest(""//
 				+ "query{unionTest(human1:?human1,droid1:?droid1,human2:?human2,droid2:?droid2) {" //
 				+ "    ... on Droid { id primaryFunction ... on Character {name(uppercase: ?uppercaseTrue) friends {name}}  } " //
 				+ "  } "//
