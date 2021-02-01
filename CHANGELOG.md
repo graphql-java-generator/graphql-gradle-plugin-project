@@ -3,12 +3,48 @@
 New developments __should not use the graphql Maven goal or generateCode Gradle task__. 
 Instead, they should use the new __generateClientCode__ and __generateServerCode__ goals/tasks.
 Whether the application uses the _graphql_, the _generateClientCode_ or the _generateServerCode_ goal/task, it should use the parameters below, to be compliant with default values of the 2.0 version:
-* copyRuntimeSources: false
-* generateDeprecatedRequestResponse: false
-* separateUtilityClasses: true
+* generateBatchLoaderEnvironment: true _(server only)_
+* generateDeprecatedRequestResponse: false _(client only)_
+* separateUtilityClasses: true _(both client and server mode)_
 
 
-#1.11.1
+# 1.12.1
+
+Both modes (client and server):
+* Correction for the _addRelayConnections_: the _Node_ interface was not properly copied to all implementing subtypes and subinterfaces
+
+Server mode:
+* The server won't start when the _graphql-java-runtime_ dependency is in the classpath (that is when the _copyRuntimeSources_ plugin parameter is set to false)
+* When a DataFetcher has a BatchLoader, two datafetchers would be wired, instead of just one. This is internal to the generated code, and has no impact on the "user's" code.
+* The cache of the DataLoader is now managed for per request.
+* When the _addRelayConnections_ plugin parameter is set to true, the _generateServerCode_ task/goal (and _graphql_ task/goal when in server mode) copies the generated schema file in the _/classes_ folder, so that the graphql-java engine has a proper access to it, at runtime.
+
+
+# 1.12
+
+Both modes (client and server):
+* Added support for OAuth 2
+* Removed all dependencies to log4j
+* [internal] The GraphqlUtils class has been moved into the com.graphql_java_generator.util package
+
+
+Client mode:
+* The client can now be a Spring Boot app (and that's now the recommended way to build a GraphQL app). see the [plugin web site](https://graphql-maven-plugin-project.graphql-java-generator.com/client_spring.html) for more info on this
+* The subscription management has been updated.
+==> Spring reactive WebSocketClient
+==> The _SubscriptionClient_ interface has a new method: _WebSocketSession getSession()_, which allows to retrieve the Spring reactive _WebSocketSession_. 
+
+Server mode:
+* Corrected a regression in 1.11.2, due to _generateBatchLoaderEnvironment_ plugin parameter (see issue #64)
+
+# 1.11.2
+
+server mode:
+* The generated code would not compile for fields with parameters (when the field's type is an entity with an id)
+* Add of the _generateBatchLoaderEnvironment_ parameter. When in server mode, it allows the batch loader to retrieve the context, for instance the field parameters associated to this id.
+
+
+# 1.11.1
 
 Both modes (client and server):
 * Upgrade of spring boot from 2.3.3 to 2.4.0
@@ -16,7 +52,6 @@ Both modes (client and server):
 
 Gradle plugin:
 * The plugin is now compatible with a JDK/JRE 8 (it previously needed java 13)
-
 
 # 1.11
 

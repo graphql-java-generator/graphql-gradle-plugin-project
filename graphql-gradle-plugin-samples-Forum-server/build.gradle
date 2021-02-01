@@ -59,6 +59,7 @@ compileJava.dependsOn graphqlGenerateCode
 // Let's configure the GraphQL Gradle Plugin
 graphql {
 	mode = "server"
+	generateBatchLoaderEnvironment = true
 	generateJPAAnnotation = true
 	javaTypeForIDType = "java.lang.Long"
 	packageName = "org.forum.server.graphql"

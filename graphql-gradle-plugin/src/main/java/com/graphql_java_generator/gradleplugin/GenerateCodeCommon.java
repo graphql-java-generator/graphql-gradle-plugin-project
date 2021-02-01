@@ -174,13 +174,13 @@ public abstract class GenerateCodeCommon extends CommonExtension implements Gene
 	@Override
 	public File getTargetClassFolder() {
 		// TODO Understand why project.file("$buildDir/classes") doesn't work
-		return project.file("build/classes");
+		return project.file("build/classes/java/main");
 	}
 
 	@Override
 	public File getTargetResourceFolder() {
 		// TODO Understand why project.file("$buildDir/resources") doesn't work
-		return project.file("build/resources");
+		return project.file("build/resources/main");
 	}
 
 }

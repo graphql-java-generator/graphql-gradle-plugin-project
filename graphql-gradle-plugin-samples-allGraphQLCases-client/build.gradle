@@ -43,8 +43,7 @@ dependencies {
 	// Dependencies for tests
 	testImplementation "org.springframework:spring-test:${springFrameworkVersion}"
 	testImplementation "org.junit.jupiter:junit-jupiter-api:${junitJupiterVersion}"
-	testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}"
-	testRuntimeOnly "org.apache.logging.log4j:log4j-slf4j-impl:${log4jVersion}"    
+	testImplementation "org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}"  
 }
 
 // In this sample, the GraphQL code generation works on the generated schema.
