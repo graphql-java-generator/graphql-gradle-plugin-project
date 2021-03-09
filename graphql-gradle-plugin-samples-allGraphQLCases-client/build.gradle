@@ -67,6 +67,7 @@ generateClientCodeConf {
 	packageName = 'org.allGraphQLCases.client'
 	schemaFileFolder = "$buildDir/generated-resources/graphql-merge" // Let's read the merged GraphQL schema
 	separateUtilityClasses = true
+	skipGenerationIfSchemaHasNotChanged = true
 	customScalars = [ [
 			graphQLTypeName: "Date",
 			javaType: "java.util.Date",

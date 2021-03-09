@@ -19,10 +19,10 @@ import org.gradle.api.tasks.TaskAction;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 
-import com.graphql_java_generator.plugin.GenerateGraphQLSchema;
-import com.graphql_java_generator.plugin.GenerateGraphQLSchemaDocumentParser;
 import com.graphql_java_generator.plugin.conf.GenerateGraphQLSchemaConfiguration;
 import com.graphql_java_generator.plugin.conf.Logger;
+import com.graphql_java_generator.plugin.generate_schema.GenerateGraphQLSchema;
+import com.graphql_java_generator.plugin.generate_schema.GenerateGraphQLSchemaDocumentParser;
 
 /**
  * Generates the code from the given GraphQL schema.
@@ -120,6 +120,12 @@ public class GenerateGraphQLSchemaTask extends DefaultTask implements GenerateGr
 	@Input
 	public boolean isAddRelayConnections() {
 		return generateGraphQLSchemaExtension.isAddRelayConnections();
+	}
+
+	@Override
+	@Input
+	public boolean isSkipGenerationIfSchemaHasNotChanged() {
+		return generateGraphQLSchemaExtension.isSkipGenerationIfSchemaHasNotChanged();
 	}
 
 }

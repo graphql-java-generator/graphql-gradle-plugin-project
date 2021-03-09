@@ -22,6 +22,7 @@ public class PostSubscriptionCallback implements SubscriptionCallback<Post> {
 	/** Indicates whether the Web Socket is connected or not */
 	boolean connected = false;
 
+	int nbReceivedMessages = 0;
 	Post lastReceivedMessage = null;
 	String lastReceivedClose = null;
 	Throwable lastReceivedError = null;
@@ -29,20 +30,17 @@ public class PostSubscriptionCallback implements SubscriptionCallback<Post> {
 	@Override
 	public void onConnect() {
 		this.connected = true;
-		System.out.println(
-				"The 'subscribeToNewPostWithBindValues' subscription is now active (the web socket is connected)");
+		logger.debug("The 'subscribeToNewPostWithBindValues' subscription is now active (the web socket is connected)");
 	}
 
 	@Override
 	public void onMessage(Post t) {
-		this.lastReceivedMessage = t;
+		nbReceivedMessages += 1;
+		lastReceivedMessage = t;
 		// Do something useful with it
 		logger.debug(
 				"Received a notification from the 'subscribeToNewPostWithBindValues' subscription, for this post {} ",
 				t);
-		System.out.println(
-				"Received a notification from the 'subscribeToNewPostWithBindValues' subscription, for this post: "
-						+ t.toString());
 	}
 
 	@Override

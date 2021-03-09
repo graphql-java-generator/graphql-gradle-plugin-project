@@ -12,6 +12,7 @@
 plugins {
   id "com.gradle.plugin-publish" version "0.11.0"
   id "java-gradle-plugin"
+  id "eclipse" // For use of this project within eclipse. For refresh, use: gradlew cleanEclipse eclipse
 }
 
 apply from: 'common_conf.gradle'

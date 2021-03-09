@@ -66,6 +66,7 @@ generateServerCodeConf {
 	generateBatchLoaderEnvironment = true
 	packageName = 'org.allGraphQLCases.server'
 	separateUtilityClasses = true
+	skipGenerationIfSchemaHasNotChanged = true
 	customScalars = [ [
 			graphQLTypeName: "Date",
 			javaType: "java.util.Date",

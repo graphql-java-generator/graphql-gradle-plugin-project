@@ -65,6 +65,7 @@ graphql {
 	packageName = "org.forum.server.graphql"
 	scanBasePackages = "org.forum.server.jpa ,  org.forum.server.specific_code"
 	schemaPersonalizationFile = "src/main/graphql/forum_personalization.json"
+	skipGenerationIfSchemaHasNotChanged = true
 	customScalars = [ [
 			graphQLTypeName: "Date",
 			javaType: "java.util.Date",

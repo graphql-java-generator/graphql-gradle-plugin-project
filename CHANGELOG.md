@@ -8,6 +8,46 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 * separateUtilityClasses: true _(both client and server mode)_
 
 
+# 1.12.5
+
+Client mode:
+* Issue #53: custom scalars would not be properly managed when they are a parameter of a query, mutation or subscription.
+
+# 1.12.4
+
+Server mode:
+* It's now possible to override the type wiring, thanks to the new `GraphQLWiring` class.
+* It's now possible to override the DataFetcher definitions, by overriding `GraphQLDataFetchers`. This allows, for instance, to change the DataLoader behavior.
+* [Internal] The `GraphQLProvider` class has been removed. The Spring beans it created are now created by the `GraphQLServerMain` class. The type wiring has been moved in the new `GraphQLWiring` class. This allows an easier overriding of the generated type wiring.
+
+
+# 1.12.3
+
+
+Both mode:
+* Corrected a multithreading issue with the provided custom scalars GraphQLScalarTypeDate and GraphQLScalarTypeDateTime
+
+Server mode:
+* Issue #72: The subscription notifications would not be properly sent when more than one client subscribed to a subscription.
+
+Client mode:
+* The GraphQL server response could not be deserialized, when it contains the (non standard) _extensions_ entry
+
+
+# 1.12.2
+
+Both modes (client and server):
+* Added the _skipGenerationIfSchemaHasNotChanged_ parameter. It's in beta version. It prevents code and resource generation, of the schema file(s) are older than these generated sources or resources. It's default value is false in 1.x releases.
+* When the _addRelayConnections_ parameter is true, the XxxConnection types of the fields marked with @RelayConnection are now non mandatory.
+* The comments read in the provided schema are reported into the generated code and the generated GraphQL schemas.
+
+Server mode:
+* The graphql-java version has been upgraded to 16.2 (the latest version at this time)
+* The generated code would not allow the specific implementation to override the GraphQLInvocation Spring Bean
+
+
+
+
 # 1.12.1
 
 Both modes (client and server):

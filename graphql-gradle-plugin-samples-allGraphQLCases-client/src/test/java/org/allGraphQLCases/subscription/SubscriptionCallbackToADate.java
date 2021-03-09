@@ -3,7 +3,7 @@
  */
 package org.allGraphQLCases.subscription;
 
-import java.util.List;
+import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,15 +15,15 @@ import com.graphql_java_generator.client.SubscriptionCallback;
  * 
  * @author etienne-sf
  */
-public class SubscriptionCallbackListIntegerForTest implements SubscriptionCallback<List<Integer>> {
+public class SubscriptionCallbackToADate implements SubscriptionCallback<Date> {
 
 	/** The logger for this class */
-	static protected Logger logger = LoggerFactory.getLogger(SubscriptionCallbackListIntegerForTest.class);
+	static protected Logger logger = LoggerFactory.getLogger(SubscriptionCallbackToADate.class);
 
 	final String clientName;
-	public List<Integer> lastReceivedMessage = null;
+	public Date lastReceivedMessage = null;
 
-	public SubscriptionCallbackListIntegerForTest(String clientName) {
+	public SubscriptionCallbackToADate(String clientName) {
 		this.clientName = clientName;
 	}
 
@@ -33,7 +33,7 @@ public class SubscriptionCallbackListIntegerForTest implements SubscriptionCallb
 	}
 
 	@Override
-	public void onMessage(List<Integer> t) {
+	public void onMessage(Date t) {
 		logger.debug("Received this list from the 'subscribeToAList' subscription: {} (for {})", t, clientName);
 		lastReceivedMessage = t;
 	}

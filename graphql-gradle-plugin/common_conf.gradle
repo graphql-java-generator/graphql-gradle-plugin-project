@@ -1,5 +1,5 @@
 group = 'com.graphql-java-generator'
-version = '1.12.1'
+version = '1.12.5'
 
 // This configuration block declares local project variable, with all versions for common dependencies
 ext {

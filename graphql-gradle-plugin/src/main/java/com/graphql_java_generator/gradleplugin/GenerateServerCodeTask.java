@@ -19,14 +19,14 @@ import org.gradle.api.tasks.TaskAction;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 
-import com.graphql_java_generator.plugin.GenerateCodeDocumentParser;
-import com.graphql_java_generator.plugin.GenerateCodeGenerator;
 import com.graphql_java_generator.plugin.conf.CustomScalarDefinition;
 import com.graphql_java_generator.plugin.conf.GenerateServerCodeConfiguration;
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.conf.Logger;
 import com.graphql_java_generator.plugin.conf.Packaging;
 import com.graphql_java_generator.plugin.conf.PluginMode;
+import com.graphql_java_generator.plugin.generate_code.GenerateCodeDocumentParser;
+import com.graphql_java_generator.plugin.generate_code.GenerateCodeGenerator;
 
 public class GenerateServerCodeTask extends DefaultTask implements GenerateServerCodeConfiguration {
 
@@ -202,5 +202,11 @@ public class GenerateServerCodeTask extends DefaultTask implements GenerateServe
 	@Input
 	public boolean isSeparateUtilityClasses() {
 		return generateServerCodeExtension.isSeparateUtilityClasses();
+	}
+
+	@Override
+	@Input
+	public boolean isSkipGenerationIfSchemaHasNotChanged() {
+		return generateServerCodeExtension.isSkipGenerationIfSchemaHasNotChanged();
 	}
 }
