@@ -8,6 +8,25 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 * separateUtilityClasses: true _(both client and server mode)_
 
 
+# Not released yet
+
+Both mode:
+* Upgrade of _com.google.guava_, to remove a vulnerability
+
+# 1.13
+
+Both mode:
+* Custom Templates can now be defined as a resource in the current project (no need to embed them in a jar prior to use them). See the [CustomTemplates-client pom file](https://github.com/graphql-java-generator/graphql-maven-plugin-project/blob/master/graphql-maven-plugin-samples/graphql-maven-plugin-samples-CustomTemplates-client/pom.xml) as a sample for that.
+
+Client mode:
+* The _extensions_ field on the root of the GraphQL server response can be retrieved by using Full Queries. More information on the [Client page about request execution](https://graphql-maven-plugin-project.graphql-java-generator.com/exec_graphql_requests.html)
+* Issue #55 : the _extensions_ field of the GraphQL errors is now properly managed. It's possible to receive any GraphQL valid response for this field. And the `Error` class has now the proper getters to manage it (including deserialization of the _extensions_ map values in any Java classes)
+* Issue #65: It's now possible to provide a full query that contains all GraphQL parameters (without runtime parameters). More info in the [Client FAQ](https://graphql-maven-plugin-project.graphql-java-generator.com/client_faq.html)
+
+Server mode:
+* The Query/Mutation/Subscription are now available on the same URL (/graphql by default). This is the standard GraphQL behavior, but it was tricky to build, due to a Java limitation.
+
+
 # 1.12.5
 
 Client mode:

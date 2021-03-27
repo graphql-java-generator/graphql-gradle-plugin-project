@@ -113,6 +113,11 @@ public class GenerateServerCodeTask extends DefaultTask implements GenerateServe
 	}
 
 	@Override
+	public File getProjectDir() {
+		return project.getProjectDir();
+	}
+
+	@Override
 	@Input
 	public String getScanBasePackages() {
 		return generateServerCodeExtension.getScanBasePackages();

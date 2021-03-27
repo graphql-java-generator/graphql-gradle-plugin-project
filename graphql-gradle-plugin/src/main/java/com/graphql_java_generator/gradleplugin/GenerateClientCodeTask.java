@@ -86,6 +86,11 @@ public class GenerateClientCodeTask extends DefaultTask implements GenerateClien
 	}
 
 	@Override
+	public File getProjectDir() {
+		return project.getProjectDir();
+	}
+
+	@Override
 	@Input
 	public PluginMode getMode() {
 		return generateClientCodeExtension.getMode();

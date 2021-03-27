@@ -80,6 +80,11 @@ public class GenerateGraphQLSchemaTask extends DefaultTask implements GenerateGr
 	}
 
 	@Override
+	public File getProjectDir() {
+		return project.getProjectDir();
+	}
+
+	@Override
 	@Input
 	public String getResourceEncoding() {
 		return generateGraphQLSchemaExtension.getResourceEncoding();

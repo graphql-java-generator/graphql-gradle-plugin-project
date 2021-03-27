@@ -126,6 +126,11 @@ public class GraphQLGenerateCodeTask extends DefaultTask implements GraphQLConfi
 	}
 
 	@Override
+	public File getProjectDir() {
+		return project.getProjectDir();
+	}
+
+	@Override
 	@Input
 	public String getScanBasePackages() {
 		return graphqlExtension.getScanBasePackages();

@@ -8,7 +8,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.allGraphQLCases.client.AnotherMutationType;
 import org.allGraphQLCases.client.Character;
@@ -26,6 +28,7 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
@@ -41,6 +44,11 @@ class FullQueriesIT {
 	GraphQLRequest mutationWithoutDirectiveRequest;
 	GraphQLRequest withDirectiveTwoParametersRequest;
 	GraphQLRequest multipleQueriesRequest;
+
+	public static class ExtensionValue {
+		public String name;
+		public String forname;
+	}
 
 	@BeforeEach
 	void setup() throws GraphQLRequestPreparationException {
@@ -84,6 +92,27 @@ class FullQueriesIT {
 		List<String> ret = resp.getDirectiveOnQuery();
 		assertNotNull(ret);
 		assertEquals(0, ret.size());
+	}
+
+	@Execution(ExecutionMode.CONCURRENT)
+	@Test
+	void extensionsResponseField()
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, JsonProcessingException {
+
+		// Go, go, go
+		MyQueryType resp = myQuery.exec("{directiveOnQuery}"); // Direct queries should be used only for very
+																// simple cases
+
+		// Verifications
+		// The extensions field contains a Human instance, for the key "aValueToTestTheExtensionsField".
+		// Check the org.allGraphQLCases.server.extensions.CustomBeans (creation of the customGraphQL Spring bean)
+		assertNotNull(resp);
+		assertNotNull(resp.getExtensions());
+		assertNotNull(resp.getExtensionsAsMap());
+		assertNotNull(resp.getExtensionsAsMap().get("aValueToTestTheExtensionsField"));
+		ExtensionValue value = resp.getExtensionsField("aValueToTestTheExtensionsField", ExtensionValue.class);
+		assertEquals("The name", value.name);
+		assertEquals("The forname", value.forname);
 	}
 
 	@Execution(ExecutionMode.CONCURRENT)
@@ -242,5 +271,30 @@ class FullQueriesIT {
 		// Verifications
 		assertNotNull(resp);
 		assertEquals(date, resp.getIssue53());
+	}
+
+	@Test
+	@Execution(ExecutionMode.CONCURRENT)
+	void test_Issue65_withGraphQLValuedParameter()
+			throws GraphQLRequestPreparationException, GraphQLRequestExecutionException {
+		// Preparation
+		Map<String, Object> params = new HashMap<>();
+		params = new HashMap<>();
+		// params.put("value", "the directive value");
+		// params.put("anotherValue", "the other directive value");
+
+		GraphQLRequest graphQLRequest = new GraphQLRequest(//
+				"mutation {createHuman (human:  {name: \\\"a name with a string that contains a \\\\\\\", two { { and a } \\\", friends: [], appearsIn: [JEDI,NEWHOPE]} )"
+						+ "@testDirective(value:?value, anotherValue:?anotherValue, "
+						+ "anArray  : [  \\\"a string that contains [ [ and ] that should be ignored\\\" ,  \\\"another string\\\" ] , \r\n"
+						+ "anObject:{    name: \\\"a name\\\" , appearsIn:[],friends : [{name:\\\"subname\\\",appearsIn:[],type:\\\"\\\"}],type:\\\"type\\\"})   "//
+						+ "{id name appearsIn friends {id name}}}"//
+		);
+
+		// Go, go, go
+		Human human = mutationType.execWithBindValues(graphQLRequest, null).getCreateHuman();
+
+		// Verifications
+		assertEquals("a name with a string that contains a \", two { { and a } ", human.getName());
 	}
 }
