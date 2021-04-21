@@ -2,6 +2,7 @@ package com.graphql_java_generator.gradle_task
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.TaskAction
 
@@ -20,8 +21,8 @@ class StartApp extends DefaultTask {
 	@Input
 	String url
 
-
 	/** The process that will be created by this task */
+	@Internal
 	Process process
 
 

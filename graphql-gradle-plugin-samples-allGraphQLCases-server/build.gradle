@@ -35,20 +35,20 @@ repositories {
 
 dependencies {
 	// The graphql-java-client-dependencies module agregates all dependencies for the generated code
-    compile (group: 'com.graphql-java-generator', name: 'graphql-java-runtime', version: "${project.version}") 
+    implementation (group: 'com.graphql-java-generator', name: 'graphql-java-runtime', version: "${project.version}") 
     // This project uses some custom scalars from the graphql-java-extended-scalars module
-    compile "com.graphql-java:graphql-java-extended-scalars:${graphqlJavaExtendedScalarsVersion}"
-    compile "com.github.dozermapper:dozer-core:${dozerVersion}"
-    compile "org.springframework.boot:spring-boot-starter-security:${springBootVersion}"
-    compile "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
-    compile "org.springframework.boot:spring-boot-starter-webflux:${springBootVersion}"
-    compile "org.springframework.boot:spring-boot-starter-oauth2-resource-server:${springBootVersion}"
-    compile "org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.4.0"
-    compile "org.apache.commons:commons-lang3:${commonsLang3Version}"
-    runtime "com.nimbusds:oauth2-oidc-sdk:${oauth2OidcSdkVersion}"
+    implementation "com.graphql-java:graphql-java-extended-scalars:${graphqlJavaExtendedScalarsVersion}"
+    implementation "com.github.dozermapper:dozer-core:${dozerVersion}"
+    implementation "org.springframework.boot:spring-boot-starter-security:${springBootVersion}"
+    implementation "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
+    implementation "org.springframework.boot:spring-boot-starter-webflux:${springBootVersion}"
+    implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server:${springBootVersion}"
+    implementation "org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.4.0"
+    implementation "org.apache.commons:commons-lang3:${commonsLang3Version}"
+    runtimeOnly "com.nimbusds:oauth2-oidc-sdk:${oauth2OidcSdkVersion}"
     
     // Gives a GraphQL test UI available at http://localhost:8180/graphiql 
-    runtime "com.graphql-java-kickstart:graphiql-spring-boot-starter:${graphiqlSpringBootStarterVersion}"
+    runtimeOnly "com.graphql-java-kickstart:graphiql-spring-boot-starter:${graphiqlSpringBootStarterVersion}"
 
 	// Dependencies for tests
 	testImplementation "org.springframework:spring-test:${springFrameworkVersion}"

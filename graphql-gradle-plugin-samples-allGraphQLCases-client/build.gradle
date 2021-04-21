@@ -106,7 +106,7 @@ import com.graphql_java_generator.gradle_task.StopApp
 task startResourceServer(type: StartApp) {
 	// Let's start the server that matches the current client project
 	jarFile = file("../${project.name}/build/libs/${project.name}-${project.version}.jar".replaceAll('client', 'server'))
-	url = 'http://localhost:8180/graphiql'
+	url = 'http://localhost:8181/helloworld.html'
 
 	// The next lines insures that the relevant server project is built before starting the integration test from this client module.
 	dependsOn ":${project.name}:bootJar".replaceAll('client', 'server')

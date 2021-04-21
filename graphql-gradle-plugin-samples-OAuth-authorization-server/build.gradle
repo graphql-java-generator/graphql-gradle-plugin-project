@@ -33,13 +33,13 @@ repositories {
 }
 
 dependencies {
-    compile "org.springframework.boot:spring-boot-starter-jdbc:${springBootVersion}"
-    compile "org.springframework.boot:spring-boot-starter-security:${springBootVersion}"
-    compile "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
-    compile "org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.1.2.RELEASE"
-    runtime "com.h2database:h2:1.4.199"
+    implementation "org.springframework.boot:spring-boot-starter-jdbc:${springBootVersion}"
+    implementation "org.springframework.boot:spring-boot-starter-security:${springBootVersion}"
+    implementation "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
+    implementation "org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.1.2.RELEASE"
+    runtimeOnly "com.h2database:h2:1.4.199"
     // Gives a GraphQL test UI available at http://localhost:8180/graphiql 
-    runtime "com.graphql-java-kickstart:graphiql-spring-boot-starter:${graphiqlSpringBootStarterVersion}"
+    runtimeOnly "com.graphql-java-kickstart:graphiql-spring-boot-starter:${graphiqlSpringBootStarterVersion}"
 
 	// Dependencies for tests
 	testImplementation "org.springframework:spring-test:${springFrameworkVersion}"
