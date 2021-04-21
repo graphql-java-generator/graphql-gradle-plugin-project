@@ -20,6 +20,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.support.AbstractApplicationContext;
 
 import com.graphql_java_generator.plugin.conf.CustomScalarDefinition;
+import com.graphql_java_generator.plugin.conf.GenerateGraphQLSchemaConfiguration;
 import com.graphql_java_generator.plugin.conf.GenerateServerCodeConfiguration;
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.conf.Logger;
@@ -83,6 +84,12 @@ public class GenerateServerCodeTask extends DefaultTask implements GenerateServe
 	}
 
 	@Override
+	@Internal
+	public String getDefaultTargetSchemaFileName() {
+		return GenerateGraphQLSchemaConfiguration.DEFAULT_TARGET_SCHEMA_FILE_NAME;
+	}
+
+	@Override
 	@Input
 	public String getJavaTypeForIDType() {
 		return generateServerCodeExtension.javaTypeForIDType;
@@ -113,6 +120,7 @@ public class GenerateServerCodeTask extends DefaultTask implements GenerateServe
 	}
 
 	@Override
+	@Internal
 	public File getProjectDir() {
 		return project.getProjectDir();
 	}

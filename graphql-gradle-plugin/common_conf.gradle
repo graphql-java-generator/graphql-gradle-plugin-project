@@ -1,16 +1,15 @@
 group = 'com.graphql-java-generator'
-version = '1.14'
+version = '1.14.1'
 
 // This configuration block declares local project variable, with all versions for common dependencies
 ext {
 	commonsLang3Version = 3.11
-	dozerVersion = '6.5.0'
-	junitJupiterVersion = '5.7.0'
-	graphiqlSpringBootStarterVersion = '6.0.1' 
+	dozerVersion = '6.5.2'
+	junitJupiterVersion = '5.7.1'
+	graphiqlSpringBootStarterVersion = '11.0.0' 
 	graphqlJavaExtendedScalarsVersion = '1.0.1'
-	h2databaseVersion = '1.4.199'
-	log4jVersion = '2.13.3'
-	oauth2OidcSdkVersion = '8.23.1'
-	springBootVersion = '2.4.0'		
-	springFrameworkVersion = '5.3.1'
+	h2databaseVersion = '1.4.200'
+	oauth2OidcSdkVersion = '8.36.1'
+	springBootVersion = '2.4.4'		
+	springFrameworkVersion = '5.3.5'
 }

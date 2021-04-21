@@ -75,11 +75,18 @@ public class GenerateGraphQLSchemaTask extends DefaultTask implements GenerateGr
 
 	@Override
 	@Internal
+	public String getDefaultTargetSchemaFileName() {
+		return GenerateGraphQLSchemaConfiguration.DEFAULT_TARGET_SCHEMA_FILE_NAME;
+	}
+
+	@Override
+	@Internal
 	public Logger getPluginLogger() {
 		return generateGraphQLSchemaExtension.getPluginLogger();
 	}
 
 	@Override
+	@Internal
 	public File getProjectDir() {
 		return project.getProjectDir();
 	}

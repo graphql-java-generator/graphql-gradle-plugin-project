@@ -20,6 +20,7 @@ import org.springframework.context.support.AbstractApplicationContext;
 
 import com.graphql_java_generator.plugin.conf.CustomScalarDefinition;
 import com.graphql_java_generator.plugin.conf.GenerateClientCodeConfiguration;
+import com.graphql_java_generator.plugin.conf.GenerateGraphQLSchemaConfiguration;
 import com.graphql_java_generator.plugin.conf.Logger;
 import com.graphql_java_generator.plugin.conf.PluginMode;
 import com.graphql_java_generator.plugin.generate_code.GenerateCodeDocumentParser;
@@ -81,11 +82,18 @@ public class GenerateClientCodeTask extends DefaultTask implements GenerateClien
 
 	@Override
 	@Internal
+	public String getDefaultTargetSchemaFileName() {
+		return GenerateGraphQLSchemaConfiguration.DEFAULT_TARGET_SCHEMA_FILE_NAME;
+	}
+
+	@Override
+	@Internal
 	public Logger getPluginLogger() {
 		return generateClientCodeExtension.getPluginLogger();
 	}
 
 	@Override
+	@Internal
 	public File getProjectDir() {
 		return project.getProjectDir();
 	}

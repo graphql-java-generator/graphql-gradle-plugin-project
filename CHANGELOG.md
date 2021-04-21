@@ -9,10 +9,26 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 
 
 
-# Not released yet
+
+# 1.14.1
 
 Both mode:
 * Upgrade of _com.google.guava_, to version 30.1.1-jre, to remove a vulnerability
+* Upgrade of Spring boot from 2.4.0 to 2.4.4
+* Upgrade of Spring framework from 5.3.0 to 5.3.5
+* Upgrade of Spring security from 5.4.1 to 5.4.5
+* Upgrade of graphql-java-extended-scalars version from 1.0.1 to 16.0.1
+* Upgrade of commons-io from 2.6 to 2.8.0
+* Upgrade of dozer-core from 6.5.0 to 6.5.2
+* Upgrade of h2 from 1.4.199 to 1.4.200
+
+Client mode:
+* Issue #65: When using requests with the parameters in the request (no GraphQL Variables and no Bind Parameter), the request is properly encoded when these parameters are or contain strings
+* Dependency order changed in the graphql-java-client-dependencies module, to make sure the right spring's dependencies are used (this could prevent a Spring app to start)
+* Removed the use of the `reactor.core.publisher.Sinks` class, to restore compatibility for those who uses an older version of Spring Boot
+
+Gradle:
+* Update in the build.gradle to make it compatible with gradle 7
 
 
 # 1.14
