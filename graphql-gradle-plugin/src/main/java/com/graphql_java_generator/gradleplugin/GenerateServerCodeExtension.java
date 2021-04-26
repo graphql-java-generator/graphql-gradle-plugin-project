@@ -32,8 +32,8 @@ public class GenerateServerCodeExtension extends GenerateCodeCommon implements G
 	 * 
 	 * <PRE>
 	 * &#64;Override
-	 * public CompletableFuture<AllFieldCasesWithIdSubtype> oneWithIdSubType(
-	 * 		DataFetchingEnvironment dataFetchingEnvironment, DataLoader<UUID, AllFieldCasesWithIdSubtype> dataLoader,
+	 * public CompletableFuture&lt;AllFieldCasesWithIdSubtype> oneWithIdSubType(
+	 * 		DataFetchingEnvironment dataFetchingEnvironment, DataLoader&lt;UUID, AllFieldCasesWithIdSubtype> dataLoader,
 	 * 		AllFieldCases source, Boolean uppercase) {
 	 * 	return dataLoader.load(UUID.randomUUID());
 	 * }
@@ -44,8 +44,8 @@ public class GenerateServerCodeExtension extends GenerateCodeCommon implements G
 	 * 
 	 * <PRE>
 	 * &#64;Override
-	 * public List<AllFieldCasesWithIdSubtype> batchLoader(List<UUID> keys, BatchLoaderEnvironment environment) {
-	 * 	List<AllFieldCasesWithIdSubtype> list = new ArrayList<>(keys.size());
+	 * public List&lt;AllFieldCasesWithIdSubtype> batchLoader(List&lt;UUID> keys, BatchLoaderEnvironment environment) {
+	 * 	List&lt;AllFieldCasesWithIdSubtype> list = new ArrayList<>(keys.size());
 	 * 	for (UUID id : keys) {
 	 * 		// Let's manage the uppercase parameter, that was associated with this key
 	 * 		Boolean uppercase = (Boolean) environment.getKeyContexts().get(id);
