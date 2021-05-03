@@ -27,6 +27,7 @@ import org.springframework.context.support.AbstractApplicationContext;
 
 import com.graphql_java_generator.plugin.conf.CustomScalarDefinition;
 import com.graphql_java_generator.plugin.conf.GenerateGraphQLSchemaConfiguration;
+import com.graphql_java_generator.plugin.conf.GeneratePojoConfiguration;
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.conf.Packaging;
 import com.graphql_java_generator.plugin.conf.PluginMode;
@@ -34,29 +35,63 @@ import com.graphql_java_generator.plugin.generate_code.GenerateCodeDocumentParse
 import com.graphql_java_generator.plugin.generate_code.GenerateCodeGenerator;
 
 /**
- * Generates the code from the given GraphQL schema.
+ * <P>
+ * The <I>generatePojo</I> goal generates all the java objects that match the provided GraphQL schema. It allows to work
+ * in Java with graphQL, in a schema first approach.
+ * </P>
+ * This goal generates:
+ * <UL>
+ * <LI>One java interface for each GraphQL `union` and `interface`</LI>
+ * <LI>One java class for each GraphQL `type` and `input` type, including the query, mutation and subscription (if any).
+ * If the GraphQL type implements an interface, then its java class implements this same interface</LI>
+ * <LI>One java enum for each GraphQL enum</LI>
+ * </UL>
+ * 
+ * <P>
+ * Every class, interface and their attributes are marked with the annotation from the <A HREF=
+ * "https://graphql-maven-plugin-project.graphql-java-generator.com/graphql-java-runtime/apidocs/com/graphql_java_generator/annotation/package-summary.html">GraphQL
+ * annotation</A> package. This allows to retrieve the GraphQL information for every class, interface and attribute, at
+ * runtime.
+ * 
+ * <P>
+ * It can run in two modes (see the <A HREF=
+ * "https://graphql-maven-plugin-project.graphql-java-generator.com/graphql-maven-plugin/generatePojo-mojo.html#mode">mode
+ * plugin parameter</A> for more information):
+ * </P>
+ * <UL>
+ * <LI><B>server</B>: In the server mode, only the GraphQL annotation are added. You can add the JPA annotation, with
+ * the <I>generateJPAAnnotation</I> plugin parameter set to true. In this mode, as with the <I>generateServerCode</I>,
+ * you need to either add the <I>graphql-java-server-dependencies</I> dependencies, or set the <I>copyRuntimeSources</I>
+ * plugin parameter to false and add the <I>graphql-java-runtime</I>.</LI>
+ * <LI><B>client</B>: The client mode is the default one. This mode generates the same POJO as in server mode, with the
+ * addition of the <A HREF="https://github.com/FasterXML/jackson">Jackson</A> annotations. These annotations allows to
+ * serialize and unserialize the GraphQL POJO to and from JSON. And the <I>CustomJacksonDeserializers</I> utility class
+ * is generated, that allows to deserialize custom scalars and arrays. In this mode, as with the
+ * <I>generateServerCode</I>, you need to either add the <I>graphql-java-client-dependencies</I> dependencies, or set
+ * the <I>copyRuntimeSources</I> plugin parameter to false and add the <I>graphql-java-runtime</I>.</LI>
+ * </UL>
  * 
  * @author EtienneSF
  */
-public class GraphQLGenerateCodeTask extends DefaultTask implements GraphQLConfiguration {
+public class GeneratePojoTask extends DefaultTask implements GeneratePojoConfiguration {
 
-	private static final Logger logger = LoggerFactory.getLogger(GraphQLGenerateCodeTask.class);
+	private static final Logger logger = LoggerFactory.getLogger(GeneratePojoTask.class);
 
 	/** The Gradle extension, to read the plugin parameters from the script */
-	private transient GraphQLExtension extension = null;
+	private transient GeneratePojoExtension extension = null;
 
-	final Project project;
+	final private Project project;
 
 	/**
 	 * @param project
 	 *            The current Gradle project
-	 * @param graphqlExtension
-	 *            The GraphQL extension, which contains all parameters found in the build script
+	 * @param generatePojoExtension
+	 *            The generatePojo extension, which contains all parameters found in the build script
 	 */
 	@Inject
-	public GraphQLGenerateCodeTask(Project project, GraphQLExtension graphqlExtension) {
+	public GeneratePojoTask(Project project, GeneratePojoExtension generatePojoExtension) {
 		this.project = project;
-		this.extension = graphqlExtension;
+		this.extension = generatePojoExtension;
 	}
 
 	@TaskAction
@@ -176,19 +211,22 @@ public class GraphQLGenerateCodeTask extends DefaultTask implements GraphQLConfi
 	@Override
 	@OutputDirectory
 	public File getTargetClassFolder() {
-		return extension.getTargetClassFolder();
+		// TODO Understand why project.file("$buildDir/classes") doesn't work
+		return project.file("build/classes/java/main");
 	}
 
 	@Override
 	@OutputDirectory
 	public File getTargetSourceFolder() {
-		return extension.getTargetSourceFolder();
+		// TODO Understand why project.file("$buildDir/classes") doesn't work
+		return project.file("build/generated/" + GraphQLPlugin.GENERATE_POJO_TASK_NAME);
 	}
 
 	@Override
 	@OutputDirectory
 	public File getTargetResourceFolder() {
-		return extension.getTargetResourceFolder();
+		// TODO Understand why project.file("$buildDir/resources") doesn't work
+		return project.file("build/resources/main");
 	}
 
 	@Override

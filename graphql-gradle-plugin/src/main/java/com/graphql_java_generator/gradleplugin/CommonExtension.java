@@ -11,7 +11,6 @@ import org.gradle.api.Project;
 
 import com.graphql_java_generator.plugin.conf.CommonConfiguration;
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
-import com.graphql_java_generator.plugin.conf.Logger;
 
 /**
  * <P>
@@ -26,8 +25,6 @@ import com.graphql_java_generator.plugin.conf.Logger;
  * @author etienne-sf
  */
 public class CommonExtension implements CommonConfiguration {
-
-	private GradleLogger logger;
 
 	protected final Project project;
 
@@ -156,12 +153,6 @@ public class CommonExtension implements CommonConfiguration {
 
 	public CommonExtension(Project project) {
 		this.project = project;
-		this.logger = new GradleLogger(project);
-	}
-
-	@Override
-	public Logger getPluginLogger() {
-		return logger;
 	}
 
 	@Override

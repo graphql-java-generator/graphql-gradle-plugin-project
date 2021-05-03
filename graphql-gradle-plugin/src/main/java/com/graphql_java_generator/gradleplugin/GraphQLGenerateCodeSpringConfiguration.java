@@ -27,6 +27,7 @@ import graphql.parser.Parser;
 @ComponentScan(basePackages = { "com.graphql_java_generator" }, excludeFilters = {
 		@Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateClientCode.*"),
 		@Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateGraphQLSchema.*"),
+		@Filter(type = FilterType.REGEX, pattern = ".*\\.GeneratePojo.*"),
 		@Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateServerCode.*") })
 public class GraphQLGenerateCodeSpringConfiguration {
 

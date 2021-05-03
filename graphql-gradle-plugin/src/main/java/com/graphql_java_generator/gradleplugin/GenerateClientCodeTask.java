@@ -15,21 +15,24 @@ import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.TaskAction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 
 import com.graphql_java_generator.plugin.conf.CustomScalarDefinition;
 import com.graphql_java_generator.plugin.conf.GenerateClientCodeConfiguration;
 import com.graphql_java_generator.plugin.conf.GenerateGraphQLSchemaConfiguration;
-import com.graphql_java_generator.plugin.conf.Logger;
 import com.graphql_java_generator.plugin.conf.PluginMode;
 import com.graphql_java_generator.plugin.generate_code.GenerateCodeDocumentParser;
 import com.graphql_java_generator.plugin.generate_code.GenerateCodeGenerator;
 
 public class GenerateClientCodeTask extends DefaultTask implements GenerateClientCodeConfiguration {
 
+	private static final Logger logger = LoggerFactory.getLogger(GenerateClientCodeTask.class);
+
 	/** The Gradle extension, to read the plugin parameters from the script */
-	private transient GenerateClientCodeExtension generateClientCodeExtension = null;
+	private transient GenerateClientCodeExtension extension = null;
 
 	final Project project;
 
@@ -42,16 +45,16 @@ public class GenerateClientCodeTask extends DefaultTask implements GenerateClien
 	@Inject
 	public GenerateClientCodeTask(Project project, GenerateClientCodeExtension generateClientCodeExtension) {
 		this.project = project;
-		this.generateClientCodeExtension = generateClientCodeExtension;
+		this.extension = generateClientCodeExtension;
 	}
 
 	@TaskAction
 	public void execute() throws IOException {
 
-		getPluginLogger().debug("Starting merging of the given GraphQL schemas");
+		logger.debug("Executing " + this.getClass().getName());
 
 		// We'll use Spring IoC
-		GenerateClientCodeSpringConfiguration.generateClientCodeExtension = generateClientCodeExtension;
+		GenerateClientCodeSpringConfiguration.generateClientCodeExtension = extension;
 		AbstractApplicationContext ctx = new AnnotationConfigApplicationContext(
 				GenerateClientCodeSpringConfiguration.class);
 
@@ -67,29 +70,23 @@ public class GenerateClientCodeTask extends DefaultTask implements GenerateClien
 
 		ctx.close();
 
-		getPluginLogger().info(nbGeneratedClasses + " java classes have been generated from the schema(s) '"
+		logger.info(nbGeneratedClasses + " java classes have been generated from the schema(s) '"
 				+ pluginConfiguration.getSchemaFilePattern() + "' in the package '"
 				+ pluginConfiguration.getPackageName() + "'");
 
-		getPluginLogger().debug("Finished generation of java classes from graphqls files (5)");
+		logger.debug("Finished generation of java classes from graphqls files (5)");
 	}
 
 	@Override
 	@Input
 	public List<CustomScalarDefinition> getCustomScalars() {
-		return generateClientCodeExtension.getCustomScalars();
+		return extension.getCustomScalars();
 	}
 
 	@Override
 	@Internal
 	public String getDefaultTargetSchemaFileName() {
 		return GenerateGraphQLSchemaConfiguration.DEFAULT_TARGET_SCHEMA_FILE_NAME;
-	}
-
-	@Override
-	@Internal
-	public Logger getPluginLogger() {
-		return generateClientCodeExtension.getPluginLogger();
 	}
 
 	@Override
@@ -101,86 +98,92 @@ public class GenerateClientCodeTask extends DefaultTask implements GenerateClien
 	@Override
 	@Input
 	public PluginMode getMode() {
-		return generateClientCodeExtension.getMode();
+		return extension.getMode();
 	}
 
 	@Override
 	@Input
 	public String getPackageName() {
-		return generateClientCodeExtension.getPackageName();
+		return extension.getPackageName();
 	}
 
 	@Override
 	@InputDirectory
 	@Optional
 	public File getSchemaFileFolder() {
-		return generateClientCodeExtension.getSchemaFileFolder();
+		return extension.getSchemaFileFolder();
 	}
 
 	@Override
 	@Input
 	public String getSchemaFilePattern() {
-		return generateClientCodeExtension.getSchemaFilePattern();
+		return extension.getSchemaFilePattern();
 	}
 
 	@Override
 	@Input
 	public String getSourceEncoding() {
-		return generateClientCodeExtension.getSourceEncoding();
+		return extension.getSourceEncoding();
 	}
 
 	@Override
 	@OutputDirectory
 	public File getTargetClassFolder() {
-		return generateClientCodeExtension.getTargetClassFolder();
+		return extension.getTargetClassFolder();
 	}
 
 	@Override
 	@OutputDirectory
 	public File getTargetSourceFolder() {
-		return generateClientCodeExtension.getTargetSourceFolder();
+		return extension.getTargetSourceFolder();
 	}
 
 	@Override
 	@OutputDirectory
 	public File getTargetResourceFolder() {
-		return generateClientCodeExtension.getTargetResourceFolder();
+		return extension.getTargetResourceFolder();
 	}
 
 	@Override
 	@Input
 	public Map<String, String> getTemplates() {
-		return generateClientCodeExtension.getTemplates();
+		return extension.getTemplates();
 	}
 
 	@Override
 	@Input
 	public boolean isAddRelayConnections() {
-		return generateClientCodeExtension.isAddRelayConnections();
+		return extension.isAddRelayConnections();
 	}
 
 	@Override
 	@Input
 	public boolean isCopyRuntimeSources() {
-		return generateClientCodeExtension.isCopyRuntimeSources();
+		return extension.isCopyRuntimeSources();
 	}
 
 	@Override
 	@Input
 	public boolean isGenerateDeprecatedRequestResponse() {
-		return generateClientCodeExtension.isGenerateDeprecatedRequestResponse();
+		return extension.isGenerateDeprecatedRequestResponse();
+	}
+
+	@Override
+	@Internal
+	public boolean isGenerateUtilityClasses() {
+		return extension.isGenerateUtilityClasses();
 	}
 
 	@Override
 	@Input
 	public boolean isSeparateUtilityClasses() {
-		return generateClientCodeExtension.isSeparateUtilityClasses();
+		return extension.isSeparateUtilityClasses();
 	}
 
 	@Override
 	@Input
 	public boolean isSkipGenerationIfSchemaHasNotChanged() {
-		return generateClientCodeExtension.isSkipGenerationIfSchemaHasNotChanged();
+		return extension.isSkipGenerationIfSchemaHasNotChanged();
 	}
 
 }

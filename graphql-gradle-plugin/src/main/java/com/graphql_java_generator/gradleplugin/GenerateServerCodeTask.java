@@ -16,6 +16,8 @@ import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.TaskAction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 
@@ -23,7 +25,6 @@ import com.graphql_java_generator.plugin.conf.CustomScalarDefinition;
 import com.graphql_java_generator.plugin.conf.GenerateGraphQLSchemaConfiguration;
 import com.graphql_java_generator.plugin.conf.GenerateServerCodeConfiguration;
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
-import com.graphql_java_generator.plugin.conf.Logger;
 import com.graphql_java_generator.plugin.conf.Packaging;
 import com.graphql_java_generator.plugin.conf.PluginMode;
 import com.graphql_java_generator.plugin.generate_code.GenerateCodeDocumentParser;
@@ -31,8 +32,10 @@ import com.graphql_java_generator.plugin.generate_code.GenerateCodeGenerator;
 
 public class GenerateServerCodeTask extends DefaultTask implements GenerateServerCodeConfiguration {
 
+	private static final Logger logger = LoggerFactory.getLogger(GenerateServerCodeTask.class);
+
 	/** The Gradle extension, to read the plugin parameters from the script */
-	private transient GenerateServerCodeExtension generateServerCodeExtension = null;
+	private transient GenerateServerCodeExtension extension = null;
 
 	final Project project;
 
@@ -45,16 +48,16 @@ public class GenerateServerCodeTask extends DefaultTask implements GenerateServe
 	@Inject
 	public GenerateServerCodeTask(Project project, GenerateServerCodeExtension generateServerCodeExtension) {
 		this.project = project;
-		this.generateServerCodeExtension = generateServerCodeExtension;
+		this.extension = generateServerCodeExtension;
 	}
 
 	@TaskAction
 	public void execute() throws IOException {
 
-		getPluginLogger().debug("Starting merging of the given GraphQL schemas");
+		logger.debug("Executing " + this.getClass().getName());
 
 		// We'll use Spring IoC
-		GenerateServerCodeSpringConfiguration.generateServerCodeExtension = generateServerCodeExtension;
+		GenerateServerCodeSpringConfiguration.generateServerCodeExtension = extension;
 		AbstractApplicationContext ctx = new AnnotationConfigApplicationContext(
 				GenerateServerCodeSpringConfiguration.class);
 
@@ -70,17 +73,17 @@ public class GenerateServerCodeTask extends DefaultTask implements GenerateServe
 
 		ctx.close();
 
-		getPluginLogger().info(nbGeneratedClasses + " java classes have been generated from the schema(s) '"
+		logger.info(nbGeneratedClasses + " java classes have been generated from the schema(s) '"
 				+ pluginConfiguration.getSchemaFilePattern() + "' in the package '"
 				+ pluginConfiguration.getPackageName() + "'");
 
-		getPluginLogger().debug("Finished generation of java classes from graphqls files (5)");
+		logger.debug("Finished generation of java classes from graphqls files (5)");
 	}
 
 	@Override
 	@Input
 	public List<CustomScalarDefinition> getCustomScalars() {
-		return generateServerCodeExtension.getCustomScalars();
+		return extension.getCustomScalars();
 	}
 
 	@Override
@@ -92,31 +95,25 @@ public class GenerateServerCodeTask extends DefaultTask implements GenerateServe
 	@Override
 	@Input
 	public String getJavaTypeForIDType() {
-		return generateServerCodeExtension.javaTypeForIDType;
-	}
-
-	@Override
-	@Internal
-	public Logger getPluginLogger() {
-		return generateServerCodeExtension.getPluginLogger();
+		return extension.javaTypeForIDType;
 	}
 
 	@Override
 	@Input
 	public PluginMode getMode() {
-		return generateServerCodeExtension.getMode();
+		return extension.getMode();
 	}
 
 	@Override
 	@Input
 	public String getPackageName() {
-		return generateServerCodeExtension.getPackageName();
+		return extension.getPackageName();
 	}
 
 	@Override
 	@Input
 	public Packaging getPackaging() {
-		return generateServerCodeExtension.getPackaging();
+		return extension.getPackaging();
 	}
 
 	@Override
@@ -128,7 +125,7 @@ public class GenerateServerCodeTask extends DefaultTask implements GenerateServe
 	@Override
 	@Input
 	public String getScanBasePackages() {
-		return generateServerCodeExtension.getScanBasePackages();
+		return extension.getScanBasePackages();
 	}
 
 	@Override
@@ -141,85 +138,91 @@ public class GenerateServerCodeTask extends DefaultTask implements GenerateServe
 	@InputDirectory
 	@Optional
 	public File getSchemaFileFolder() {
-		return generateServerCodeExtension.getSchemaFileFolder();
+		return extension.getSchemaFileFolder();
 	}
 
 	@Override
 	@Input
 	public String getSchemaFilePattern() {
-		return generateServerCodeExtension.getSchemaFilePattern();
+		return extension.getSchemaFilePattern();
 	}
 
 	@Override
 	@InputFile
 	@Optional
 	public File getSchemaPersonalizationFile() {
-		return generateServerCodeExtension.getSchemaPersonalizationFile();
+		return extension.getSchemaPersonalizationFile();
 	}
 
 	@Override
 	@Input
 	public String getSourceEncoding() {
-		return generateServerCodeExtension.getSourceEncoding();
+		return extension.getSourceEncoding();
 	}
 
 	@Override
 	@OutputDirectory
 	public File getTargetClassFolder() {
-		return generateServerCodeExtension.getTargetClassFolder();
+		return extension.getTargetClassFolder();
 	}
 
 	@Override
 	@OutputDirectory
 	public File getTargetSourceFolder() {
-		return generateServerCodeExtension.getTargetSourceFolder();
+		return extension.getTargetSourceFolder();
 	}
 
 	@Override
 	@OutputDirectory
 	public File getTargetResourceFolder() {
-		return generateServerCodeExtension.getTargetResourceFolder();
+		return extension.getTargetResourceFolder();
 	}
 
 	@Override
 	@Input
 	public Map<String, String> getTemplates() {
-		return generateServerCodeExtension.getTemplates();
+		return extension.getTemplates();
 	}
 
 	@Override
 	@Input
 	public boolean isAddRelayConnections() {
-		return generateServerCodeExtension.isAddRelayConnections();
+		return extension.isAddRelayConnections();
 	}
 
 	@Override
 	@Input
 	public boolean isCopyRuntimeSources() {
-		return generateServerCodeExtension.isCopyRuntimeSources();
+		return extension.isCopyRuntimeSources();
 	}
 
 	@Override
 	@Input
 	public boolean isGenerateBatchLoaderEnvironment() {
-		return generateServerCodeExtension.isGenerateBatchLoaderEnvironment();
+		return extension.isGenerateBatchLoaderEnvironment();
 	}
 
 	@Override
 	@Input
 	public boolean isGenerateJPAAnnotation() {
-		return generateServerCodeExtension.isGenerateJPAAnnotation();
+		return extension.isGenerateJPAAnnotation();
+	}
+
+	@Override
+	@Internal
+	public boolean isGenerateUtilityClasses() {
+		return extension.isGenerateUtilityClasses();
 	}
 
 	@Override
 	@Input
 	public boolean isSeparateUtilityClasses() {
-		return generateServerCodeExtension.isSeparateUtilityClasses();
+		return extension.isSeparateUtilityClasses();
 	}
 
 	@Override
 	@Input
 	public boolean isSkipGenerationIfSchemaHasNotChanged() {
-		return generateServerCodeExtension.isSkipGenerationIfSchemaHasNotChanged();
+		return extension.isSkipGenerationIfSchemaHasNotChanged();
 	}
 }

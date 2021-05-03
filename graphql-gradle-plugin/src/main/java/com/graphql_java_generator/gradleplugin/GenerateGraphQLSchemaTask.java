@@ -16,11 +16,12 @@ import org.gradle.api.tasks.InputDirectory;
 import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.TaskAction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 
 import com.graphql_java_generator.plugin.conf.GenerateGraphQLSchemaConfiguration;
-import com.graphql_java_generator.plugin.conf.Logger;
 import com.graphql_java_generator.plugin.generate_schema.GenerateGraphQLSchema;
 import com.graphql_java_generator.plugin.generate_schema.GenerateGraphQLSchemaDocumentParser;
 
@@ -31,8 +32,10 @@ import com.graphql_java_generator.plugin.generate_schema.GenerateGraphQLSchemaDo
  */
 public class GenerateGraphQLSchemaTask extends DefaultTask implements GenerateGraphQLSchemaConfiguration {
 
+	private static final Logger logger = LoggerFactory.getLogger(GenerateGraphQLSchemaTask.class);
+
 	/** The Gradle extension, to read the plugin parameters from the script */
-	private transient GenerateGraphQLSchemaExtension generateGraphQLSchemaExtension = null;
+	private transient GenerateGraphQLSchemaExtension extension = null;
 
 	final Project project;
 
@@ -45,16 +48,17 @@ public class GenerateGraphQLSchemaTask extends DefaultTask implements GenerateGr
 	@Inject
 	public GenerateGraphQLSchemaTask(Project project, GenerateGraphQLSchemaExtension generateGraphQLSchemaExtension) {
 		this.project = project;
-		this.generateGraphQLSchemaExtension = generateGraphQLSchemaExtension;
+		this.extension = generateGraphQLSchemaExtension;
 	}
 
 	@TaskAction
 	public void execute() throws IOException {
 
-		getPluginLogger().debug("Starting merging of the given GraphQL schemas");
+		logger.debug("Executing " + this.getClass().getName() + " (extension is an instance of "
+				+ extension.getClass().getName());
 
 		// We'll use Spring IoC
-		GenerateGraphQLSchemaSpringConfiguration.generateGraphQLSchemaExtension = generateGraphQLSchemaExtension;
+		GenerateGraphQLSchemaSpringConfiguration.generateGraphQLSchemaExtension = extension;
 		AbstractApplicationContext ctx = new AnnotationConfigApplicationContext(
 				GenerateGraphQLSchemaSpringConfiguration.class);
 
@@ -70,19 +74,13 @@ public class GenerateGraphQLSchemaTask extends DefaultTask implements GenerateGr
 
 		ctx.close();
 
-		getPluginLogger().debug("Finished generation of the merged schema");
+		logger.debug("Finished generation of the merged schema");
 	}
 
 	@Override
 	@Internal
 	public String getDefaultTargetSchemaFileName() {
 		return GenerateGraphQLSchemaConfiguration.DEFAULT_TARGET_SCHEMA_FILE_NAME;
-	}
-
-	@Override
-	@Internal
-	public Logger getPluginLogger() {
-		return generateGraphQLSchemaExtension.getPluginLogger();
 	}
 
 	@Override
@@ -94,50 +92,50 @@ public class GenerateGraphQLSchemaTask extends DefaultTask implements GenerateGr
 	@Override
 	@Input
 	public String getResourceEncoding() {
-		return generateGraphQLSchemaExtension.getResourceEncoding();
+		return extension.getResourceEncoding();
 	}
 
 	@Override
 	@InputDirectory
 	@Optional
 	public File getSchemaFileFolder() {
-		return generateGraphQLSchemaExtension.getSchemaFileFolder();
+		return extension.getSchemaFileFolder();
 	}
 
 	@Override
 	@Input
 	public String getSchemaFilePattern() {
-		return generateGraphQLSchemaExtension.getSchemaFilePattern();
+		return extension.getSchemaFilePattern();
 	}
 
 	@Override
 	@InputDirectory
 	public File getTargetFolder() {
-		return generateGraphQLSchemaExtension.getTargetFolder();
+		return extension.getTargetFolder();
 	}
 
 	@Override
 	@Input
 	public String getTargetSchemaFileName() {
-		return generateGraphQLSchemaExtension.getTargetSchemaFileName();
+		return extension.getTargetSchemaFileName();
 	}
 
 	@Override
 	@Input
 	public Map<String, String> getTemplates() {
-		return generateGraphQLSchemaExtension.getTemplates();
+		return extension.getTemplates();
 	}
 
 	@Override
 	@Input
 	public boolean isAddRelayConnections() {
-		return generateGraphQLSchemaExtension.isAddRelayConnections();
+		return extension.isAddRelayConnections();
 	}
 
 	@Override
 	@Input
 	public boolean isSkipGenerationIfSchemaHasNotChanged() {
-		return generateGraphQLSchemaExtension.isSkipGenerationIfSchemaHasNotChanged();
+		return extension.isSkipGenerationIfSchemaHasNotChanged();
 	}
 
 }
