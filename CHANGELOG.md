@@ -15,6 +15,11 @@ Client mode:
     * Once the request is executed, The alias value can be retrieved with the `Object getAliasValue(String: aliasname)` method that has been added to every generated objects and interfaces. This method returns the alias value, parsed into the relevant Java Object.
 * The default `QueryExecutor` provided by the plugin is now a Spring bean. If you want to override it, you should not mark your own `QueryExecutor` with the `@Primary` annotation, to ignore the default one.
 
+Gradle only:
+* Since 1.15, the files are generated in these folders:
+    * Resources are generated in: `build/generated/resources/graphqlGradlePlugin`
+    * Sources are generated in: `build/generated/sources/graphqlGradlePlugin`
+    
 
 # 1.14.2
 
