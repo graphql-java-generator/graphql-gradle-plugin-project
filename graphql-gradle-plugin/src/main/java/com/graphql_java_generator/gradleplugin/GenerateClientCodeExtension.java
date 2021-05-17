@@ -1,7 +1,5 @@
 package com.graphql_java_generator.gradleplugin;
 
-import java.io.File;
-
 import org.gradle.api.Project;
 
 import com.graphql_java_generator.plugin.conf.GenerateClientCodeConfiguration;
@@ -47,11 +45,5 @@ public class GenerateClientCodeExtension extends GenerateCodeCommon implements G
 	@Override
 	public PluginMode getMode() {
 		return PluginMode.client;
-	}
-
-	@Override
-	public File getTargetSourceFolder() {
-		// TODO Understand why project.file("$buildDir/classes") doesn't work
-		return project.file("build/generated/" + GraphQLPlugin.GENERATE_CLIENT_CODE_TASK_NAME);
 	}
 }

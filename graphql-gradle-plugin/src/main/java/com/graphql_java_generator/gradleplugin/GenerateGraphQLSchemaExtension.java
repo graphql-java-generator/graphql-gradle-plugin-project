@@ -24,6 +24,9 @@ public class GenerateGraphQLSchemaExtension extends CommonExtension
 	/** The folder where the generated GraphQL schema will be stored */
 	private String targetFolder = GenerateGraphQLSchemaConfiguration.DEFAULT_TARGET_FOLDER;
 
+	/** The folder where the generated resources will be generated */
+	protected String targetResourceFolder = "./build/generated/resources/graphqlGradlePlugin";
+
 	/**
 	 * The name of the target filename, in which the schema is generated. This file is stored in the folder, defined in
 	 * the <I>targetFolder</I> plugin parameter.
@@ -53,6 +56,14 @@ public class GenerateGraphQLSchemaExtension extends CommonExtension
 		project.file(targetFolder).mkdirs();
 
 		this.targetFolder = targetFolder;
+	}
+
+	public File getTargetResourceFolder() {
+		return project.file(targetResourceFolder);
+	}
+
+	public void setTargetResourceFolder(String targetResourceFolder) {
+		this.targetResourceFolder = targetResourceFolder;
 	}
 
 	@Override

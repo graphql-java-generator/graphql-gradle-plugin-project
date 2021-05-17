@@ -11,10 +11,12 @@ import javax.inject.Inject;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Project;
+import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputDirectory;
 import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.Optional;
+import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.TaskAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,6 +75,11 @@ public class GenerateGraphQLSchemaTask extends DefaultTask implements GenerateGr
 		merge.generateGraphQLSchema();
 
 		ctx.close();
+
+		// Let's add the folders where the GraphQL schemas have been generated to the project
+		JavaPluginConvention javaConvention = project.getConvention().getPlugin(JavaPluginConvention.class);
+		SourceSet main = javaConvention.getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME);
+		main.getResources().srcDir(extension.getTargetResourceFolder());
 
 		logger.debug("Finished generation of the merged schema");
 	}

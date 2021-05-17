@@ -119,6 +119,12 @@ public abstract class GenerateCodeCommon extends CommonExtension implements Gene
 	/** The encoding for the generated source files */
 	private String sourceEncoding = GraphQLConfiguration.DEFAULT_SOURCE_ENCODING;
 
+	/** The folder where the generated resources will be generated */
+	protected String targetResourceFolder = "./build/generated/resources/graphqlGradlePlugin";
+
+	/** The folder where the source code for the generated classes will be generated */
+	protected String targetSourceFolder = "./build/generated/sources/graphqlGradlePlugin";
+
 	public GenerateCodeCommon(Project project) {
 		super(project);
 	}
@@ -173,14 +179,25 @@ public abstract class GenerateCodeCommon extends CommonExtension implements Gene
 
 	@Override
 	public File getTargetClassFolder() {
-		// TODO Understand why project.file("$buildDir/classes") doesn't work
 		return project.file("build/classes/java/main");
 	}
 
 	@Override
 	public File getTargetResourceFolder() {
-		// TODO Understand why project.file("$buildDir/resources") doesn't work
-		return project.file("build/resources/main");
+		return project.file(targetResourceFolder);
+	}
+
+	public void setTargetResourceFolder(String targetResourceFolder) {
+		this.targetResourceFolder = targetResourceFolder;
+	}
+
+	@Override
+	public File getTargetSourceFolder() {
+		return project.file(targetSourceFolder);
+	}
+
+	public void setTargetSourceFolder(String targetSourceFolder) {
+		this.targetSourceFolder = targetSourceFolder;
 	}
 
 }

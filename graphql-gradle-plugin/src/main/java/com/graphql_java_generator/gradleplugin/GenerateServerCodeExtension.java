@@ -194,9 +194,4 @@ public class GenerateServerCodeExtension extends GenerateCodeCommon implements G
 		this.schemaPersonalizationFile = schemaPersonalizationFile;
 	}
 
-	@Override
-	public File getTargetSourceFolder() {
-		// TODO Understand why project.file("$buildDir/classes") doesn't work
-		return project.file("build/generated/" + GraphQLPlugin.GENERATE_SERVER_CODE_TASK_NAME);
-	}
 }

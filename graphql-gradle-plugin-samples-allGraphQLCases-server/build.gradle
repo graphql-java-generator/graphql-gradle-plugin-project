@@ -60,6 +60,9 @@ dependencies {
 // Of course, we need to generate the GraphQL's java code before compiling the project:
 compileJava.dependsOn generateServerCode
 
+// The line below adds the generated sources as a java source folder, in the IDE
+sourceSets.main.java.srcDirs += '/build/generated/sources/graphqlGradlePlugin'
+
 // Let's configure the GraphQL Gradle Plugin
 generateServerCodeConf {
 	addRelayConnections = true

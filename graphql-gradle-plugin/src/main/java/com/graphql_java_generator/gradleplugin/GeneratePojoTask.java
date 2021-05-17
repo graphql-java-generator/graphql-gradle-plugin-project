@@ -13,12 +13,14 @@ import javax.inject.Inject;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Project;
 import org.gradle.api.UncheckedIOException;
+import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputDirectory;
 import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputDirectory;
+import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.TaskAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -117,6 +119,12 @@ public class GeneratePojoTask extends DefaultTask implements GeneratePojoConfigu
 
 			ctx.close();
 
+			// Let's add the folders where the sources and resources have been generated to the project
+			JavaPluginConvention javaConvention = project.getConvention().getPlugin(JavaPluginConvention.class);
+			SourceSet main = javaConvention.getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME);
+			main.getJava().srcDir(extension.getTargetSourceFolder());
+			main.getResources().srcDir(extension.getTargetResourceFolder());
+
 			logger.info(nbGeneratedClasses + " java classes have been generated from the schema(s) '"
 					+ pluginConfiguration.getSchemaFilePattern() + "' in the package '"
 					+ pluginConfiguration.getPackageName() + "'");
@@ -211,22 +219,19 @@ public class GeneratePojoTask extends DefaultTask implements GeneratePojoConfigu
 	@Override
 	@OutputDirectory
 	public File getTargetClassFolder() {
-		// TODO Understand why project.file("$buildDir/classes") doesn't work
-		return project.file("build/classes/java/main");
+		return extension.getTargetClassFolder();
 	}
 
 	@Override
 	@OutputDirectory
 	public File getTargetSourceFolder() {
-		// TODO Understand why project.file("$buildDir/classes") doesn't work
-		return project.file("build/generated/" + GraphQLPlugin.GENERATE_POJO_TASK_NAME);
+		return extension.getTargetSourceFolder();
 	}
 
 	@Override
 	@OutputDirectory
 	public File getTargetResourceFolder() {
-		// TODO Understand why project.file("$buildDir/resources") doesn't work
-		return project.file("build/resources/main");
+		return extension.getTargetResourceFolder();
 	}
 
 	@Override

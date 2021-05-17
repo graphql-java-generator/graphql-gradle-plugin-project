@@ -6,8 +6,6 @@ package com.graphql_java_generator.gradleplugin;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.plugins.JavaPlugin;
-import org.gradle.api.plugins.JavaPluginConvention;
-import org.gradle.api.tasks.SourceSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,10 +64,18 @@ public class GraphQLPlugin implements Plugin<Project> {
 
 		// Apply the java plugin, then add the generated source
 		project.getPlugins().apply(JavaPlugin.class);
+	}
 
-		JavaPluginConvention javaConvention = project.getConvention().getPlugin(JavaPluginConvention.class);
-		SourceSet main = javaConvention.getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME);
-		main.getJava().srcDir(extension.getTargetSourceFolder());
+	/**
+	 * Applies the <I>generateGraphQLSchema</I> task
+	 * 
+	 * @param project
+	 */
+	private void applyGenerateGraphQLSchema(Project project) {
+		GenerateGraphQLSchemaExtension extension = project.getExtensions().create(MERGE_EXTENSION,
+				GenerateGraphQLSchemaExtension.class, project);
+		logger.debug("Applying generateGraphQLSchema task");
+		project.getTasks().register(MERGE_TASK_NAME, GenerateGraphQLSchemaTask.class, project, extension);
 	}
 
 	/**
@@ -85,10 +91,6 @@ public class GraphQLPlugin implements Plugin<Project> {
 
 		// Apply the java plugin, then add the generated source
 		project.getPlugins().apply(JavaPlugin.class);
-
-		JavaPluginConvention javaConvention = project.getConvention().getPlugin(JavaPluginConvention.class);
-		SourceSet main = javaConvention.getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME);
-		main.getJava().srcDir(extension.getTargetSourceFolder());
 	}
 
 	/**
@@ -104,10 +106,6 @@ public class GraphQLPlugin implements Plugin<Project> {
 
 		// Apply the java plugin, then add the generated source
 		project.getPlugins().apply(JavaPlugin.class);
-
-		JavaPluginConvention javaConvention = project.getConvention().getPlugin(JavaPluginConvention.class);
-		SourceSet main = javaConvention.getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME);
-		main.getJava().srcDir(extension.getTargetSourceFolder());
 	}
 
 	/**
@@ -122,21 +120,6 @@ public class GraphQLPlugin implements Plugin<Project> {
 
 		// Apply the java plugin, then add the generated source
 		project.getPlugins().apply(JavaPlugin.class);
-
-		JavaPluginConvention javaConvention = project.getConvention().getPlugin(JavaPluginConvention.class);
-		SourceSet main = javaConvention.getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME);
-		main.getJava().srcDir(extension.getTargetSourceFolder());
 	}
 
-	/**
-	 * Applies the <I>generateGraphQLSchema</I> task
-	 * 
-	 * @param project
-	 */
-	private void applyGenerateGraphQLSchema(Project project) {
-		GenerateGraphQLSchemaExtension extension = project.getExtensions().create(MERGE_EXTENSION,
-				GenerateGraphQLSchemaExtension.class, project);
-		logger.debug("Applying generateGraphQLSchema task");
-		project.getTasks().register(MERGE_TASK_NAME, GenerateGraphQLSchemaTask.class, project, extension);
-	}
 }

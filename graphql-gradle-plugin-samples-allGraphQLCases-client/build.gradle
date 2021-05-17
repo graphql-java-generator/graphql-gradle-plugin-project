@@ -52,13 +52,13 @@ generateClientCode.dependsOn generateGraphQLSchema
 // The line below makes the GraphQL plugin be executed before Java compiles, so that all sources are generated on time
 compileJava.dependsOn generateClientCode
 
-// The line below adds the generated sources as a java source folder
-sourceSets.main.java.srcDirs += '/build/generated/graphqlGenerateCode'
+// The line below adds the generated sources as a java source folder, in the IDE
+sourceSets.main.java.srcDirs += '/build/generated/sources/graphqlGradlePlugin'
 
 //Let's configure the GraphQL Gradle Plugin, for the merge task
 generateGraphQLSchemaConf {
 	schemaFileFolder = 'src/graphqls/'
-	targetFolder = "$buildDir/generated-resources/graphql-merge"
+	targetFolder = "$buildDir/generated/resources/generateGraphQLSchema"
 	targetSchemaFileName = 'merged_schemas.graphqls'
 }
 
@@ -66,7 +66,7 @@ generateGraphQLSchemaConf {
 generateClientCodeConf {
 	addRelayConnections = true
 	packageName = 'org.allGraphQLCases.client'
-	schemaFileFolder = "$buildDir/generated-resources/graphql-merge" // Let's read the merged GraphQL schema
+	schemaFileFolder = "$buildDir/generated/resources/generateGraphQLSchema" // Let's read the merged GraphQL schema
 	separateUtilityClasses = true
 	skipGenerationIfSchemaHasNotChanged = true
 	customScalars = [ [
