@@ -8,6 +8,15 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 * separateUtilityClasses: true _(both client and server mode)_
 * skipGenerationIfSchemaHasNotChanged: true _(both client and server mode)_
 
+# Not released yet
+
+Client mode:
+* The generated code can now attack two (or more) GraphQL servers.
+    * More information on [this page](https://github.com/graphql-java-generator/graphql-maven-plugin-project/wiki/client_more_than_one_graphql_servers).
+* Added the ability to create GraphQL Repositories: like Spring Data Repositories, GraphQL Repositories allow to declare GraphQL requests (query, mutation, subscription) by __just declaring an interface__. The runtime code create dynamic proxies at runtime, that will execute these GraphQL requests.
+    * In other words: GraphQL Repositories is a powerful tool that allows to execute GraphQL request, without writing code for that: just declare these requests in the GraphQL Repository interface
+    * More information on [this page](https://github.com/graphql-java-generator/graphql-maven-plugin-project/wiki/client_graphql_repository).
+
 # 1.16
 
 Both mode:

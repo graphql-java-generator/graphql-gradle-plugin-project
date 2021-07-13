@@ -1,4 +1,4 @@
-package org.allGraphQLCases;
+package org.allGraphQLCases.demo;
 
 import java.util.Arrays;
 import java.util.List;
@@ -6,19 +6,26 @@ import java.util.List;
 import org.allGraphQLCases.client.CharacterInput;
 import org.allGraphQLCases.client.Episode;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutor;
-import org.allGraphQLCases.impl.PartialDirectQueries;
-import org.allGraphQLCases.impl.PartialPreparedQueries;
-import org.allGraphQLCases.subscription.ExecSubscription;
+import org.allGraphQLCases.demo.impl.PartialDirectQueries;
+import org.allGraphQLCases.demo.impl.PartialPreparedQueries;
+import org.allGraphQLCases.demo.impl.PartialRequestGraphQLRepository;
+import org.allGraphQLCases.demo.subscription.ExecSubscription;
+import org.forum.client.util.QueryTypeExecutor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
+import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.oauth2.client.registration.ReactiveClientRegistrationRepository;
 import org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction;
 import org.springframework.security.oauth2.client.web.server.UnAuthenticatedServerOAuth2AuthorizedClientRepository;
 
 import com.graphql_java_generator.client.GraphQLConfiguration;
+import com.graphql_java_generator.client.graphqlrepository.EnableGraphQLRepositories;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
@@ -48,13 +55,19 @@ curl -i -X GET "http://localhost:8181/profile/me" --noproxy "*" -H "Authorizatio
  * @see https://michalgebauer.github.io/spring-graphql-security/
  */
 @SuppressWarnings("deprecation")
-@SpringBootApplication(scanBasePackageClasses = { Main.class, GraphQLConfiguration.class, MyQueryTypeExecutor.class })
+@SpringBootApplication(scanBasePackageClasses = { Main.class, GraphQLConfiguration.class, MyQueryTypeExecutor.class,
+		QueryTypeExecutor.class })
+@EnableAutoConfiguration(exclude = { DataSourceAutoConfiguration.class,
+		DataSourceTransactionManagerAutoConfiguration.class, HibernateJpaAutoConfiguration.class })
+@EnableGraphQLRepositories({ "org.allGraphQLCases.demo.impl", "org.allGraphQLCases.subscription.graphqlrepository" })
 public class Main implements CommandLineRunner {
 
 	@Autowired
 	PartialDirectQueries partialDirectQueries;
 	@Autowired
 	PartialPreparedQueries partialPreparedQueries;
+	@Autowired
+	PartialRequestGraphQLRepository partialRequestGraphQLRepository;
 	@Autowired
 	ExecSubscription execSubscription;
 
@@ -69,10 +82,15 @@ public class Main implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 
-		// Execution of two ways of calling the GraphQL server
+		// Execution of three different ways of calling the GraphQL server
 
 		System.out.println("============================================================================");
-		System.out.println("======= SIMPLEST WAY: DIRECT QUERIES =======================================");
+		System.out.println("======= SIMPLEST WAY: GRAPHQL REPOSITOTRY  =================================");
+		System.out.println("============================================================================");
+		execOne(partialRequestGraphQLRepository);
+
+		System.out.println("============================================================================");
+		System.out.println("======= A SIMPLE WAY: DIRECT QUERIES =======================================");
 		System.out.println("============================================================================");
 		execOne(partialDirectQueries);
 
@@ -81,6 +99,7 @@ public class Main implements CommandLineRunner {
 		System.out.println("============================================================================");
 		execOne(partialPreparedQueries);
 
+		// Then a subscription
 		System.out.println("============================================================================");
 		System.out.println("======= EXECUTING A SUBSCRIPTION ===========================================");
 		System.out.println("============================================================================");
@@ -128,7 +147,7 @@ public class Main implements CommandLineRunner {
 	}
 
 	@Bean
-	ServerOAuth2AuthorizedClientExchangeFilterFunction serverOAuth2AuthorizedClientExchangeFilterFunction(
+	ServerOAuth2AuthorizedClientExchangeFilterFunction serverOAuth2AuthorizedClientExchangeFilterFunctionAllGraphQLCases(
 			ReactiveClientRegistrationRepository clientRegistrations) {
 		ServerOAuth2AuthorizedClientExchangeFilterFunction oauth = new ServerOAuth2AuthorizedClientExchangeFilterFunction(
 				clientRegistrations, new UnAuthenticatedServerOAuth2AuthorizedClientRepository());
@@ -136,4 +155,9 @@ public class Main implements CommandLineRunner {
 		return oauth;
 	}
 
+	@Bean
+	ServerOAuth2AuthorizedClientExchangeFilterFunction serverOAuth2AuthorizedClientExchangeFilterFunctionForum(
+			ReactiveClientRegistrationRepository clientRegistrations) {
+		return null;
+	}
 }

@@ -169,6 +169,12 @@ public class GenerateServerCodeTask extends DefaultTask implements GenerateServe
 	}
 
 	@Override
+	@Input
+	public String getSpringBeanSuffix() {
+		return extension.getSpringBeanSuffix();
+	}
+
+	@Override
 	@OutputDirectory
 	public File getTargetClassFolder() {
 		return extension.getTargetClassFolder();

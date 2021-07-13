@@ -119,6 +119,13 @@ public abstract class GenerateCodeCommon extends CommonExtension implements Gene
 	/** The encoding for the generated source files */
 	private String sourceEncoding = GraphQLConfiguration.DEFAULT_SOURCE_ENCODING;
 
+	/**
+	 * Retrieves the suffix that will be applied to the name of the Spring Beans that are generated for this schema.
+	 * It's mandatory if you' using a Spring app and have more than one GraphQL schemas. The default value is an empty
+	 * String.
+	 */
+	private String springBeanSuffix = GraphQLConfiguration.DEFAULT_SPRING_BEAN_SUFFIX;
+
 	/** The folder where the generated resources will be generated */
 	protected String targetResourceFolder = "./build/generated/resources/graphqlGradlePlugin";
 
@@ -171,6 +178,11 @@ public abstract class GenerateCodeCommon extends CommonExtension implements Gene
 	@Override
 	public String getSourceEncoding() {
 		return sourceEncoding;
+	}
+
+	@Override
+	public String getSpringBeanSuffix() {
+		return springBeanSuffix;
 	}
 
 	public void setSourceEncoding(String sourceEncoding) {

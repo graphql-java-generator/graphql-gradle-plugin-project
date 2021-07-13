@@ -182,6 +182,12 @@ public class GraphQLGenerateCodeTask extends DefaultTask implements GraphQLConfi
 	}
 
 	@Override
+	@Input
+	public String getSpringBeanSuffix() {
+		return extension.getSpringBeanSuffix();
+	}
+
+	@Override
 	@OutputDirectory
 	public File getTargetClassFolder() {
 		return extension.getTargetClassFolder();

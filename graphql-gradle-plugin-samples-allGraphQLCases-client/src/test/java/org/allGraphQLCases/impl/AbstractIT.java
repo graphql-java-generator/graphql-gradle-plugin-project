@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.allGraphQLCases.PartialQueries;
 import org.allGraphQLCases.SpringTestConfig;
 import org.allGraphQLCases.client.AllFieldCases;
 import org.allGraphQLCases.client.AllFieldCasesInput;
@@ -22,12 +21,14 @@ import org.allGraphQLCases.client.FieldParameterInput;
 import org.allGraphQLCases.client.Human;
 import org.allGraphQLCases.client._extends;
 import org.allGraphQLCases.client.util.MyQueryTypeExecutor;
+import org.allGraphQLCases.demo.PartialQueries;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
@@ -38,21 +39,23 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
  * 
  * @author etienne-sf
  */
+// Adding "webEnvironment = SpringBootTest.WebEnvironment.NONE" avoid this error:
+// "No qualifying bean of type 'ReactiveClientRegistrationRepository' available"
+// More details here: https://stackoverflow.com/questions/62558552/error-when-using-enablewebfluxsecurity-in-springboot
+@SpringBootTest(classes = SpringTestConfig.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @Execution(ExecutionMode.CONCURRENT)
 abstract class AbstractIT {
 
+	@Autowired
 	MyQueryTypeExecutor queryType;
-	PartialQueries partialQueries;
 
+	@Autowired
 	protected ApplicationContext ctx;
+
+	PartialQueries partialQueries;
 
 	@BeforeEach
 	void setup() {
-		ctx = new AnnotationConfigApplicationContext(SpringTestConfig.class);
-
-		queryType = ctx.getBean(MyQueryTypeExecutor.class);
-		assertNotNull(queryType);
-
 		partialQueries = getQueries();
 		assertNotNull(partialQueries);
 	}
@@ -103,7 +106,7 @@ abstract class AbstractIT {
 	@Test
 	void test_withOneMandatoryParam_nullParameter()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		// With null parameter
+
 		GraphQLRequestExecutionException e = assertThrows(GraphQLRequestExecutionException.class,
 				() -> partialQueries.withOneMandatoryParam(null));
 		assertTrue(e.getMessage().contains("character"));
@@ -229,6 +232,7 @@ abstract class AbstractIT {
 	@Execution(ExecutionMode.CONCURRENT)
 	@Test
 	void test_error() {
+
 		GraphQLRequestExecutionException e = assertThrows(GraphQLRequestExecutionException.class,
 				() -> partialQueries.error("This is an expected error"));
 		assertTrue(e.getMessage().contains("This is an expected error"),

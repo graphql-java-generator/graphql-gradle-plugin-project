@@ -50,7 +50,7 @@ dependencies {
 // In this sample, the GraphQL code generation works on the generated schema.
 generateClientCode.dependsOn generateGraphQLSchema
 // The line below makes the GraphQL plugin be executed before Java compiles, so that all sources are generated on time
-compileJava.dependsOn generateClientCode
+compileJava.dependsOn('generateClientCodeAllGraphQLCases')
 
 // The line below adds the generated sources as a java source folder, in the IDE
 sourceSets.main.java.srcDirs += '/build/generated/sources/graphqlGradlePlugin'
@@ -63,7 +63,7 @@ generateGraphQLSchemaConf {
 }
 
 // Let's configure the GraphQL Gradle Plugin, for the code generation
-generateClientCodeConf {
+tasks.register('generateClientCodeAllGraphQLCases', generateClientCode) {
 	addRelayConnections = true
 	packageName = 'org.allGraphQLCases.client'
 	schemaFileFolder = "$buildDir/generated/resources/generateGraphQLSchema" // Let's read the merged GraphQL schema
