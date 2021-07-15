@@ -49,7 +49,7 @@ All maven goals and gradle tasks are described on [this page](https://graphql-ma
 This plugin contains these goals (Maven) / tasks (Gradle):
 * __generateClientCode__ : this goal generates the client code from the Graphql schema file(s)
     * You'll find all the details [on this page](https://graphql-maven-plugin-project.graphql-java-generator.com/graphql-maven-plugin/generateClientCode-mojo.html)
-* __generateClientCode__ : this goal generates the server code from the Graphql schema file(s)
+* __generateServerCode__ : this goal generates the server code from the Graphql schema file(s)
     * You'll find all the details [on this page](https://graphql-maven-plugin-project.graphql-java-generator.com/graphql-maven-plugin/generateServerCode-mojo.html)
 * __generatePojo__ : this goal generates only the java objects that match the provided GraphQL schema. It allows to work
  * in Java with graphQL, in a schema first approach.
