@@ -31,7 +31,7 @@ public class GenerateGraphQLSchemaExtension extends CommonExtension
 	 * The name of the target filename, in which the schema is generated. This file is stored in the folder, defined in
 	 * the <I>targetFolder</I> plugin parameter.
 	 */
-	private String targetSchemaFileName;
+	private String targetSchemaFileName = GenerateGraphQLSchemaConfiguration.DEFAULT_TARGET_SCHEMA_FILE_NAME;
 
 	public GenerateGraphQLSchemaExtension(Project project) {
 		super(project);
@@ -56,14 +56,6 @@ public class GenerateGraphQLSchemaExtension extends CommonExtension
 		project.file(targetFolder).mkdirs();
 
 		this.targetFolder = targetFolder;
-	}
-
-	public File getTargetResourceFolder() {
-		return project.file(targetResourceFolder);
-	}
-
-	public void setTargetResourceFolder(String targetResourceFolder) {
-		this.targetResourceFolder = targetResourceFolder;
 	}
 
 	@Override

@@ -5,17 +5,10 @@ package com.graphql_java_generator.gradleplugin;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
 
-import javax.inject.Inject;
-
-import org.gradle.api.DefaultTask;
-import org.gradle.api.Project;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputDirectory;
-import org.gradle.api.tasks.Internal;
-import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.TaskAction;
 import org.slf4j.Logger;
@@ -28,45 +21,66 @@ import com.graphql_java_generator.plugin.generate_schema.GenerateGraphQLSchema;
 import com.graphql_java_generator.plugin.generate_schema.GenerateGraphQLSchemaDocumentParser;
 
 /**
- * Generates the code from the given GraphQL schema.
+ * <P>
+ * The <I>generateGraphQLSchema</I> goal generates GraphQL schema, based on the source GraphQL schemas, and possibly
+ * containing additional stuff, like the Relay connection objects.
+ * </P>
+ * It can be used to:
+ * <UL>
+ * <LI>Generate several GraphQL schema files into one file, for instance with additional schema files that would use the
+ * <I>extend</I> GraphQL keyword</LI>
+ * <LI>Reformat the schema file</LI>
+ * <LI>Generate the GraphQL schema with the Relay Connection stuff (Node interface, XxxEdge and XxxConnection types),
+ * thanks to the <I>addRelayConnections</I> plugin parameter.
+ * </UL>
+ * <P>
+ * This goal is, by default, attached to the Initialize maven phase, to be sure that the GraphQL schema are generated
+ * before the code generation would need it, if relevant.
+ * </P>
+ * <P>
+ * <B>Note:</B> The attribute have no default values: their default values is read from the
+ * {@link GenerateCodeCommonExtension}, whose attributes can be either the default value, or a value set in the build
+ * script.
+ * </P>
  * 
  * @author EtienneSF
  */
-public class GenerateGraphQLSchemaTask extends DefaultTask implements GenerateGraphQLSchemaConfiguration {
+public class GenerateGraphQLSchemaTask extends CommonTask implements GenerateGraphQLSchemaConfiguration {
 
 	private static final Logger logger = LoggerFactory.getLogger(GenerateGraphQLSchemaTask.class);
 
-	/** The Gradle extension, to read the plugin parameters from the script */
-	private transient GenerateGraphQLSchemaExtension extension = null;
+	/** The encoding for the generated resource files */
+	String resourceEncoding;
 
-	final Project project;
+	/** The folder where the generated GraphQL schema will be stored */
+	private String targetFolder;
 
 	/**
-	 * @param project
-	 *            The current Gradle project
-	 * @param generateGraphQLSchemaExtension
-	 *            The Gradle extension, which contains all parameters found in the build script
+	 * The name of the target filename, in which the schema is generated. This file is stored in the folder, defined in
+	 * the <I>targetFolder</I> plugin parameter.
 	 */
-	@Inject
-	public GenerateGraphQLSchemaTask(Project project, GenerateGraphQLSchemaExtension generateGraphQLSchemaExtension) {
-		this.project = project;
-		this.extension = generateGraphQLSchemaExtension;
+	private String targetSchemaFileName;
+
+	public GenerateGraphQLSchemaTask() {
+		super(GenerateGraphQLSchemaExtension.class);
 	}
 
 	@TaskAction
 	public void execute() throws IOException {
 
-		logger.debug("Executing " + this.getClass().getName() + " (extension is an instance of "
-				+ extension.getClass().getName());
-
 		// We'll use Spring IoC
-		GenerateGraphQLSchemaSpringConfiguration.generateGraphQLSchemaExtension = extension;
+		GenerateGraphQLSchemaSpringConfiguration.generateGraphQLSchemaConf = this;
 		AbstractApplicationContext ctx = new AnnotationConfigApplicationContext(
 				GenerateGraphQLSchemaSpringConfiguration.class);
 
 		// Let's log the current configuration (this will do something only when in debug mode)
 		GenerateGraphQLSchemaConfiguration pluginConfiguration = ctx.getBean(GenerateGraphQLSchemaConfiguration.class);
 		pluginConfiguration.logConfiguration();
+
+		// Let's add the folders where the GraphQL schemas have been generated to the project
+		JavaPluginConvention javaConvention = getProject().getConvention().getPlugin(JavaPluginConvention.class);
+		SourceSet main = javaConvention.getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME);
+		main.getResources().srcDir(getTargetFolder());
 
 		GenerateGraphQLSchemaDocumentParser documentParser = ctx.getBean(GenerateGraphQLSchemaDocumentParser.class);
 		documentParser.parseDocuments();
@@ -76,73 +90,44 @@ public class GenerateGraphQLSchemaTask extends DefaultTask implements GenerateGr
 
 		ctx.close();
 
-		// Let's add the folders where the GraphQL schemas have been generated to the project
-		JavaPluginConvention javaConvention = project.getConvention().getPlugin(JavaPluginConvention.class);
-		SourceSet main = javaConvention.getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME);
-		main.getResources().srcDir(extension.getTargetResourceFolder());
-
 		logger.debug("Finished generation of the merged schema");
-	}
-
-	@Override
-	@Internal
-	public String getDefaultTargetSchemaFileName() {
-		return GenerateGraphQLSchemaConfiguration.DEFAULT_TARGET_SCHEMA_FILE_NAME;
-	}
-
-	@Override
-	@Internal
-	public File getProjectDir() {
-		return project.getProjectDir();
 	}
 
 	@Override
 	@Input
 	public String getResourceEncoding() {
-		return extension.getResourceEncoding();
+		return getValue(resourceEncoding, getExtension().getResourceEncoding());
 	}
 
-	@Override
-	@InputDirectory
-	@Optional
-	public File getSchemaFileFolder() {
-		return extension.getSchemaFileFolder();
-	}
-
-	@Override
-	@Input
-	public String getSchemaFilePattern() {
-		return extension.getSchemaFilePattern();
+	public String setResourceEncoding(String resourceEncoding) {
+		return this.resourceEncoding = resourceEncoding;
 	}
 
 	@Override
 	@InputDirectory
 	public File getTargetFolder() {
-		return extension.getTargetFolder();
+		return getFileValue(targetFolder, getExtension().getTargetFolder());
+	}
+
+	public void setTargetFolder(String targetFolder) {
+		// Let's create the folder now, so that it exists when if any other task needs it, during configuration time
+		getProject().file(targetFolder).mkdirs();
+
+		this.targetFolder = targetFolder;
 	}
 
 	@Override
 	@Input
 	public String getTargetSchemaFileName() {
-		return extension.getTargetSchemaFileName();
+		return getValue(targetSchemaFileName, getExtension().getTargetSchemaFileName());
+	}
+
+	public void setTargetSchemaFileName(String targetSchemaFileName) {
+		this.targetSchemaFileName = targetSchemaFileName;
 	}
 
 	@Override
-	@Input
-	public Map<String, String> getTemplates() {
-		return extension.getTemplates();
+	protected GenerateGraphQLSchemaExtension getExtension() {
+		return (GenerateGraphQLSchemaExtension) super.getExtension();
 	}
-
-	@Override
-	@Input
-	public boolean isAddRelayConnections() {
-		return extension.isAddRelayConnections();
-	}
-
-	@Override
-	@Input
-	public boolean isSkipGenerationIfSchemaHasNotChanged() {
-		return extension.isSkipGenerationIfSchemaHasNotChanged();
-	}
-
 }

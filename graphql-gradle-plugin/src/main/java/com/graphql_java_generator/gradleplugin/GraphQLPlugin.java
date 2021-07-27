@@ -57,10 +57,9 @@ public class GraphQLPlugin implements Plugin<Project> {
 	 * @param project
 	 */
 	private void applyGenerateClientCode(Project project) {
-		GenerateClientCodeExtension extension = project.getExtensions().create(GENERATE_CLIENT_CODE_EXTENSION,
-				GenerateClientCodeExtension.class, project);
+		project.getExtensions().create(GENERATE_CLIENT_CODE_EXTENSION, GenerateClientCodeExtension.class, project);
 		logger.debug("Applying generateClientCode task");
-		project.getTasks().register(GENERATE_CLIENT_CODE_TASK_NAME, GenerateClientCodeTask.class, project, extension);
+		project.getTasks().register(GENERATE_CLIENT_CODE_TASK_NAME, GenerateClientCodeTask.class);
 
 		// Apply the java plugin, then add the generated source
 		project.getPlugins().apply(JavaPlugin.class);
@@ -72,10 +71,9 @@ public class GraphQLPlugin implements Plugin<Project> {
 	 * @param project
 	 */
 	private void applyGenerateGraphQLSchema(Project project) {
-		GenerateGraphQLSchemaExtension extension = project.getExtensions().create(MERGE_EXTENSION,
-				GenerateGraphQLSchemaExtension.class, project);
+		project.getExtensions().create(MERGE_EXTENSION, GenerateGraphQLSchemaExtension.class, project);
 		logger.debug("Applying generateGraphQLSchema task");
-		project.getTasks().register(MERGE_TASK_NAME, GenerateGraphQLSchemaTask.class, project, extension);
+		project.getTasks().register(MERGE_TASK_NAME, GenerateGraphQLSchemaTask.class);
 	}
 
 	/**
@@ -84,10 +82,9 @@ public class GraphQLPlugin implements Plugin<Project> {
 	 * @param project
 	 */
 	private void applyGeneratePojo(Project project) {
-		GeneratePojoExtension extension = project.getExtensions().create(GENERATE_POJO_EXTENSION,
-				GeneratePojoExtension.class, project);
+		project.getExtensions().create(GENERATE_POJO_EXTENSION, GeneratePojoExtension.class, project);
 		logger.debug("Applying generatePojo task");
-		project.getTasks().register(GENERATE_POJO_TASK_NAME, GeneratePojoTask.class, project, extension);
+		project.getTasks().register(GENERATE_POJO_TASK_NAME, GeneratePojoTask.class);
 
 		// Apply the java plugin, then add the generated source
 		project.getPlugins().apply(JavaPlugin.class);
@@ -99,10 +96,9 @@ public class GraphQLPlugin implements Plugin<Project> {
 	 * @param project
 	 */
 	private void applyGenerateServerCode(Project project) {
-		GenerateServerCodeExtension extension = project.getExtensions().create(GENERATE_SERVER_CODE_EXTENSION,
-				GenerateServerCodeExtension.class, project);
+		project.getExtensions().create(GENERATE_SERVER_CODE_EXTENSION, GenerateServerCodeExtension.class, project);
 		logger.debug("Applying generateServerCode task");
-		project.getTasks().register(GENERATE_SERVER_CODE_TASK_NAME, GenerateServerCodeTask.class, project, extension);
+		project.getTasks().register(GENERATE_SERVER_CODE_TASK_NAME, GenerateServerCodeTask.class);
 
 		// Apply the java plugin, then add the generated source
 		project.getPlugins().apply(JavaPlugin.class);
@@ -114,9 +110,9 @@ public class GraphQLPlugin implements Plugin<Project> {
 	 * @param project
 	 */
 	private void applyGraphQLGenerateCode(Project project) {
-		GraphQLExtension extension = project.getExtensions().create(GRAPHQL_EXTENSION, GraphQLExtension.class, project);
+		project.getExtensions().create(GRAPHQL_EXTENSION, GraphQLExtension.class, project);
 		logger.debug("Applying GraphQL task");
-		project.getTasks().register(GRAPHQL_GENERATE_CODE_TASK_NAME, GraphQLGenerateCodeTask.class, project, extension);
+		project.getTasks().register(GRAPHQL_GENERATE_CODE_TASK_NAME, GraphQLGenerateCodeTask.class);
 
 		// Apply the java plugin, then add the generated source
 		project.getPlugins().apply(JavaPlugin.class);

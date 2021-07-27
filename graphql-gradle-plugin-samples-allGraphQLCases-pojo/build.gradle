@@ -49,8 +49,7 @@ sourceSets.main.java.srcDirs += "$buildDir/generated/sources/generatePojo-client
 sourceSets.main.java.srcDirs += "$buildDir/generated/sources/generatePojo-server"
 
 // Let's configure the GraphQL Gradle Plugin, for the code generation, for both the client and the server pojo
-def generatePojoClientConf = new com.graphql_java_generator.gradleplugin.GeneratePojoExtension(project)
-generatePojoClientConf.with {
+tasks.register('generateClientPojo', com.graphql_java_generator.gradleplugin.GeneratePojoTask) {
 	mode = 'client'
 	packageName = 'org.allGraphQLCases.client.pojo'
 	skipGenerationIfSchemaHasNotChanged = true
@@ -75,11 +74,10 @@ generatePojoClientConf.with {
 	] ]
 }
 
-tasks.register('generateClientPojo', com.graphql_java_generator.gradleplugin.GeneratePojoTask, project, generatePojoClientConf)
 
 
-def generatePojoServerConf = new com.graphql_java_generator.gradleplugin.GeneratePojoExtension(project)
-generatePojoServerConf.with {
+
+tasks.register('generateServerPojo', com.graphql_java_generator.gradleplugin.GeneratePojoTask) {
 	mode = 'server'
 	packageName = 'org.allGraphQLCases.server.pojo'
 	copyRuntimeSources = false
@@ -104,7 +102,7 @@ generatePojoServerConf.with {
 			graphQLScalarTypeStaticField: "graphql.scalars.ExtendedScalars.NonNegativeInt"
 	] ]
 }
-tasks.register('generateServerPojo', com.graphql_java_generator.gradleplugin.GeneratePojoTask, project, generatePojoServerConf) 
+ 
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

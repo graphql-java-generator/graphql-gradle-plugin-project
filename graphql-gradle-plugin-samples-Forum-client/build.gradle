@@ -77,27 +77,27 @@ import com.graphql_java_generator.gradle_task.StartApp
 import com.graphql_java_generator.gradle_task.StopApp
 
 
-task startWebApp(type: StartApp) {
+task startForumServer(type: StartApp) {
 	// Let's start the server that matches the current client project
 	jarFile = file("../${project.name}/build/libs/${project.name}-${project.version}.jar".replaceAll('client', 'server'))
-	url = 'http://localhost:8180/graphiql'
+	url = 'http://localhost:8182/graphiql'
 
 	// The next lines insures that the relevant server project is built before starting the integration test from this client module.
 	dependsOn ":${project.name}:bootJar".replaceAll('client', 'server')
 
-	// The stopWebApp must be attached here. And must run after tests
-	finalizedBy 'stopWebApp'
+	// The stopForumServer must be attached here. And must run after tests
+	finalizedBy 'stopForumServer'
 }
 
-task stopWebApp(type: StopApp) {
+task stopForumServer(type: StopApp) {
 	// The line blow is executed during configuration phase. So the process is unknown. 
 	// We just define the Task object. The StopApp task will read the process id at execution time
-	startAppTask = tasks["startWebApp"]
+	startAppTask = tasks["startForumServer"]
 
-	// The stopWebApp is attached to startWebApp, and must run after tests
+	// The stopForumServer is attached to startForumServer, and must run after tests
 	mustRunAfter test
 }
 
 // The next lines insures that the Basic-server is built before starting the integration test from the client.
 // Using mustRunAfter instead of dependsOn allows to manually start the server, then just execute the test task.
-test.dependsOn startWebApp
+test.dependsOn startForumServer

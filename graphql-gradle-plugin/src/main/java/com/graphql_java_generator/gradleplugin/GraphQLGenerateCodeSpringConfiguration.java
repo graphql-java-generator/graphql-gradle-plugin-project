@@ -37,11 +37,11 @@ public class GraphQLGenerateCodeSpringConfiguration {
 	 * The current GraphQL extension, that contains the plugin configuration. It is set by the
 	 * {@link GraphQLGenerateCodeTask} task, before it starts the Spring context
 	 */
-	static GraphQLExtension graphqlExtension = null;
+	static GraphQLGenerateCodeTask graphqlGenerateCodeConf = null;
 
 	@Bean
-	GraphQLExtension graphqlExtension() {
-		return graphqlExtension;
+	GraphQLGenerateCodeTask graphqlGenerateCodeConf() {
+		return graphqlGenerateCodeConf;
 	}
 
 	/**

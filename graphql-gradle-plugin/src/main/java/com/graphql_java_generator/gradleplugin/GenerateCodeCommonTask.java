@@ -4,15 +4,18 @@
 package com.graphql_java_generator.gradleplugin;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.gradle.api.Project;
+import javax.inject.Inject;
+
+import org.gradle.api.tasks.Input;
+import org.gradle.api.tasks.Internal;
+import org.gradle.api.tasks.Optional;
+import org.gradle.api.tasks.OutputDirectory;
 
 import com.graphql_java_generator.plugin.conf.CustomScalarDefinition;
 import com.graphql_java_generator.plugin.conf.GenerateCodeCommonConfiguration;
-import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.conf.PluginMode;
 
 import graphql.schema.GraphQLScalarType;
@@ -28,10 +31,15 @@ import graphql.schema.GraphQLScalarType;
  * This avoids to redeclare each common parameter in each task, including its comment. When a comment is updated, only
  * one update is necessary, instead of updating it in each.
  * </P>
+ * <P>
+ * <B>Note:</B> The attribute have no default values: their default values is read from the
+ * {@link GenerateCodeCommonExtension}, whose attributes can be either the default value, or a value set in the build
+ * script.
+ * </P>
  * 
  * @author etienne-sf
  */
-public abstract class GenerateCodeCommon extends CommonExtension implements GenerateCodeCommonConfiguration {
+public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCommonConfiguration {
 	/**
 	 * <P>
 	 * Flag to enable copy sources for graphql-java-runtime library to target source code directory. It allows to
@@ -51,7 +59,7 @@ public abstract class GenerateCodeCommon extends CommonExtension implements Gene
 	 * to check the compatibility with all the next versions.
 	 * </P>
 	 */
-	private boolean copyRuntimeSources = GraphQLConfiguration.DEFAULT_COPY_RUNTIME_SOURCES.equals("true");
+	private Boolean copyRuntimeSources;
 
 	/**
 	 * <P>
@@ -91,10 +99,10 @@ public abstract class GenerateCodeCommon extends CommonExtension implements Gene
 	 * client pom</A> is a good sample.
 	 * </P>
 	 */
-	private List<CustomScalarDefinition> customScalars = new ArrayList<>();
+	private List<CustomScalarDefinition> customScalars;
 
 	/** The packageName in which the generated classes will be created */
-	private String packageName = GraphQLConfiguration.DEFAULT_PACKAGE_NAME;
+	private String packageName;
 
 	/**
 	 * <P>
@@ -114,102 +122,131 @@ public abstract class GenerateCodeCommon extends CommonExtension implements Gene
 	 * all the utility classes are generated in the <I>util</I> subpackage of this package.
 	 * </P>
 	 */
-	private boolean separateUtilityClasses = GraphQLConfiguration.DEFAULT_SEPARATE_UTIL_CLASSES.equals("true");
+	private Boolean separateUtilityClasses;
 
 	/** The encoding for the generated source files */
-	private String sourceEncoding = GraphQLConfiguration.DEFAULT_SOURCE_ENCODING;
+	private String sourceEncoding;
 
 	/**
 	 * Retrieves the suffix that will be applied to the name of the Spring Beans that are generated for this schema.
 	 * It's mandatory if you' using a Spring app and have more than one GraphQL schemas. The default value is an empty
 	 * String.
 	 */
-	private String springBeanSuffix = GraphQLConfiguration.DEFAULT_SPRING_BEAN_SUFFIX;
+	private String springBeanSuffix;
 
 	/** The folder where the generated resources will be generated */
-	protected String targetResourceFolder = "./build/generated/resources/graphqlGradlePlugin";
+	protected String targetResourceFolder;
 
 	/** The folder where the source code for the generated classes will be generated */
-	protected String targetSourceFolder = "./build/generated/sources/graphqlGradlePlugin";
+	protected String targetSourceFolder;
 
-	public GenerateCodeCommon(Project project) {
-		super(project);
+	@Inject
+	public GenerateCodeCommonTask(Class<? extends GenerateCodeCommonExtension> extensionClazz) {
+		super(extensionClazz);
 	}
 
+	@Input
 	@Override
-	public boolean isCopyRuntimeSources() {
-		return copyRuntimeSources;
+	final public boolean isCopyRuntimeSources() {
+		return getValue(copyRuntimeSources, getExtension().isCopyRuntimeSources());
 	}
 
-	public void setCopyRuntimeSources(boolean copyRuntimeSources) {
+	@Internal
+	@Override
+	public boolean isGenerateUtilityClasses() {
+		return true;
+	}
+
+	final public void setCopyRuntimeSources(boolean copyRuntimeSources) {
 		this.copyRuntimeSources = copyRuntimeSources;
 	}
 
+	@Input
 	@Override
-	public List<CustomScalarDefinition> getCustomScalars() {
-		return customScalars;
+	final public List<CustomScalarDefinition> getCustomScalars() {
+		return getValue(customScalars, getExtension().getCustomScalars());
 	}
 
-	public void setCustomScalars(CustomScalarDefinition[] customScalars) {
+	final public void setCustomScalars(CustomScalarDefinition[] customScalars) {
 		this.customScalars = Arrays.asList(customScalars);
 	}
 
+	@Input
+	@Optional
 	@Override
-	public abstract PluginMode getMode();
-
-	@Override
-	public String getPackageName() {
-		return packageName;
+	public PluginMode getMode() {
+		// This method must be overridden by the real task.
+		return null;
 	}
 
-	public void setPackageName(String packageName) {
+	@Input
+	@Override
+	final public String getPackageName() {
+		return getValue(packageName, getExtension().getPackageName());
+	}
+
+	final public void setPackageName(String packageName) {
 		this.packageName = packageName;
 	}
 
+	@Input
 	@Override
-	public boolean isSeparateUtilityClasses() {
-		return separateUtilityClasses;
+	final public boolean isSeparateUtilityClasses() {
+		return getValue(separateUtilityClasses, getExtension().isSeparateUtilityClasses());
 	}
 
-	public void setSeparateUtilityClasses(boolean separateUtilityClasses) {
+	final public void setSeparateUtilityClasses(boolean separateUtilityClasses) {
 		this.separateUtilityClasses = separateUtilityClasses;
 	}
 
+	@Input
 	@Override
-	public String getSourceEncoding() {
-		return sourceEncoding;
+	final public String getSourceEncoding() {
+		return getValue(sourceEncoding, getExtension().getSourceEncoding());
 	}
 
-	@Override
-	public String getSpringBeanSuffix() {
-		return springBeanSuffix;
-	}
-
-	public void setSourceEncoding(String sourceEncoding) {
+	final public void setSourceEncoding(String sourceEncoding) {
 		this.sourceEncoding = sourceEncoding;
 	}
 
+	@Input
 	@Override
-	public File getTargetClassFolder() {
-		return project.file("build/classes/java/main");
+	final public String getSpringBeanSuffix() {
+		return getValue(springBeanSuffix, getExtension().getSpringBeanSuffix());
 	}
 
-	@Override
-	public File getTargetResourceFolder() {
-		return project.file(targetResourceFolder);
+	public final void setSpringBeanSuffix(String springBeanSuffix) {
+		this.springBeanSuffix = springBeanSuffix;
 	}
 
-	public void setTargetResourceFolder(String targetResourceFolder) {
+	@OutputDirectory
+	@Override
+	final public File getTargetClassFolder() {
+		return getProject().file("build/classes/java/main");
+	}
+
+	@OutputDirectory
+	@Override
+	final public File getTargetResourceFolder() {
+		return getFileValue(targetResourceFolder, getExtension().getTargetResourceFolder());
+	}
+
+	final public void setTargetResourceFolder(String targetResourceFolder) {
 		this.targetResourceFolder = targetResourceFolder;
 	}
 
+	@OutputDirectory
 	@Override
-	public File getTargetSourceFolder() {
-		return project.file(targetSourceFolder);
+	final public File getTargetSourceFolder() {
+		return getFileValue(targetSourceFolder, getExtension().getTargetSourceFolder());
 	}
 
-	public void setTargetSourceFolder(String targetSourceFolder) {
+	final public void setTargetSourceFolder(String targetSourceFolder) {
 		this.targetSourceFolder = targetSourceFolder;
 	}
 
+	@Override
+	protected GenerateCodeCommonExtension getExtension() {
+		return (GenerateCodeCommonExtension) super.getExtension();
+	}
 }

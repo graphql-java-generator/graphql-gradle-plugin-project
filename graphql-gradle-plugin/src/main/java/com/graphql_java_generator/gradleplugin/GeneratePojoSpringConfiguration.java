@@ -25,7 +25,6 @@ import graphql.parser.Parser;
  * @author EtienneSF
  */
 @Configuration
-// @Import({ JacksonAutoConfiguration.class })
 @ComponentScan(basePackageClasses = { DocumentParser.class, GraphqlUtils.class }, //
 		excludeFilters = { @Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateGraphQLSchema.*"),
 				@Filter(type = FilterType.REGEX, pattern = ".*\\.GenerateClientCode.*"),
@@ -37,11 +36,11 @@ public class GeneratePojoSpringConfiguration {
 	 * The current GraphQL extension, that contains the plugin configuration. It is set by the
 	 * {@link GraphQLGenerateCodeTask} task, before it starts the Spring context
 	 */
-	static GraphQLExtension graphqlExtension = null;
+	static GeneratePojoTask graphqlPojoConf = null;
 
 	@Bean
-	GraphQLExtension graphqlExtension() {
-		return graphqlExtension;
+	GeneratePojoTask graphqlPojoConf() {
+		return graphqlPojoConf;
 	}
 
 	/**

@@ -17,7 +17,8 @@ import com.graphql_java_generator.plugin.conf.PluginMode;
 /**
  * @author etienne-sf
  */
-public class GenerateServerCodeExtension extends GenerateCodeCommon implements GenerateServerCodeConfiguration {
+public class GenerateServerCodeExtension extends GenerateCodeCommonExtension
+		implements GenerateServerCodeConfiguration {
 
 	/**
 	 * <P>
@@ -173,6 +174,22 @@ public class GenerateServerCodeExtension extends GenerateCodeCommon implements G
 		// We calculate as late as possible this packaging. So no precaculation on creation, we wait for a call on this
 		// getter. At this time, it should be triggered by the gradle plugin execution (and not its configuration)
 		return (project.getTasksByName("war", false).size() >= 1) ? Packaging.war : Packaging.jar;
+	}
+
+	@Override
+	public String getQuotedScanBasePackages() {
+		String scanBasePackages = getScanBasePackages();
+
+		if (scanBasePackages == null || scanBasePackages.contentEquals("") || scanBasePackages.contentEquals("null")) {
+			return "";
+		}
+
+		// Let's remove all spaces. It will be easier to insert the good double quotes, afterwards.
+		// Let's say scanBasePackages is: a, b, c,d
+		scanBasePackages = scanBasePackages.replace(" ", "");// scanBasePackages is now a,b,c,d
+		scanBasePackages = scanBasePackages.replace(",", "\",\"");// scanBasePackages is now a","b","c","d
+		scanBasePackages = ",\"" + scanBasePackages + "\"";// scanBasePackages is now ,"a","b","c","d"
+		return scanBasePackages;
 	}
 
 	@Override
