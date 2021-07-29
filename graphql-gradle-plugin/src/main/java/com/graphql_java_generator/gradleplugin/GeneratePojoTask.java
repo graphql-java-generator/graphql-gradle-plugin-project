@@ -6,8 +6,6 @@ package com.graphql_java_generator.gradleplugin;
 import java.io.IOException;
 
 import org.gradle.api.UncheckedIOException;
-import org.gradle.api.plugins.JavaPluginConvention;
-import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.TaskAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,12 +85,6 @@ public class GeneratePojoTask extends GraphQLGenerateCodeTask implements Generat
 			GraphQLConfiguration pluginConfiguration = ctx.getBean(GraphQLConfiguration.class);
 			pluginConfiguration.logConfiguration();
 
-			// Let's add the folders where the sources and resources have been generated to the project
-			JavaPluginConvention javaConvention = getProject().getConvention().getPlugin(JavaPluginConvention.class);
-			SourceSet main = javaConvention.getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME);
-			main.getJava().srcDir(getTargetSourceFolder());
-			main.getResources().srcDir(getTargetResourceFolder());
-
 			GenerateCodeDocumentParser documentParser = ctx.getBean(GenerateCodeDocumentParser.class);
 			documentParser.parseDocuments();
 
@@ -100,6 +92,8 @@ public class GeneratePojoTask extends GraphQLGenerateCodeTask implements Generat
 			codeGenerator.generateCode();
 
 			ctx.close();
+
+			registerGeneratedFolders();
 
 			logger.debug("Finished generation of java classes from graphqls files (5)");
 

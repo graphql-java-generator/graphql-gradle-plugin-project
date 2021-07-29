@@ -44,7 +44,7 @@ dependencies {
 	// Dependencies for tests
 	testImplementation "org.springframework.boot:spring-boot-starter-test:${springBootVersion}"
 	testImplementation "org.junit.jupiter:junit-jupiter-api:${junitJupiterVersion}"
-	testImplementation "org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}"  
+	testImplementation "org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}"
 }
 
 
@@ -53,8 +53,8 @@ compileJava.dependsOn('generateClientCodeAllGraphQLCases')
 compileJava.dependsOn('generateClientCodeForum')
 
 // The line below adds the generated sources as a java source folder, in the IDE
-sourceSets.main.java.srcDirs += "$buildDir/generated/sources/graphqlGradlePlugin"
-sourceSets.main.java.srcDirs += "$buildDir/generated/sources/graphqlGradlePlugin2"
+//sourceSets.main.java.srcDirs += "$buildDir/generated/sources/graphqlGradlePlugin"
+//sourceSets.main.java.srcDirs += "$buildDir/generated/sources/graphqlGradlePlugin2"
 
 //Let's configure the GraphQL Gradle Plugin, for the merge task
 generateGraphQLSchema {
@@ -124,7 +124,7 @@ import com.graphql_java_generator.gradle_task.StartApp
 import com.graphql_java_generator.gradle_task.StopApp
 
 
-task startResourceServer(type: StartApp) {
+task startAllGraphQLCasesServer(type: StartApp) {
 	// Let's start the server that matches the current client project
 	jarFile = file("../${project.name}/build/libs/${project.name}-${project.version}.jar".replaceAll('client', 'server'))
 	url = 'http://localhost:8180/helloworld.html'
@@ -133,13 +133,13 @@ task startResourceServer(type: StartApp) {
 	dependsOn ":${project.name}:bootJar".replaceAll('client', 'server')
 
 	// The stopWebApp must be attached here. And must run after tests
-	finalizedBy 'stopResourceServer'
+	finalizedBy 'stopAllGraphQLCasesServer'
 }
 
-task stopResourceServer(type: StopApp) {
+task stopAllGraphQLCasesServer(type: StopApp) {
 	// The line blow is executed during configuration phase. So the process is unknown. 
 	// We just define the Task object. The StopApp task will read the process id at execution time
-	startAppTask = tasks["startResourceServer"]
+	startAppTask = tasks["startAllGraphQLCasesServer"]
 
 	// The stopWebApp is attached to startWebApp, and must run after tests
 	mustRunAfter test
@@ -190,5 +190,5 @@ task stopAuthorizationServer(type: StopApp) {
 // The next lines insures that the Basic-server is built before starting the integration test from the client.
 // Using mustRunAfter instead of dependsOn allows to manually start the server, then just execute the test task.
 test.dependsOn startAuthorizationServer
-test.dependsOn startResourceServer
+test.dependsOn startAllGraphQLCasesServer
 test.dependsOn startForumServer

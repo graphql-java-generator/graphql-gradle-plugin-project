@@ -8,6 +8,7 @@ target
 
 # Ignore logs folder (generated during integration tests)
 logs/
+**.log
 
 # Ignore eclipse files
 .settings/

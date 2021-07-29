@@ -9,13 +9,18 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import org.gradle.api.DefaultTask;
+import org.gradle.api.Task;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputDirectory;
 import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.graphql_java_generator.plugin.conf.CommonConfiguration;
 import com.graphql_java_generator.plugin.conf.GenerateGraphQLSchemaConfiguration;
+
+import groovy.lang.Closure;
 
 /**
  * <P>
@@ -35,6 +40,8 @@ import com.graphql_java_generator.plugin.conf.GenerateGraphQLSchemaConfiguration
  * @author etienne-sf
  */
 public class CommonTask extends DefaultTask implements CommonConfiguration {
+
+	private static final Logger logger = LoggerFactory.getLogger(CommonTask.class);
 
 	/**
 	 * <P>
@@ -236,4 +243,31 @@ public class CommonTask extends DefaultTask implements CommonConfiguration {
 		return extension;
 	}
 
+	/**
+	 * This method registers to Gradle the source and resources folders in which files are generated, if any
+	 */
+	public void registerGeneratedFolders() {
+		// No action in this class, as it manages no sources nor resources folder
+	}
+
+	// /**
+	// * Let's insure that we declare in all cases the folder where sources or resources are generated
+	// */
+	// Commented, as these lines seems to break the build (or at least change the build behaviour): redoing a 'gradlew
+	// build' with these lines uncommented prevents the test to be executed:
+	// - If these lines are commented, then executing twice 'gradlew build' makes the tests be executed twice (once at
+	// each build execution)
+	// - If they are uncommented, then executing twice 'gradlew build' makes the tests be executed once (only for the
+	// first build execution)
+	//
+	// This is to bad, as it seems to be the good way to declare
+	//
+	@Override
+	@SuppressWarnings("rawtypes")
+	public Task configure(Closure closure) {
+		Task t = super.configure(closure);
+		logger.info("[In configure] Before calling registerGeneratedFolders, for task '" + getName() + "'");
+		registerGeneratedFolders();
+		return t;
+	}
 }

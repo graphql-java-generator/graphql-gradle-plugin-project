@@ -2,9 +2,7 @@ package com.graphql_java_generator.gradleplugin;
 
 import java.io.IOException;
 
-import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.Input;
-import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.TaskAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,15 +19,18 @@ import com.graphql_java_generator.plugin.generate_code.GenerateCodeGenerator;
  * The <I>generateClientCode</I> Maven goal (and Gradle task) generates the java code from one or more GraphQL schemas.
  * It allows to work in Java with graphQL, in a schema first approach.
  * </P>
+ * <P>
  * It generates a class for each query, mutation and subscription type. These classes contain the methods to call the
  * queries, mutations and subscriptions. That is: to execute a query against the GraphQL server, you just have to call
  * one of these methods. It also generates the POJOs from the GraphQL schema. The <B>GraphQL response is stored in these
- * POJOs</B>, for an easy and standard use in Java. <BR/>
- * <BR/>
+ * POJOs</B>, for an easy and standard use in Java.
+ * </P>
+ * <P>
  * You'll find more info in the tutorials: take a look at the
  * <A HREF="https://github.com/graphql-java-generator/GraphQL-Forum-Maven-Tutorial-client">Maven client tutorial</A> or
  * the <A HREF="https://github.com/graphql-java-generator/GraphQL-Forum-Gradle-Tutorial-client">Gradle client
  * tutorial</A>
+ * </P>
  * <P>
  * <B>Note:</B> The attribute have no default values: their default values is read from the
  * {@link GenerateCodeCommonExtension}, whose attributes can be either the default value, or a value set in the build
@@ -77,13 +78,6 @@ public class GenerateClientCodeTask extends GenerateCodeCommonTask implements Ge
 		GenerateClientCodeConfiguration pluginConfiguration = ctx.getBean(GenerateClientCodeConfiguration.class);
 		pluginConfiguration.logConfiguration();
 
-		// Let's add the folders where the sources and resources have been generated to the project
-		JavaPluginConvention javaConvention = getProject().getConvention().getPlugin(JavaPluginConvention.class);
-		SourceSet main = javaConvention.getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME);
-		main.getJava().srcDir(getTargetSourceFolder());
-		logger.info("Adding '" + getTargetResourceFolder() + "' folder to the resources folders list");
-		main.getResources().srcDir(getTargetResourceFolder());
-
 		GenerateCodeDocumentParser documentParser = ctx.getBean(GenerateCodeDocumentParser.class);
 		documentParser.parseDocuments();
 
@@ -91,6 +85,8 @@ public class GenerateClientCodeTask extends GenerateCodeCommonTask implements Ge
 		codeGenerator.generateCode();
 
 		ctx.close();
+
+		registerGeneratedFolders();
 
 		logger.debug("Finished generation of java classes from graphqls files (5)");
 	}

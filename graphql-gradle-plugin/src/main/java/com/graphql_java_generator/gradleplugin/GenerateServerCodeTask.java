@@ -7,12 +7,10 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import org.dataloader.BatchLoaderEnvironment;
-import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.Optional;
-import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.TaskAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -212,12 +210,6 @@ public class GenerateServerCodeTask extends GenerateCodeCommonTask implements Ge
 		GenerateServerCodeConfiguration pluginConfiguration = ctx.getBean(GenerateServerCodeConfiguration.class);
 		pluginConfiguration.logConfiguration();
 
-		// Let's add the folders where the sources and resources have been generated to the project
-		JavaPluginConvention javaConvention = getProject().getConvention().getPlugin(JavaPluginConvention.class);
-		SourceSet main = javaConvention.getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME);
-		main.getJava().srcDir(getTargetSourceFolder());
-		main.getResources().srcDir(getTargetResourceFolder());
-
 		GenerateCodeDocumentParser documentParser = ctx.getBean(GenerateCodeDocumentParser.class);
 		documentParser.parseDocuments();
 
@@ -225,6 +217,8 @@ public class GenerateServerCodeTask extends GenerateCodeCommonTask implements Ge
 		codeGenerator.generateCode();
 
 		ctx.close();
+
+		registerGeneratedFolders();
 
 		logger.debug("Finished generation of java classes from graphqls files (5)");
 	}

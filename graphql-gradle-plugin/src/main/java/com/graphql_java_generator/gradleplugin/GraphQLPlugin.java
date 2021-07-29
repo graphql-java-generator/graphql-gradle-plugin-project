@@ -3,8 +3,10 @@
  */
 package com.graphql_java_generator.gradleplugin;
 
+import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.Task;
 import org.gradle.api.plugins.JavaPlugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,6 +51,27 @@ public class GraphQLPlugin implements Plugin<Project> {
 		applyGenerateServerCode(project);
 		applyGraphQLGenerateCode(project);
 		applyGenerateGraphQLSchema(project);
+
+		// The generated resources must be declared:
+		// - Not here as it's too soon: the project has not been evaluated yet
+		// - Not in the Task.execute method, as this method is not executed if the task is up-to-date
+		// So we create a dedicated Action for that. Let's register it, so that it is executed once the project is
+		// evaluated.
+		project.afterEvaluate(new Action<Project>() {
+			@Override
+			public void execute(Project project) {
+				logger.info("[in project.afterEvaluate] Before registering generated folders for project '"
+						+ project.getName() + "'");
+				for (Task task : project.getTasks()) {
+					if (task instanceof CommonTask) {
+						logger.info("Registering generated folders for task '" + task.getName() + "'");
+						((CommonTask) task).registerGeneratedFolders();
+					} else {
+						logger.info("Registering generated folders: ignoring task '" + task.getName() + "'");
+					}
+				}
+			}
+		});
 	}
 
 	/**

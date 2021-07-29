@@ -4,15 +4,20 @@
 package com.graphql_java_generator.gradleplugin;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputDirectory;
+import org.gradle.api.tasks.SourceSet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.graphql_java_generator.plugin.conf.CustomScalarDefinition;
 import com.graphql_java_generator.plugin.conf.GenerateCodeCommonConfiguration;
@@ -40,6 +45,9 @@ import graphql.schema.GraphQLScalarType;
  * @author etienne-sf
  */
 public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCommonConfiguration {
+
+	private static final Logger logger = LoggerFactory.getLogger(GenerateCodeCommonTask.class);
+
 	/**
 	 * <P>
 	 * Flag to enable copy sources for graphql-java-runtime library to target source code directory. It allows to
@@ -228,7 +236,9 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 	@OutputDirectory
 	@Override
 	final public File getTargetResourceFolder() {
-		return getFileValue(targetResourceFolder, getExtension().getTargetResourceFolder());
+		File file = getFileValue(targetResourceFolder, getExtension().getTargetResourceFolder());
+		file.mkdirs();
+		return file;
 	}
 
 	final public void setTargetResourceFolder(String targetResourceFolder) {
@@ -238,7 +248,9 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 	@OutputDirectory
 	@Override
 	final public File getTargetSourceFolder() {
-		return getFileValue(targetSourceFolder, getExtension().getTargetSourceFolder());
+		File file = getFileValue(targetSourceFolder, getExtension().getTargetSourceFolder());
+		file.mkdirs();
+		return file;
 	}
 
 	final public void setTargetSourceFolder(String targetSourceFolder) {
@@ -249,4 +261,27 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 	protected GenerateCodeCommonExtension getExtension() {
 		return (GenerateCodeCommonExtension) super.getExtension();
 	}
+
+	@Override
+	public void registerGeneratedFolders() {
+		// Let's add the folders where the sources and resources have been generated to the project
+		JavaPluginConvention javaConvention = getProject().getConvention().getPlugin(JavaPluginConvention.class);
+		SourceSet main = javaConvention.getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME);
+
+		main.getJava().srcDir(getTargetSourceFolder());
+
+		logger.info("Adding '" + getTargetResourceFolder() + "' folder to the resources folders list for task '"
+				+ getName() + "'");
+
+		main.getResources().srcDir(getTargetResourceFolder());
+
+		if (logger.isInfoEnabled()) {
+			List<String> paths = new ArrayList<>();
+			for (File f : main.getResources().getSrcDirs()) {
+				paths.add(f.getAbsolutePath());
+			}
+			logger.info("Resources folders are: [" + String.join(",", paths) + "]");
+		}
+	}
+
 }

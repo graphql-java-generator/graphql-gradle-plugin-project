@@ -77,11 +77,6 @@ public class GenerateGraphQLSchemaTask extends CommonTask implements GenerateGra
 		GenerateGraphQLSchemaConfiguration pluginConfiguration = ctx.getBean(GenerateGraphQLSchemaConfiguration.class);
 		pluginConfiguration.logConfiguration();
 
-		// Let's add the folders where the GraphQL schemas have been generated to the project
-		JavaPluginConvention javaConvention = getProject().getConvention().getPlugin(JavaPluginConvention.class);
-		SourceSet main = javaConvention.getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME);
-		main.getResources().srcDir(getTargetFolder());
-
 		GenerateGraphQLSchemaDocumentParser documentParser = ctx.getBean(GenerateGraphQLSchemaDocumentParser.class);
 		documentParser.parseDocuments();
 
@@ -89,6 +84,8 @@ public class GenerateGraphQLSchemaTask extends CommonTask implements GenerateGra
 		merge.generateGraphQLSchema();
 
 		ctx.close();
+
+		registerGeneratedFolders();
 
 		logger.debug("Finished generation of the merged schema");
 	}
@@ -106,7 +103,9 @@ public class GenerateGraphQLSchemaTask extends CommonTask implements GenerateGra
 	@Override
 	@InputDirectory
 	public File getTargetFolder() {
-		return getFileValue(targetFolder, getExtension().getTargetFolder());
+		File file = getFileValue(targetFolder, getExtension().getTargetFolder());
+		file.mkdirs();
+		return file;
 	}
 
 	public void setTargetFolder(String targetFolder) {
@@ -130,4 +129,15 @@ public class GenerateGraphQLSchemaTask extends CommonTask implements GenerateGra
 	protected GenerateGraphQLSchemaExtension getExtension() {
 		return (GenerateGraphQLSchemaExtension) super.getExtension();
 	}
+
+	@Override
+	public void registerGeneratedFolders() {
+		// Let's add the folders where the GraphQL schemas have been generated to the project
+		JavaPluginConvention javaConvention = getProject().getConvention().getPlugin(JavaPluginConvention.class);
+		SourceSet main = javaConvention.getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME);
+
+		logger.debug("Adding '" + getTargetFolder() + "' folder to the resources folders list");
+		main.getResources().srcDir(getTargetFolder());
+	}
+
 }

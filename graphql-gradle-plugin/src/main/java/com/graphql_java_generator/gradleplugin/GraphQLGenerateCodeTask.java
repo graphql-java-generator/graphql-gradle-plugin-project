@@ -8,9 +8,7 @@ import java.io.IOException;
 import javax.inject.Inject;
 
 import org.gradle.api.UncheckedIOException;
-import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.Input;
-import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.TaskAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,8 +25,10 @@ import com.graphql_java_generator.plugin.generate_code.GenerateCodeGenerator;
  * <B>This goal is <U>deprecated</U></B>. The <I>graphql</I> goal generates the java code from one or more GraphQL
  * schemas. It allows to work in Java with graphQL, in a schema first approach.
  * </P>
+ * <P>
  * It will be maintained in the future 2.x versions. The <I>generateClientCode</I> and <I>generateServerCode</I> should
- * be used instead.<BR/>
+ * be used instead.
+ * </P>
  * The <I>graphql</I> goal has two main modes:
  * <UL>
  * <LI><B>client mode:</B> it does the same jobs as the <I>generateClientCode</I> goal. It generates a class for each
@@ -105,12 +105,6 @@ public class GraphQLGenerateCodeTask extends GenerateServerCodeTask implements G
 			GraphQLConfiguration pluginConfiguration = ctx.getBean(GraphQLConfiguration.class);
 			pluginConfiguration.logConfiguration();
 
-			// Let's add the folders where the sources and resources have been generated to the project
-			JavaPluginConvention javaConvention = getProject().getConvention().getPlugin(JavaPluginConvention.class);
-			SourceSet main = javaConvention.getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME);
-			main.getJava().srcDir(getTargetSourceFolder());
-			main.getResources().srcDir(getTargetResourceFolder());
-
 			GenerateCodeDocumentParser documentParser = ctx.getBean(GenerateCodeDocumentParser.class);
 			documentParser.parseDocuments();
 
@@ -118,6 +112,8 @@ public class GraphQLGenerateCodeTask extends GenerateServerCodeTask implements G
 			codeGenerator.generateCode();
 
 			ctx.close();
+
+			registerGeneratedFolders();
 
 			logger.debug("Finished generation of java classes from graphqls files (5)");
 
