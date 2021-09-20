@@ -8,6 +8,12 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 * separateUtilityClasses: true _(both client and server mode)_
 * skipGenerationIfSchemaHasNotChanged: true _(both client and server mode)_
 
+# 1.17.2 
+
+Client mode:
+* Correction of issues #95 and #96 (of the maven project): the `springBeanSuffix` is now properly applied to all spring beans. Now it is also applied to the query, mutation and subscription executors, as well as all other Spring beans.
+
+
 # 1.17
 
 Gradle Plugin:

@@ -50,6 +50,7 @@ dependencies {
 
 // The line below makes the GraphQL plugin be executed before Java compiles, so that all sources are generated on time
 compileJava.dependsOn('generateClientCodeAllGraphQLCases')
+compileJava.dependsOn('generateClientCodeAllGraphQLCases2')
 compileJava.dependsOn('generateClientCodeForum')
 
 // The line below adds the generated sources as a java source folder, in the IDE
@@ -93,6 +94,39 @@ tasks.register('generateClientCodeAllGraphQLCases', com.graphql_java_generator.g
 	] ]
 }
 
+//Let's configure a second generation of the same Schema. This allows to check possible collision between Spring Beans
+tasks.register('generateClientCodeAllGraphQLCases2', com.graphql_java_generator.gradleplugin.GenerateClientCodeTask) {
+	// In this sample, the GraphQL code generation works on the generated schema.
+	dependsOn generateGraphQLSchema
+	
+	// Task properties
+	copyRuntimeSources = false
+	packageName = 'org.allGraphQLCases.client2'
+	schemaFileFolder = "$buildDir/generated/resources/generateGraphQLSchema" // Let's read the merged GraphQL schema
+	separateUtilityClasses = true
+	skipGenerationIfSchemaHasNotChanged = true
+	springBeanSuffix = 'AllGraphQLCases2'
+	targetSourceFolder = "$buildDir/generated/sources/graphqlGradlePlugin2"
+	customScalars = [ [
+			graphQLTypeName: "Date",
+			javaType: "java.util.Date",
+			graphQLScalarTypeStaticField: "com.graphql_java_generator.customscalars.GraphQLScalarTypeDate.Date"
+		], [
+			graphQLTypeName: "else",
+			javaType: "java.lang.String",
+			graphQLScalarTypeGetter: "org.allGraphQLCases.demo.GraphQLScalarTypeElse.getElseScalar()"
+		], [
+			graphQLTypeName: "Long",
+			javaType: "java.lang.Long",
+			graphQLScalarTypeStaticField: "graphql.Scalars.GraphQLLong"
+		], [
+			graphQLTypeName: "NonNegativeInt",
+			javaType: "java.lang.Integer",
+			graphQLScalarTypeStaticField: "graphql.scalars.ExtendedScalars.NonNegativeInt"
+	] ]
+}
+
+// Then, a last code generation, to do a real integration test with another GraphQL server  
 tasks.register('generateClientCodeForum', com.graphql_java_generator.gradleplugin.GraphQLGenerateCodeTask) {
 	mode = 'client'
 	copyRuntimeSources = false
@@ -101,7 +135,7 @@ tasks.register('generateClientCodeForum', com.graphql_java_generator.gradleplugi
 	separateUtilityClasses = true
 	skipGenerationIfSchemaHasNotChanged = true
 	springBeanSuffix = 'Forum'
-	targetSourceFolder = "$buildDir/generated/sources/graphqlGradlePlugin2"
+	targetSourceFolder = "$buildDir/generated/sources/graphqlGradlePluginForum"
 	customScalars = [ [ 
 			graphQLTypeName: 'Date',
 			javaType: 'java.util.Date',
