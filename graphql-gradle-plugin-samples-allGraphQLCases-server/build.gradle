@@ -36,7 +36,7 @@ repositories {
 
 dependencies {
 	// The graphql-java-client-dependencies module agregates all dependencies for the generated code
-    implementation (group: 'com.graphql-java-generator', name: 'graphql-java-runtime', version: "${project.version}") 
+    implementation (group: 'com.graphql-java-generator', name: 'graphql-java-runtime', version: "${graphQLJavaGeneratorVersion}") 
     // This project uses some custom scalars from the graphql-java-extended-scalars module
     implementation "com.graphql-java:graphql-java-extended-scalars:${graphqlJavaExtendedScalarsVersion}"
     implementation "com.github.dozermapper:dozer-core:${dozerVersion}"
@@ -59,6 +59,7 @@ dependencies {
 
 // Of course, we need to generate the GraphQL's java code before compiling the project:
 compileJava.dependsOn generateServerCode
+processResources.dependsOn generateServerCode
 
 // The line below adds the generated sources as a java source folder, in the IDE
 sourceSets.main.java.srcDirs += '/build/generated/sources/graphqlGradlePlugin'

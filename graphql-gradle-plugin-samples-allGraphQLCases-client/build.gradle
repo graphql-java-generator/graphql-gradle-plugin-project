@@ -30,7 +30,7 @@ apply from: '../graphql-gradle-plugin/common_conf.gradle'
 
 dependencies {
 	// The graphql-java-client-dependencies module agregates all dependencies for the generated code
-    implementation "com.graphql-java-generator:graphql-java-client-dependencies:${project.version}"
+    implementation "com.graphql-java-generator:graphql-java-client-dependencies:${graphQLJavaGeneratorVersion}"
     // This project uses some custom scalars from the graphql-java-extended-scalars module
     implementation "com.graphql-java:graphql-java-extended-scalars:${graphqlJavaExtendedScalarsVersion}"
 	
@@ -52,6 +52,9 @@ dependencies {
 compileJava.dependsOn('generateClientCodeAllGraphQLCases')
 compileJava.dependsOn('generateClientCodeAllGraphQLCases2')
 compileJava.dependsOn('generateClientCodeForum')
+processResources.dependsOn('generateClientCodeAllGraphQLCases')
+processResources.dependsOn('generateClientCodeAllGraphQLCases2')
+processResources.dependsOn('generateClientCodeForum')
 
 // The line below adds the generated sources as a java source folder, in the IDE
 //sourceSets.main.java.srcDirs += "$buildDir/generated/sources/graphqlGradlePlugin"

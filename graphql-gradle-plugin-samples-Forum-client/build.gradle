@@ -30,7 +30,7 @@ apply from: '../graphql-gradle-plugin/common_conf.gradle'
 
 dependencies {
 	// The graphql-java-client-dependencies module agregates all dependencies for the generated code
-    implementation "com.graphql-java-generator:graphql-java-client-dependencies:${project.version}"
+    implementation "com.graphql-java-generator:graphql-java-client-dependencies:${graphQLJavaGeneratorVersion}"
 
 	// Dependencies for Web Socket. In the next version, they will be integratd into the graphql-java-client-dependencies module
 	implementation "javax.websocket:javax.websocket-api:1.1"
@@ -44,6 +44,7 @@ dependencies {
 }
 
 // The line below makes the GraphQL plugin be executed before Java compiles, so that all sources are generated on time
+compileJava.dependsOn graphqlGenerateCode
 compileJava.dependsOn graphqlGenerateCode
 
 // The line below adds the generated sources as a java source folder, in the IDE

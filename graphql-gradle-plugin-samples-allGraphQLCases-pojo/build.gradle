@@ -30,7 +30,7 @@ apply from: '../graphql-gradle-plugin/common_conf.gradle'
 
 dependencies {
 	// The graphql-java-client-dependencies module agregates all dependencies for the generated code
-    implementation "com.graphql-java-generator:graphql-java-client-dependencies:${project.version}"
+    implementation "com.graphql-java-generator:graphql-java-client-dependencies:${graphQLJavaGeneratorVersion}"
     // This project uses some custom scalars from the graphql-java-extended-scalars module
     implementation "com.graphql-java:graphql-java-extended-scalars:${graphqlJavaExtendedScalarsVersion}"
 
@@ -43,6 +43,8 @@ dependencies {
 // In this sample, the GraphQL code generation is based on the generated POJOs
 compileJava.dependsOn 'generateClientPojo'
 compileJava.dependsOn 'generateServerPojo'
+processResources.dependsOn 'generateClientPojo'
+processResources.dependsOn 'generateClientPojo'
 
 // The line below adds the generated sources as a java source folder
 sourceSets.main.java.srcDirs += "$buildDir/generated/sources/generatePojo-client"

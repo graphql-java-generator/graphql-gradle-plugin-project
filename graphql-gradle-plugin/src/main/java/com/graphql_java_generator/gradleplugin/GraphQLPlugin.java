@@ -3,10 +3,14 @@
  */
 package com.graphql_java_generator.gradleplugin;
 
+import java.util.Set;
+
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
+import org.gradle.api.file.CopySpec;
+import org.gradle.api.file.DuplicatesStrategy;
 import org.gradle.api.plugins.JavaPlugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,19 +63,73 @@ public class GraphQLPlugin implements Plugin<Project> {
 		// evaluated.
 		project.afterEvaluate(new Action<Project>() {
 			@Override
-			public void execute(Project project) {
-				logger.info("[in project.afterEvaluate] Before registering generated folders for project '"
-						+ project.getName() + "'");
-				for (Task task : project.getTasks()) {
-					if (task instanceof CommonTask) {
-						logger.info("Registering generated folders for task '" + task.getName() + "'");
-						((CommonTask) task).registerGeneratedFolders();
-					} else {
-						logger.info("Registering generated folders: ignoring task '" + task.getName() + "'");
-					}
+			public void execute(Project p) {
+				logger.info("[in project.afterEvaluate2] Before registering generated folders for project '"
+						+ p.getName() + "'");
+				// Below is an attempt to automatically say to Gradle, that the codeGeneration must occur before the
+				// compilation. But this fails, as doing the code below would activate all the plugin's tasks.
+				// And I found no way to identify all the task that will be executed before the Project is evaluated,
+				// and the TaskExecutionGraph (that can be retrieved from the Gradle instance) is populated. But at this
+				// time, it's too late to change the tasks execution order
+				// for (Task task : p.getTasks()) {
+				// if (!task.getEnabled()) {
+				// logger.info(" Ignoring disabled task '" + task.getName() + "'");
+				// } else if (task.getState().getSkipped()) {
+				// logger.info(" Ignoring skipped task '" + task.getName() + "'");
+				// } else if (task instanceof CommonTask) {
+				// logger.info(" Registering generated folders for task '" + task.getName() + "'");
+				// ((CommonTask) task).registerGeneratedFolders();
+				//
+				// // This task generates the code. So it must be executed before the compilation and the resource
+				// // processing
+				// addDependency("compileJava", task);
+				// for (Task t : addDependency("processResources", task)) {
+				// // Some resources are generated in double. Here is a workaround
+				// ((CopySpec) t).setDuplicatesStrategy(DuplicatesStrategy.INCLUDE);
+				// logger.info(" Setting property: {}.duplicatesStrategy = {}", t.getName(),
+				// DuplicatesStrategy.INCLUDE);
+				// }
+				// } else {
+				// logger.info(" Ignoring task '" + task.getName() + "'");
+				// }
+				// } // for
+
+				Set<Task> tasks = project.getTasksByName("processResources", false);
+				if (tasks.size() == 0) {
+					throw new RuntimeException(
+							"Found no 'processResources' task, when executing project.afterEvaluate()");
+				}
+				for (Task t : tasks) { // There should be one.
+					// Some resources are generated in double. This can generate an error when building the project.
+					// Here is a workaround:
+					((CopySpec) t).setDuplicatesStrategy(DuplicatesStrategy.INCLUDE);
+					logger.info(" Setting property: {}.duplicatesStrategy = {}", t.getName(),
+							DuplicatesStrategy.INCLUDE);
 				}
 			}
-		});
+
+			/**
+			 * Add a dependency on taskName, like this: <I>taskName.dependsOn(dependsOnTask)</I>.
+			 * 
+			 * @param taskName
+			 * @param dependsOnTask
+			 * @return the set of tasks, that has <I>taskName<I> as a name. This set contains at least one item (and
+			 *         should not contain more than one)
+			 */
+			private Set<Task> addDependency(String taskName, Task dependsOnTask) {
+				Set<Task> tasks = project.getTasksByName(taskName, false);
+				if (tasks.size() == 0) {
+					throw new RuntimeException("Found no '" + taskName + taskName + "' task, when trying to execute: "
+							+ taskName + ".dependsOn(\"" + dependsOnTask.getName() + "\"");
+				}
+				for (Task t : tasks) {
+					logger.info("    Adding task dependency: {}.dependsOn({})", t.getName(), dependsOnTask.getName());
+					t.dependsOn(dependsOnTask);
+				}
+				return tasks;
+			}
+		});// project.afterEvaluate
+			//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	}
 
 	/**

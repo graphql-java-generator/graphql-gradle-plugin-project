@@ -8,6 +8,14 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 * separateUtilityClasses: true _(both client and server mode)_
 * skipGenerationIfSchemaHasNotChanged: true _(both client and server mode)_
 
+# 1.17.3p1
+
+All modes:
+* Corrected an issue with duplicate files that can break the Gradle build
+
+__Caution:__ this is a Gradle only release. So, for this version, the Gradle plugin version is 1.17.3p1, whereas the `graphql-java-client-dependencies`, `graphql-java-server-dependencies` or `graphql-java-runtime` version is 1.17.3.
+
+
 # 1.17.3
 
 Client mode:
