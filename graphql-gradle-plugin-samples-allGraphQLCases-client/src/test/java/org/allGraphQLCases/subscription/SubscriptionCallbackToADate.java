@@ -4,6 +4,7 @@
 package org.allGraphQLCases.subscription;
 
 import java.util.Date;
+import java.util.concurrent.CountDownLatch;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +23,10 @@ public class SubscriptionCallbackToADate implements SubscriptionCallback<Date> {
 
 	final String clientName;
 	public Date lastReceivedMessage = null;
+	public Throwable lastReceivedError = null;
+
+	/** A latch that will be freed when a the first notification arrives for this subscription */
+	public CountDownLatch latchForMessageReception = new CountDownLatch(1);
 
 	public SubscriptionCallbackToADate(String clientName) {
 		this.clientName = clientName;
@@ -36,6 +41,7 @@ public class SubscriptionCallbackToADate implements SubscriptionCallback<Date> {
 	public void onMessage(Date t) {
 		logger.debug("Received this list from the 'subscribeToAList' subscription: {} (for {})", t, clientName);
 		lastReceivedMessage = t;
+		latchForMessageReception.countDown();
 	}
 
 	@Override
@@ -45,7 +51,9 @@ public class SubscriptionCallbackToADate implements SubscriptionCallback<Date> {
 
 	@Override
 	public void onError(Throwable cause) {
+		lastReceivedError = cause;
 		logger.error("Oups! An error occurred: " + cause.getMessage());
+		latchForMessageReception.countDown();
 	}
 
 }

@@ -3,6 +3,7 @@ package com.graphql_java_generator.gradleplugin;
 import java.io.IOException;
 
 import org.gradle.api.tasks.Input;
+import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.TaskAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -99,6 +100,12 @@ public class GenerateClientCodeTask extends GenerateCodeCommonTask implements Ge
 
 	public final void setGenerateDeprecatedRequestResponse(boolean generateDeprecatedRequestResponse) {
 		this.generateDeprecatedRequestResponse = generateDeprecatedRequestResponse;
+	}
+
+	@Internal
+	@Override
+	public boolean isGenerateJacksonAnnotations() {
+		return true;
 	}
 
 	@Override

@@ -284,6 +284,12 @@ public class GenerateServerCodeTask extends GenerateCodeCommonTask implements Ge
 		this.generateBatchLoaderEnvironment = generateBatchLoaderEnvironment;
 	}
 
+	@Internal
+	@Override
+	public boolean isGenerateJacksonAnnotations() {
+		return false;
+	}
+
 	@Override
 	@Input
 	final public boolean isGenerateJPAAnnotation() {

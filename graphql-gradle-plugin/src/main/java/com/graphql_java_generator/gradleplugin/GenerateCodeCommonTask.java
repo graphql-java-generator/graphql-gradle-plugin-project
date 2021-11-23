@@ -199,7 +199,7 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 
 	@Input
 	@Override
-	final public boolean isSeparateUtilityClasses() {
+	public boolean isSeparateUtilityClasses() {
 		return getValue(separateUtilityClasses, getExtension().isSeparateUtilityClasses());
 	}
 
@@ -215,6 +215,13 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 
 	final public void setSourceEncoding(String sourceEncoding) {
 		this.sourceEncoding = sourceEncoding;
+	}
+
+	@Override
+	@Internal
+	public String getSpringAutoConfigurationPackage() {
+		return GenerateCodeCommonConfiguration.getSpringAutoConfigurationPackage(isSeparateUtilityClasses(),
+				getPackageName());
 	}
 
 	@Input
@@ -260,6 +267,12 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 	@Override
 	protected GenerateCodeCommonExtension getExtension() {
 		return (GenerateCodeCommonExtension) super.getExtension();
+	}
+
+	@Internal
+	@Override
+	public boolean isGenerateJacksonAnnotations() {
+		return true;
 	}
 
 	@Override

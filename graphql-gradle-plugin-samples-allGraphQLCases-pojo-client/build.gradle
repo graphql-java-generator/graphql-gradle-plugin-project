@@ -29,8 +29,6 @@ repositories {
 apply from: '../graphql-gradle-plugin/common_conf.gradle'
 
 dependencies {
-	// The graphql-java-client-dependencies module agregates all dependencies for the generated code
-    implementation "com.graphql-java-generator:graphql-java-client-dependencies:${graphQLJavaGeneratorVersion}"
     // This project uses some custom scalars from the graphql-java-extended-scalars module
     implementation "com.graphql-java:graphql-java-extended-scalars:${graphqlJavaExtendedScalarsVersion}"
 
@@ -42,8 +40,6 @@ dependencies {
 
 // In this sample, the GraphQL code generation is based on the generated POJOs
 compileJava.dependsOn 'generateClientPojo'
-compileJava.dependsOn 'generateServerPojo'
-processResources.dependsOn 'generateClientPojo'
 processResources.dependsOn 'generateClientPojo'
 
 // The line below adds the generated sources as a java source folder
@@ -53,7 +49,9 @@ sourceSets.main.java.srcDirs += "$buildDir/generated/sources/generatePojo-server
 // Let's configure the GraphQL Gradle Plugin, for the code generation, for both the client and the server pojo
 tasks.register('generateClientPojo', com.graphql_java_generator.gradleplugin.GeneratePojoTask) {
 	mode = 'client'
+	generateJacksonAnnotations = false
 	packageName = 'org.allGraphQLCases.client.pojo'
+	schemaFileFolder = '../graphql-gradle-plugin-samples-allGraphQLCases-client/src/graphqls/allGraphQLCases'
 	skipGenerationIfSchemaHasNotChanged = true
 	targetSourceFolder = "$buildDir/generated/sources/generatePojo-client"
 	targetResourceFolder = "$buildDir/generated/resources/generatePojo-client"
@@ -76,35 +74,6 @@ tasks.register('generateClientPojo', com.graphql_java_generator.gradleplugin.Gen
 	] ]
 }
 
-
-
-
-tasks.register('generateServerPojo', com.graphql_java_generator.gradleplugin.GeneratePojoTask) {
-	mode = 'server'
-	packageName = 'org.allGraphQLCases.server.pojo'
-	copyRuntimeSources = false
-	skipGenerationIfSchemaHasNotChanged = true
-	targetSourceFolder = "$buildDir/generated/sources/generatePojo-server"
-	targetResourceFolder = "$buildDir/generated/resources/generatePojo-server"
-	customScalars = [ [
-			graphQLTypeName: "Date",
-			javaType: "java.util.Date",
-			graphQLScalarTypeStaticField: "com.graphql_java_generator.customscalars.GraphQLScalarTypeDate.Date"
-		], [
-			graphQLTypeName: "else",
-			javaType: "java.lang.String",
-			graphQLScalarTypeGetter: "org.allGraphQLCases.GraphQLScalarTypeElse.getElseScalar()"
-		], [
-			graphQLTypeName: "Long",
-			javaType: "java.lang.Long",
-			graphQLScalarTypeStaticField: "graphql.Scalars.GraphQLLong"
-		], [
-			graphQLTypeName: "NonNegativeInt",
-			javaType: "java.lang.Integer",
-			graphQLScalarTypeStaticField: "graphql.scalars.ExtendedScalars.NonNegativeInt"
-	] ]
-}
- 
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

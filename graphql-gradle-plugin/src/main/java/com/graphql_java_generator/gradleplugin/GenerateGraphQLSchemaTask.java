@@ -9,6 +9,7 @@ import java.io.IOException;
 import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputDirectory;
+import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.TaskAction;
 import org.slf4j.Logger;
@@ -128,6 +129,12 @@ public class GenerateGraphQLSchemaTask extends CommonTask implements GenerateGra
 	@Override
 	protected GenerateGraphQLSchemaExtension getExtension() {
 		return (GenerateGraphQLSchemaExtension) super.getExtension();
+	}
+
+	@Internal
+	@Override
+	public boolean isGenerateJacksonAnnotations() {
+		return true;
 	}
 
 	@Override

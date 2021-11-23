@@ -71,6 +71,7 @@ generateServerCodeConf {
 	generateBatchLoaderEnvironment = true
 	packageName = 'org.allGraphQLCases.server'
 	separateUtilityClasses = true
+	schemaFileFolder = '../graphql-gradle-plugin-samples-allGraphQLCases-client/src/graphqls/allGraphQLCases'
 	skipGenerationIfSchemaHasNotChanged = true
 	customScalars = [ [
 			graphQLTypeName: "Date",

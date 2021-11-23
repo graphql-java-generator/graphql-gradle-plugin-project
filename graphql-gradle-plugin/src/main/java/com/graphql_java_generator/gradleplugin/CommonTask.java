@@ -189,6 +189,12 @@ public class CommonTask extends DefaultTask implements CommonConfiguration {
 		return getProject().getProjectDir();
 	}
 
+	@Internal
+	@Override
+	public boolean isGenerateJacksonAnnotations() {
+		return true;
+	}
+
 	@Input
 	@Override
 	final public boolean isSkipGenerationIfSchemaHasNotChanged() {

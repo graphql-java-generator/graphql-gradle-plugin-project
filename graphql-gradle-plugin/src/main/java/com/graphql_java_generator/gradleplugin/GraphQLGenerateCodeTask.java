@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import org.gradle.api.UncheckedIOException;
 import org.gradle.api.tasks.Input;
+import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.TaskAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -140,6 +141,12 @@ public class GraphQLGenerateCodeTask extends GenerateServerCodeTask implements G
 
 	public final void setGenerateDeprecatedRequestResponse(boolean generateDeprecatedRequestResponse) {
 		this.generateDeprecatedRequestResponse = generateDeprecatedRequestResponse;
+	}
+
+	@Internal
+	@Override
+	public boolean isGenerateJacksonAnnotations() {
+		return getMode().equals(PluginMode.client);
 	}
 
 	@Override

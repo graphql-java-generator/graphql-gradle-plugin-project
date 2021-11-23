@@ -6,6 +6,7 @@ package com.graphql_java_generator.gradleplugin;
 import java.io.IOException;
 
 import org.gradle.api.UncheckedIOException;
+import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.TaskAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +15,7 @@ import org.springframework.context.support.AbstractApplicationContext;
 
 import com.graphql_java_generator.plugin.conf.GeneratePojoConfiguration;
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
+import com.graphql_java_generator.plugin.conf.PluginMode;
 import com.graphql_java_generator.plugin.generate_code.GenerateCodeDocumentParser;
 import com.graphql_java_generator.plugin.generate_code.GenerateCodeGenerator;
 
@@ -58,12 +60,37 @@ import com.graphql_java_generator.plugin.generate_code.GenerateCodeGenerator;
  * {@link GenerateCodeCommonExtension}, whose attributes can be either the default value, or a value set in the build
  * script.
  * </P>
+ * <P>
+ * <U>Note:</U> in this mode, <I>copyRuntimeSources</I> must be set to false. Some dependencies must be copied for the
+ * code to compile (exceptions, annotations...)
+ * </P>
+ * *
  * 
  * @author EtienneSF
  */
 public class GeneratePojoTask extends GraphQLGenerateCodeTask implements GeneratePojoConfiguration {
 
 	private static final Logger logger = LoggerFactory.getLogger(GeneratePojoTask.class);
+
+	/**
+	 * <P>
+	 * The <A HREF="https://github.com/FasterXML/jackson">Jackson</A> annotations are necessary to properly deserialize
+	 * the json, that is incoming from the GraphQL Server. Setting this property to false allows to not generate them.
+	 * </P>
+	 * <P>
+	 * If this property is set to true, the Jackson annotations are added in the generated GraphQL objects. The
+	 * <A HREF="https://github.com/FasterXML/jackson">Jackson</A> dependencies must then be added to the target project,
+	 * so that the project compiles.
+	 * </P>
+	 * <P>
+	 * The default value is:
+	 * </P>
+	 * <UL>
+	 * <LI><I>true</I> when in <I>client</I> mode.</LI>
+	 * <LI><I>false</I> when in <I>server</I> mode.</LI>
+	 * </UL>
+	 */
+	Boolean generateJacksonAnnotations = null;
 
 	public GeneratePojoTask() {
 		super(GeneratePojoExtension.class);
@@ -79,7 +106,7 @@ public class GeneratePojoTask extends GraphQLGenerateCodeTask implements Generat
 			// We'll use Spring IoC
 			GeneratePojoSpringConfiguration.graphqlPojoConf = this;
 			AbstractApplicationContext ctx = new AnnotationConfigApplicationContext(
-					GraphQLGenerateCodeSpringConfiguration.class);
+					GeneratePojoSpringConfiguration.class);
 
 			// Let's log the current configuration (this will do something only when in debug mode)
 			GraphQLConfiguration pluginConfiguration = ctx.getBean(GraphQLConfiguration.class);
@@ -105,5 +132,35 @@ public class GeneratePojoTask extends GraphQLGenerateCodeTask implements Generat
 	@Override
 	protected GeneratePojoExtension getExtension() {
 		return (GeneratePojoExtension) super.getExtension();
+	}
+
+	@Override
+	@Input
+	public boolean isGenerateJacksonAnnotations() {
+		if (generateJacksonAnnotations == null && getExtension().isGenerateJacksonAnnotations_Raw() == null) {
+			// Both stored values are null. We select the default value according to the plugin mode
+			return getMode().equals(PluginMode.client);
+		} else {
+			return getValue(generateJacksonAnnotations, getExtension().isGenerateJacksonAnnotations_Raw());
+		}
+	}
+
+	public void setGenerateJacksonAnnotations(boolean generateJacksonAnnotations) {
+		this.generateJacksonAnnotations = generateJacksonAnnotations;
+	}
+
+	@Override
+	public boolean isGenerateUtilityClasses() {
+		return false;
+	}
+
+	/**
+	 * There is no utility classes for this goal.
+	 * 
+	 * @return The {@link GeneratePojoConfiguration} implementation of this method always returns false
+	 */
+	@Override
+	public boolean isSeparateUtilityClasses() {
+		return true;
 	}
 }

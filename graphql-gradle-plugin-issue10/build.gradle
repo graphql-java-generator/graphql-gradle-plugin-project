@@ -1,0 +1,50 @@
+buildscript {
+    repositories {
+        mavenCentral()
+		// The plugin depends on the graphql-maven-plugin, whose snapshot versions are on the local maven repository.
+		// So, for development reason, we need to access to the local maven repository. It's useless for standard use of the plugin
+        mavenLocal()
+    }
+    dependencies {
+    	// The version number is not used in this multi-module project: the included build of graphql-gradle-plugin
+    	// will replace this declaration. But this dummy declaration is needed!
+    	//
+    	// Of course, for a real use of the plugin in your project, you'll have to replace by the last plugin's version,
+    	// or better: put this version number in the gradle.properties file, to use it for both the plugin and the dependencies version
+        classpath 'com.graphql-java-generator:graphql-gradle-plugin:dummy'
+    }
+}
+
+plugins {
+	id 'java'
+}
+
+apply plugin:  'java-library'
+apply plugin:  'com.graphql_java_generator.graphql-gradle-plugin'
+
+repositories {
+	mavenCentral()
+	// The plugin depends on the graphql-maven-plugin, whose snapshot versions are on the local maven repository.
+	// So, for development reason, we need to access to the local maven repository. It's useless for standard use of the plugin
+	mavenLocal()
+}
+
+dependencies {
+	implementation "com.graphql-java:graphql-java-extended-scalars:$graphqlJavaExtendedScalarsVersion"
+	implementation "com.fasterxml.jackson.core:jackson-databind:$jacksonDatabindVersion"
+}
+
+compileJava.dependsOn generatePojo
+
+// Let's configure the GraphQL Gradle Plugin
+generatePojo {
+	mode = "client"  //This line is here only for the demo, as client is the default mode
+	generateJacksonAnnotations = true
+	packageName = "org.test"
+	skipGenerationIfSchemaHasNotChanged = true
+	customScalars = [ [
+			graphQLTypeName: "Date",
+			javaType: "java.util.Date",
+			graphQLScalarTypeStaticField: "com.graphql_java_generator.customscalars.GraphQLScalarTypeDate.Date"
+	] ]
+}
