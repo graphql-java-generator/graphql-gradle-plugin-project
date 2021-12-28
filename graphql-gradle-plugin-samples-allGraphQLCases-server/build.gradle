@@ -1,10 +1,10 @@
 
 buildscript {
     repositories {
-        mavenCentral()
 		// The plugin depends on the graphql-maven-plugin, whose snapshot versions are on the local maven repository.
 		// So, for development reason, we need to access to the local maven repository. It's useless for standard use of the plugin
         mavenLocal()
+        mavenCentral()
     }
     
     dependencies {
@@ -84,7 +84,7 @@ generateServerCodeConf {
 		], [
 			graphQLTypeName: "Long",
 			javaType: "java.lang.Long",
-			graphQLScalarTypeStaticField: "graphql.Scalars.GraphQLLong"
+			graphQLScalarTypeStaticField: "graphql.scalars.ExtendedScalars.GraphQLLong"
 		], [
 			graphQLTypeName: "NonNegativeInt",
 			javaType: "java.lang.Integer",

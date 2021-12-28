@@ -1,9 +1,9 @@
 buildscript {
     repositories {
-        mavenCentral()
 		// The plugin depends on the graphql-maven-plugin, whose snapshot versions are on the local maven repository.
 		// So, for development reason, we need to access to the local maven repository. It's useless for standard use of the plugin
         mavenLocal()
+        mavenCentral()
     }
     dependencies {
     	// The version number is not used in this multi-module project: the included build of graphql-gradle-plugin
@@ -89,7 +89,7 @@ tasks.register('generateClientCodeAllGraphQLCases', com.graphql_java_generator.g
 		], [
 			graphQLTypeName: "Long",
 			javaType: "java.lang.Long",
-			graphQLScalarTypeStaticField: "graphql.Scalars.GraphQLLong"
+			graphQLScalarTypeStaticField: "graphql.scalars.ExtendedScalars.GraphQLLong"
 		], [
 			graphQLTypeName: "NonNegativeInt",
 			javaType: "java.lang.Integer",
@@ -121,7 +121,7 @@ tasks.register('generateClientCodeAllGraphQLCases2', com.graphql_java_generator.
 		], [
 			graphQLTypeName: "Long",
 			javaType: "java.lang.Long",
-			graphQLScalarTypeStaticField: "graphql.Scalars.GraphQLLong"
+			graphQLScalarTypeStaticField: "graphql.scalars.ExtendedScalars.GraphQLLong"
 		], [
 			graphQLTypeName: "NonNegativeInt",
 			javaType: "java.lang.Integer",

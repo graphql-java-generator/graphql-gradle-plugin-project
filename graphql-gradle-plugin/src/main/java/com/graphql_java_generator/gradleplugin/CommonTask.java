@@ -13,6 +13,7 @@ import org.gradle.api.Task;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputDirectory;
 import org.gradle.api.tasks.Internal;
+import org.gradle.api.tasks.Nested;
 import org.gradle.api.tasks.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +43,15 @@ import groovy.lang.Closure;
 public class CommonTask extends DefaultTask implements CommonConfiguration {
 
 	private static final Logger logger = LoggerFactory.getLogger(CommonTask.class);
+
+	/**
+	 * Defines the options that maximum number of tokens that the GraphQL schema parser may read. The default value is
+	 * 15000. If the schema contains more than <I>maxTokens</I>, the build will fail with an error. For bigger GraphQL
+	 * schemas, you must define the <I>maxTokens</I> to the needed value.
+	 * 
+	 * @return
+	 */
+	Integer maxTokens = null;
 
 	/**
 	 * <P>
@@ -181,6 +191,16 @@ public class CommonTask extends DefaultTask implements CommonConfiguration {
 	@Override
 	final public String getDefaultTargetSchemaFileName() {
 		return GenerateGraphQLSchemaConfiguration.DEFAULT_TARGET_SCHEMA_FILE_NAME;
+	}
+
+	@Nested
+	@Override
+	public int getMaxTokens() {
+		return getValue(maxTokens, getExtension().getMaxTokens());
+	}
+
+	public void setParserOptions(int maxTokens) {
+		this.maxTokens = maxTokens;
 	}
 
 	@Internal
