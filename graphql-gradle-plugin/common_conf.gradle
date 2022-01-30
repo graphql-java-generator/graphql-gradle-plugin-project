@@ -1,5 +1,5 @@
 group = 'com.graphql-java-generator'
-version = 'local-SNAPSHOT'
+version = '1.18.1'
 
 // This configuration block declares local project variable, with all versions for common dependencies
 ext {
@@ -9,7 +9,7 @@ ext {
 	junitJupiterVersion = '5.7.1'
 	graphiqlSpringBootStarterVersion = '11.0.0' 
 	graphqlJavaExtendedScalarsVersion = '17.0'
-	h2databaseVersion = '1.4.200'
+	h2databaseVersion = '2.1.210'
 	jacksonDatabindVersion = '2.11.4'
 	oauth2OidcSdkVersion = '8.36.1'
 	springBootVersion = '2.4.4'		

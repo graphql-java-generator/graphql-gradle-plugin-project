@@ -36,7 +36,7 @@ repositories {
 
 dependencies {
 	// The graphql-java-client-dependencies module agregates all dependencies for the generated code
-    implementation (group: 'com.graphql-java-generator', name: 'graphql-java-runtime', version: "${graphQLJavaGeneratorVersion}") 
+    implementation (group: 'com.graphql-java-generator', name: 'graphql-java-server-runtime', version: "${graphQLJavaGeneratorVersion}") 
     // This project uses some custom scalars from the graphql-java-extended-scalars module
     implementation "com.graphql-java:graphql-java-extended-scalars:${graphqlJavaExtendedScalarsVersion}"
     implementation "com.github.dozermapper:dozer-core:${dozerVersion}"

@@ -8,7 +8,7 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 * separateUtilityClasses: true _(both client and server mode)_
 * skipGenerationIfSchemaHasNotChanged: true _(both client and server mode)_
 
-# Not released yet
+# 1.18.1
 
 All modes (client and server):
 * Dependencies has been restructured to properly separate client and server runtimes:
@@ -16,11 +16,23 @@ All modes (client and server):
     * When `copyRuntimeSources` is false, the used dependencies should be either `graphql-java-client-runtime` or `graphql-java-server-runtime`
     * When `copyRuntimeSources` is true, the used dependencies should be either `graphql-java-client-dependencies` or `graphql-java-server-dependencies`
     * 	This solves issues #109 and #56
-* Switch from graphql-java 16.2 to 17.3
+* graphql-java upgraded from 16.2 to 17.3
 	* You can check the changes on the [graphql-java release page](https://github.com/graphql-java/graphql-java/releases)
     * The main changes are:
         * __Non standard scalars__ have moved from the `graphql.Scalars` class (that is included in the graphql-java module) to the `graphql-java-extended-scalars`. So, if you're using non standard scalars like `Byte`, `Short` and `Long` (...), you'll probably have to change your configuration in your pom.xml or gradle.build file, from `graphql.Scalars.xxx` to `graphql.scalars.ExtendedScalars.xxx`
         * The graphQL schema is, by default, limited to 15000 tokens. This version adds the new plugin parameter __`maxTokens`__, that allows to override this limit.
+* Issue #114: allows overriding field's type when implementing interface
+
+
+Server mode:
+* More robust multi-threading management for subscriptions
+
+
+Upgrade of dependencies versions (to remove security issues):
+* h2 is used only for sample. Upgraded from 1.4.200 to 2.1.210
+* velocity is the template engine. Upgraded from 1.7 to 2.3
+    * A (positive) side effect, is that the velocity logging is managed through slf4j, like all the plugin's code logging. So this solves the issue #103, caused by velocity.log beeing created in the Intellij `bin` folder.
+
 
 
 # 1.18
