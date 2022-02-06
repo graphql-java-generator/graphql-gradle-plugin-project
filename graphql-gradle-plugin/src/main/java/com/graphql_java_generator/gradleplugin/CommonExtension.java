@@ -29,7 +29,7 @@ public class CommonExtension implements CommonConfiguration {
 
 	final protected Project project;
 
-	private int maxTokens = Integer.parseInt(CommonConfiguration.DEFAULT_MAX_TOKENS);
+	private Integer maxTokens = Integer.parseInt(CommonConfiguration.DEFAULT_MAX_TOKENS);
 	private boolean addRelayConnections = CommonConfiguration.DEFAULT_ADD_RELAY_CONNECTIONS.equals("true");
 	private String schemaFileFolder = GraphQLConfiguration.DEFAULT_SCHEMA_FILE_FOLDER;
 	private String schemaFilePattern = GraphQLConfiguration.DEFAULT_SCHEMA_FILE_PATTERN;
@@ -42,11 +42,11 @@ public class CommonExtension implements CommonConfiguration {
 	}
 
 	@Override
-	public int getMaxTokens() {
+	public Integer getMaxTokens() {
 		return maxTokens;
 	}
 
-	public void setMaxTokens(int maxTokens) {
+	public void setMaxTokens(Integer maxTokens) {
 		this.maxTokens = maxTokens;
 	}
 

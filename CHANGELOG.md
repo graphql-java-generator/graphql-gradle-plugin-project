@@ -8,6 +8,18 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 * separateUtilityClasses: true _(both client and server mode)_
 * skipGenerationIfSchemaHasNotChanged: true _(both client and server mode)_
 
+
+# 1.18.2
+
+Gradle plugin:
+* Solved a build issue, that would generate an error with some old configurations of the plugin
+
+Server more:
+* Issue #122, and PR #123: NullPointerException would occurs when a notification returns a null value. This may occurs when a Subscription response is a non mandatory object or scalar. For this kind of subscription only, the DataFetcher must now return a `Publisher<Optional<JavaType>>` instead of a `Publisher<JavaType>`
+    * There is no impact on DataFetchers for Queries or Mutations
+    * There is no impact on DataFetchers for Subscriptions which return type is mandatory (like `String!`)
+
+
 # 1.18.1
 
 All modes (client and server):

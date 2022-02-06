@@ -13,7 +13,6 @@ import org.gradle.api.Task;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputDirectory;
 import org.gradle.api.tasks.Internal;
-import org.gradle.api.tasks.Nested;
 import org.gradle.api.tasks.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -193,13 +192,13 @@ public class CommonTask extends DefaultTask implements CommonConfiguration {
 		return GenerateGraphQLSchemaConfiguration.DEFAULT_TARGET_SCHEMA_FILE_NAME;
 	}
 
-	@Nested
+	@Input
 	@Override
-	public int getMaxTokens() {
+	public Integer getMaxTokens() {
 		return getValue(maxTokens, getExtension().getMaxTokens());
 	}
 
-	public void setParserOptions(int maxTokens) {
+	public void setParserOptions(Integer maxTokens) {
 		this.maxTokens = maxTokens;
 	}
 
