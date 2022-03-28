@@ -4,9 +4,9 @@
 package org.forum.server.specific_code;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import javax.annotation.Resource;
@@ -60,26 +60,6 @@ public class DataFetchersDelegateTopicImpl implements DataFetchersDelegateTopic 
 		return dataLoader.load(source.getAuthorId());
 	}
 
-	/**
-	 * This method should not be called. The {@link DataFetchersDelegateMemberImpl#batchLoader(List)} should be called
-	 * instead. The name returned by this method is marked by "[SL] ", to check that in integration tests.
-	 */
-	@Override
-	public Member author(DataFetchingEnvironment dataFetchingEnvironment, Topic origin) {
-		logger.debug("Loading author of topic {}", origin.getId());
-		Optional<Member> opt = memberRepository.findById(origin.getAuthorId());
-
-		if (opt.isPresent()) {
-			// Let's mark all the entries retrieved here by [SL] (Single Loader), to check this in integration tests
-			// These tests are in the graphql-maven-plugin-samples-Forum-client project
-			Member m = opt.get();
-			m.setName("[SL] " + m.getName());
-			return m;
-		} else {
-			return null;
-		}
-	}
-
 	@Override
 	public List<Post> posts(DataFetchingEnvironment dataFetchingEnvironment, Topic source, Long memberId,
 			String memberName, Date since) {
@@ -125,9 +105,45 @@ public class DataFetchersDelegateTopicImpl implements DataFetchersDelegateTopic 
 	}
 
 	@Override
-	public List<Topic> batchLoader(List<Long> keys, BatchLoaderEnvironment env) {
+	public CompletableFuture<List<Post>> posts(DataFetchingEnvironment dataFetchingEnvironment,
+			DataLoader<Long, Post> dataLoader, Topic origin, Long memberId, String memberName, Date since) {
+		// When the data is modeled this way (that is: in a relational database), using Data Loader is not an
+		// optimization.
+		// But this is used here for integration tests
+		List<Long> ids = new ArrayList<>();
+
+		for (Post post : posts(dataFetchingEnvironment, origin, memberId, memberName, since)) {
+			ids.add(post.getId());
+		}
+
+		if (logger.isDebugEnabled()) {
+			StringBuilder sb = new StringBuilder();
+			sb.append("Retrieving posts for topic {id=");
+			sb.append(origin.getId());
+			sb.append(", autorId=");
+			sb.append(memberId);
+			sb.append(", since=");
+			sb.append(since);
+			sb.append("}. The requested ids of posts are:");
+			for (Long id : ids) {
+				sb.append(" ");
+				sb.append(id);
+			}
+			logger.debug(sb.toString());
+		}
+
+		return dataLoader.loadMany(ids);
+	}
+
+	@Override
+	public List<Topic> unorderedReturnBatchLoader(List<Long> keys, BatchLoaderEnvironment env) {
 		logger.debug("Batch loading {} topics", keys.size());
 		return topicRepository.findByIds(keys);
+	}
+
+	@Override
+	public Member author(DataFetchingEnvironment dataFetchingEnvironment, Topic origin) {
+		return memberRepository.findById(origin.getAuthorId()).orElseGet(() -> null);
 	}
 
 }

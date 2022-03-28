@@ -5,6 +5,7 @@ package org.allGraphQLCases.server.impl;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -80,10 +81,10 @@ public class DataGenerator {
 			// enum are a special case
 			int x = RANDOM.nextInt(clazzToReturn.getEnumConstants().length);
 			return clazzToReturn.getEnumConstants()[x];
-
 		} else if (clazzToReturn.equals(Boolean.class)) {
 			return (T) (Boolean) (RANDOM.nextBoolean());
-
+		} else if (clazzToReturn.equals(UUID.class)) {
+			return (T) UUID.randomUUID();
 		} else {
 
 			// Standard case
@@ -147,6 +148,8 @@ public class DataGenerator {
 			return RANDOM.nextBoolean();
 		} else if (type == Date.class) {
 			return new Date(RANDOM.nextInt(3000), RANDOM.nextInt(12), RANDOM.nextInt(29));
+		} else if (type == OffsetDateTime.class) {
+			return OffsetDateTime.now();
 		} else if (type == Double.class) {
 			return (double) (Math.random() * Double.MAX_VALUE);
 		} else if (type.isEnum()) {
@@ -165,7 +168,6 @@ public class DataGenerator {
 		} else {
 			throw new RuntimeException("Non managed Scalar type, when generating data: " + type.getName());
 		}
-
 	}
 
 }

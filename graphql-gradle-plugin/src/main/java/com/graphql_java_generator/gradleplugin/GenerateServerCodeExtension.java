@@ -5,6 +5,7 @@ package com.graphql_java_generator.gradleplugin;
 
 import java.io.File;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 import org.dataloader.BatchLoaderEnvironment;
 import org.gradle.api.Project;
@@ -75,6 +76,37 @@ public class GenerateServerCodeExtension extends GenerateCodeCommonExtension
 	 */
 	private boolean generateJPAAnnotation = GraphQLConfiguration.DEFAULT_GENERATE_JPA_ANNOTATION.equals("true");
 
+	/**
+	 * <P>
+	 * (only for server mode) Defines how the methods in the data fetchers delegates are generated. The detailed
+	 * information is available in the
+	 * <a href="https://github.com/graphql-java-generator/graphql-maven-plugin-project/wiki/server">Wiki server page</a>
+	 * </P>
+	 * <P>
+	 * When generateDataLoaderForLists is false (default mode), the data loaders are used only for fields that don't
+	 * return a list. In other words, for fields which type is a sub-object with an id, two methods are generated: one
+	 * which returns a {@link CompletableFuture}, and one which returns a none {@link CompletableFuture} result (that is
+	 * used by the generated code only if no data loader is available).
+	 * </P>
+	 * <P>
+	 * When generateDataLoaderForLists is true, the above behavior is extended to fields that are a list.
+	 * </P>
+	 * <P>
+	 * Note: if set to true, this plugin parameter make the use of data loader mandatory for every field which type is a
+	 * list of GraphQL objects, which have an id. This may not be suitable, for instance when your data is stored in a
+	 * relational database, where you would need a first query to retrieve the ids and push them into the data loader,
+	 * then another one to retrieve the associated values. If you want to use data loader for only some of particular
+	 * fields, you should <b>consider using the <code>generateDataLoaderForLists</code></b>. You'll find more
+	 * information on the
+	 * <a href="https://github.com/graphql-java-generator/graphql-maven-plugin-project/wiki/server">Wiki server
+	 * page</a>.
+	 * </P>
+	 * <P>
+	 * This parameter is available since version 1.18.4
+	 * </P>
+	 */
+	private boolean generateDataLoaderForLists = GenerateServerCodeConfiguration.DEFAULT_GENERATE_DATA_LOADER_FOR_LISTS
+			.equals("true");
 	/**
 	 * <P>
 	 * The <I>javaTypeForIDType</I> is the java class that is used in the generated code for GraphQL fields that are of
@@ -152,6 +184,15 @@ public class GenerateServerCodeExtension extends GenerateCodeCommonExtension
 
 	public void setGenerateJPAAnnotation(boolean generateJPAAnnotation) {
 		this.generateJPAAnnotation = generateJPAAnnotation;
+	}
+
+	@Override
+	public boolean isGenerateDataLoaderForLists() {
+		return generateDataLoaderForLists;
+	}
+
+	public final void setGenerateDataLoaderForLists(boolean generateDataLoaderForLists) {
+		this.generateDataLoaderForLists = generateDataLoaderForLists;
 	}
 
 	@Override

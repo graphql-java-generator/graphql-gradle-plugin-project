@@ -3,6 +3,9 @@ scalar Date
 	# Directive commented, as with graphql-java 15.0, they can't be applied to a Scalar that is the type of a directive definition's argument
 	# (see issue 2055)
 
+# The DateTime uses the ExtendedScalars#DateTime implementation, provided by graphql-java (in the graphql-java-extended-scalars)
+scalar DateTime
+
 scalar Long
 
 directive @IDScalarDirective
@@ -12,6 +15,9 @@ on SCALAR
 extend scalar ID @IDScalarDirective
 
 directive @RelayConnection
+on FIELD_DEFINITION
+
+directive @generateDataLoaderForLists
 on FIELD_DEFINITION
 
 schema @testDirective(value:"on Schema") {
@@ -77,6 +83,9 @@ type MyQueryType {
     #issue82 is about hard coded values as parameters. Other types are tests with other queries, but there was no method with a simple float parameter
     issue82Float(aFloat: Float!): Float!
     issue82ID(aID: ID!): ID!
+
+	# test for issue #128 (compilation error when a Query returns a type 'Client')
+	issue128: Client
 }
 
 type AnotherMutationType {
@@ -94,6 +103,7 @@ type TheSubscriptionType {
 	
 	# Issue 54
 	subscribeToAList: [Int]!
+	subscribeToAListOfScalars: [Date]
 	
     # issue53 is about custom scalars as parameter for a query/mutation/subscription, that was not properly serialized/deserialized
     issue53(date: Date!): Date!
@@ -133,6 +143,7 @@ input AllFieldCasesInput @testDirective(value:"on Input Type") {
     forname: String
     age: Long!
     date: Date
+    dateTime: DateTime
     dates: [Date]!
     nbComments: Int
     comments: [String]
@@ -174,6 +185,7 @@ type AllFieldCases implements WithID @testDirective(value:"on Object") @anotherT
     age(unit: Unit = YEAR) : Long!   @deprecated(reason: "This is a test")
     aFloat: Float
     date: Date
+    dateTime: DateTime
     dates: [Date]!
     nbComments: Int
     comments: [String]
@@ -184,6 +196,7 @@ type AllFieldCases implements WithID @testDirective(value:"on Object") @anotherT
     matrix: [[Float]]!
     oneWithIdSubType(uppercase: Boolean): AllFieldCasesWithIdSubtype
     listWithIdSubTypes(nbItems: Long!, date: Date, dates: [Date]!, uppercaseName: Boolean, textToAppendToTheForname: String): [AllFieldCasesWithIdSubtype]
+       @generateDataLoaderForLists
     oneWithoutIdSubType(input: FieldParameterInput): AllFieldCasesWithoutIdSubtype
     listWithoutIdSubTypes(nbItems: Long!, input: FieldParameterInput, textToAppendToTheForname: String): [AllFieldCasesWithoutIdSubtype]
     issue65(inputs: [FieldParameterInput!]): [AllFieldCasesWithoutIdSubtype]
@@ -524,4 +537,12 @@ interface IList {
 
 type TList implements IList {
 	list: [TFoo1]
+}
+
+
+#############################
+# test for issue #128
+
+interface Client {
+	foo: String
 }

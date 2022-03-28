@@ -63,6 +63,7 @@ sourceSets.main.java.srcDirs += '/build/generated/sources/graphqlGradlePlugin'
 // Let's configure the GraphQL Gradle Plugin
 generateServerCodeConf {
 	generateBatchLoaderEnvironment = true
+	generateDataLoaderForLists = true
 	generateJPAAnnotation = true
 	javaTypeForIDType = "java.lang.Long"
 	packageName = "org.forum.server.graphql"

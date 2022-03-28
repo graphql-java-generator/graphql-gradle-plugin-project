@@ -4,7 +4,6 @@
 package org.forum.server.specific_code;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import javax.annotation.Resource;
@@ -38,34 +37,21 @@ public class DataFetchersDelegatePostImpl implements DataFetchersDelegatePost {
 
 	@Override
 	public CompletableFuture<Member> author(DataFetchingEnvironment dataFetchingEnvironment,
-			DataLoader<Long, Member> dataLoader, Post source) {
-		return dataLoader.load(source.getAuthorId());
+			DataLoader<Long, Member> dataLoader, Post origin) {
+		return dataLoader.load(origin.getAuthorId());
 	}
 
 	@Override
-	public List<Post> batchLoader(List<Long> keys, BatchLoaderEnvironment env) {
+	public Member author(DataFetchingEnvironment dataFetchingEnvironment, Post origin) {
+		return memberRepository.findById(origin.getAuthorId()).orElseGet(() -> {
+			return null;
+		});
+	}
+
+	@Override
+	public List<Post> unorderedReturnBatchLoader(List<Long> keys, BatchLoaderEnvironment env) {
 		logger.debug("Batch loading {} posts", keys.size());
 		return postRepository.findByIds(keys);
 	}
 
-	/**
-	 * This method should not be called. The {@link DataFetchersDelegateMemberImpl#batchLoader(List)} should be called
-	 * instead. The name returned by this method is marked by "[SL] ", to check that in integration tests.
-	 */
-	@Override
-	public Member author(DataFetchingEnvironment dataFetchingEnvironment, Post origin) {
-		logger.debug("Loading author for post ", origin.getId());
-
-		Optional<Member> opt = memberRepository.findById(origin.getAuthorId());
-
-		if (opt.isPresent()) {
-			// Let's mark all the entries retrieved here by [SL] (Single Loader), to check this in integration tests
-			// These tests are in the graphql-maven-plugin-samples-Forum-client project
-			Member m = opt.get();
-			m.setName("[SL] " + m.getName());
-			return m;
-		} else {
-			return null;
-		}
-	}
 }
