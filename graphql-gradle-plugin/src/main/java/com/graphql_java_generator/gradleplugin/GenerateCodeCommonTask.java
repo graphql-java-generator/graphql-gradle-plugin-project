@@ -167,6 +167,8 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 
 	final public void setCopyRuntimeSources(boolean copyRuntimeSources) {
 		this.copyRuntimeSources = copyRuntimeSources;
+		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		setInitialized(true);
 	}
 
 	@Input
@@ -177,6 +179,8 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 
 	final public void setCustomScalars(CustomScalarDefinition[] customScalars) {
 		this.customScalars = Arrays.asList(customScalars);
+		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		setInitialized(true);
 	}
 
 	@Input
@@ -195,6 +199,8 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 
 	final public void setPackageName(String packageName) {
 		this.packageName = packageName;
+		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		setInitialized(true);
 	}
 
 	@Input
@@ -205,6 +211,8 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 
 	final public void setSeparateUtilityClasses(boolean separateUtilityClasses) {
 		this.separateUtilityClasses = separateUtilityClasses;
+		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		setInitialized(true);
 	}
 
 	@Input
@@ -215,6 +223,8 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 
 	final public void setSourceEncoding(String sourceEncoding) {
 		this.sourceEncoding = sourceEncoding;
+		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		setInitialized(true);
 	}
 
 	@Override
@@ -232,6 +242,8 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 
 	public final void setSpringBeanSuffix(String springBeanSuffix) {
 		this.springBeanSuffix = springBeanSuffix;
+		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		setInitialized(true);
 	}
 
 	@OutputDirectory
@@ -250,6 +262,8 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 
 	final public void setTargetResourceFolder(String targetResourceFolder) {
 		this.targetResourceFolder = targetResourceFolder;
+		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		setInitialized(true);
 	}
 
 	@OutputDirectory
@@ -262,6 +276,8 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 
 	final public void setTargetSourceFolder(String targetSourceFolder) {
 		this.targetSourceFolder = targetSourceFolder;
+		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		setInitialized(true);
 	}
 
 	@Override

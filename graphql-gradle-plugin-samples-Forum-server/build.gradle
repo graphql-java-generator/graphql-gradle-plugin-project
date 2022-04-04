@@ -41,7 +41,7 @@ dependencies {
         exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
     }
     runtimeOnly "com.h2database:h2:${h2databaseVersion}"
-	
+
 	// Needed for Reactive implementation, to support the Subscription
 	implementation "io.reactivex.rxjava2:rxjava:2.2.19"
     
@@ -54,13 +54,11 @@ dependencies {
 	testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}"
 }
 
-// Of course, we need to generate the GraphQL's java code before compiling the project:
-compileJava.dependsOn generateServerCode
-
 // The line below adds the generated sources as a java source folder, in the IDE
 sourceSets.main.java.srcDirs += '/build/generated/sources/graphqlGradlePlugin'
 
 // Let's configure the GraphQL Gradle Plugin
+// (the plugin will automatically add it as a dependency to compileJava and processResources) 
 generateServerCodeConf {
 	generateBatchLoaderEnvironment = true
 	generateDataLoaderForLists = true

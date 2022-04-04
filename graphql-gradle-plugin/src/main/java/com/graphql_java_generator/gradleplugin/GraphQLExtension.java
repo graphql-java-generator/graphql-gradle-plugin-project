@@ -54,6 +54,8 @@ public class GraphQLExtension extends GenerateServerCodeExtension implements Gra
 
 	public void setGenerateDeprecatedRequestResponse(boolean generateDeprecatedRequestResponse) {
 		this.generateDeprecatedRequestResponse = generateDeprecatedRequestResponse;
+		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		setInitialized(true);
 	}
 
 	@Override
@@ -63,6 +65,8 @@ public class GraphQLExtension extends GenerateServerCodeExtension implements Gra
 
 	public void setMode(PluginMode mode) {
 		this.mode = mode;
+		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		setInitialized(true);
 	}
 
 }

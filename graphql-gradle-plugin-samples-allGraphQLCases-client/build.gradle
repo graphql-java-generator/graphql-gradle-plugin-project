@@ -48,19 +48,9 @@ dependencies {
 }
 
 
-// The line below makes the GraphQL plugin be executed before Java compiles, so that all sources are generated on time
-compileJava.dependsOn('generateClientCodeAllGraphQLCases')
-compileJava.dependsOn('generateClientCodeAllGraphQLCases2')
-compileJava.dependsOn('generateClientCodeForum')
-processResources.dependsOn('generateClientCodeAllGraphQLCases')
-processResources.dependsOn('generateClientCodeAllGraphQLCases2')
-processResources.dependsOn('generateClientCodeForum')
 
-// The line below adds the generated sources as a java source folder, in the IDE
-//sourceSets.main.java.srcDirs += "$buildDir/generated/sources/graphqlGradlePlugin"
-//sourceSets.main.java.srcDirs += "$buildDir/generated/sources/graphqlGradlePlugin2"
-
-//Let's configure the GraphQL Gradle Plugin, for the merge task
+// Let's configure the GraphQL Gradle Plugin, for the merge task
+// (the plugin will automatically add it as a dependency to compileJava and processResources) 
 generateGraphQLSchema {
 	schemaFileFolder = 'src/graphqls/allGraphQLCases/'
 	targetFolder = "$buildDir/generated/resources/generateGraphQLSchema"
@@ -68,6 +58,7 @@ generateGraphQLSchema {
 }
 
 // Let's configure the GraphQL Gradle Plugin, for the code generation
+// (the plugin will automatically add it as a dependency to compileJava and processResources) 
 tasks.register('generateClientCodeAllGraphQLCases', com.graphql_java_generator.gradleplugin.GenerateClientCodeTask) {
 	// In this sample, the GraphQL code generation works on the generated schema.
 	dependsOn generateGraphQLSchema
@@ -102,6 +93,7 @@ tasks.register('generateClientCodeAllGraphQLCases', com.graphql_java_generator.g
 }
 
 //Let's configure a second generation of the same Schema. This allows to check possible collision between Spring Beans
+// (the plugin will automatically add it as a dependency to compileJava and processResources) 
 tasks.register('generateClientCodeAllGraphQLCases2', com.graphql_java_generator.gradleplugin.GenerateClientCodeTask) {
 	// In this sample, the GraphQL code generation works on the generated schema.
 	dependsOn generateGraphQLSchema
@@ -138,6 +130,7 @@ tasks.register('generateClientCodeAllGraphQLCases2', com.graphql_java_generator.
 }
 
 // Then, a last code generation, to do a real integration test with another GraphQL server  
+// (the plugin will automatically add it as a dependency to compileJava and processResources) 
 tasks.register('generateClientCodeForum', com.graphql_java_generator.gradleplugin.GraphQLGenerateCodeTask) {
 	mode = 'client'
 	copyRuntimeSources = false

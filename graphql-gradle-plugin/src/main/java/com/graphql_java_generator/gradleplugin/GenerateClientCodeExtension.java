@@ -23,6 +23,8 @@ public class GenerateClientCodeExtension extends GenerateCodeCommonExtension
 
 	public void setGenerateDeprecatedRequestResponse(boolean generateDeprecatedRequestResponse) {
 		this.generateDeprecatedRequestResponse = generateDeprecatedRequestResponse;
+		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		setInitialized(true);
 	}
 
 	/** The mode is forced to {@link PluginMode#client} */

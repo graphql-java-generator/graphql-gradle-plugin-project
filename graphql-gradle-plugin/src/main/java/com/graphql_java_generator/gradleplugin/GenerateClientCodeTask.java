@@ -100,6 +100,8 @@ public class GenerateClientCodeTask extends GenerateCodeCommonTask implements Ge
 
 	public final void setGenerateDeprecatedRequestResponse(boolean generateDeprecatedRequestResponse) {
 		this.generateDeprecatedRequestResponse = generateDeprecatedRequestResponse;
+		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		setInitialized(true);
 	}
 
 	@Internal

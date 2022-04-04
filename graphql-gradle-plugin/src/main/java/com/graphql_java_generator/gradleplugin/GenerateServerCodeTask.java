@@ -263,6 +263,8 @@ public class GenerateServerCodeTask extends GenerateCodeCommonTask implements Ge
 
 	public final void setJavaTypeForIDType(String javaTypeForIDType) {
 		this.javaTypeForIDType = javaTypeForIDType;
+		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		setInitialized(true);
 	}
 
 	@Input
@@ -293,6 +295,8 @@ public class GenerateServerCodeTask extends GenerateCodeCommonTask implements Ge
 
 	public final void setScanBasePackages(String scanBasePackages) {
 		this.scanBasePackages = scanBasePackages;
+		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		setInitialized(true);
 	}
 
 	@Override
@@ -304,6 +308,8 @@ public class GenerateServerCodeTask extends GenerateCodeCommonTask implements Ge
 
 	public final void setSchemaPersonalizationFile(String schemaPersonalizationFile) {
 		this.schemaPersonalizationFile = schemaPersonalizationFile;
+		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		setInitialized(true);
 	}
 
 	@Override
@@ -314,6 +320,8 @@ public class GenerateServerCodeTask extends GenerateCodeCommonTask implements Ge
 
 	public final void setGenerateBatchLoaderEnvironment(boolean generateBatchLoaderEnvironment) {
 		this.generateBatchLoaderEnvironment = generateBatchLoaderEnvironment;
+		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		setInitialized(true);
 	}
 
 	@Internal
@@ -330,6 +338,8 @@ public class GenerateServerCodeTask extends GenerateCodeCommonTask implements Ge
 
 	public final void setGenerateJPAAnnotation(boolean generateJPAAnnotation) {
 		this.generateJPAAnnotation = generateJPAAnnotation;
+		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		setInitialized(true);
 	}
 
 	@Override
@@ -340,6 +350,8 @@ public class GenerateServerCodeTask extends GenerateCodeCommonTask implements Ge
 
 	public final void setGenerateDataLoaderForLists(boolean generateDataLoaderForLists) {
 		this.generateDataLoaderForLists = generateDataLoaderForLists;
+		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		setInitialized(true);
 	}
 
 	@Override

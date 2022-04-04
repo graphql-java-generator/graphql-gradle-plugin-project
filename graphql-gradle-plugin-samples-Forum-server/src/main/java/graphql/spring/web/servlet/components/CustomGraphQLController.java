@@ -52,6 +52,7 @@ public class CustomGraphQLController {
 	JsonSerializer jsonSerializer;
 
 	// TODO remove the 2 in the URL (which is here only for tests)
+	@SuppressWarnings("deprecation")
 	@RequestMapping(value = "${graphql.url:graphql3}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Object graphqlPOST(@RequestHeader(value = HttpHeaders.CONTENT_TYPE, required = false) String contentType,
 			@RequestParam(value = "query", required = false) String query,
@@ -152,6 +153,7 @@ public class CustomGraphQLController {
 	// return "";
 	// }
 
+	@SuppressWarnings("unchecked")
 	private Map<String, Object> convertVariablesJson(String jsonMap) {
 		if (jsonMap == null) {
 			return Collections.emptyMap();

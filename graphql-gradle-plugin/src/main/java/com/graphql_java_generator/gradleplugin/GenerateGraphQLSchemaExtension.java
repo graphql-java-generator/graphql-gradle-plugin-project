@@ -44,6 +44,8 @@ public class GenerateGraphQLSchemaExtension extends CommonExtension
 
 	public void setResourceEncoding(String resourceEncoding) {
 		this.resourceEncoding = resourceEncoding;
+		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		setInitialized(true);
 	}
 
 	@Override
@@ -56,6 +58,9 @@ public class GenerateGraphQLSchemaExtension extends CommonExtension
 		project.file(targetFolder).mkdirs();
 
 		this.targetFolder = targetFolder;
+
+		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		setInitialized(true);
 	}
 
 	@Override
@@ -65,6 +70,8 @@ public class GenerateGraphQLSchemaExtension extends CommonExtension
 
 	public void setTargetSchemaFileName(String targetSchemaFileName) {
 		this.targetSchemaFileName = targetSchemaFileName;
+		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		setInitialized(true);
 	}
 
 }

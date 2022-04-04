@@ -43,14 +43,11 @@ dependencies {
 	testImplementation "org.springframework.boot:spring-boot-starter-test:${springBootVersion}" 
 }
 
-// The line below makes the GraphQL plugin be executed before Java compiles, so that all sources are generated on time
-compileJava.dependsOn graphqlGenerateCode
-compileJava.dependsOn graphqlGenerateCode
-
 // The line below adds the generated sources as a java source folder, in the IDE
 sourceSets.main.java.srcDirs += '/build/generated/sources/graphqlGradlePlugin'
 
 // Let's configure the GraphQL Gradle Plugin
+// (the plugin will automatically add it as a dependency to compileJava and processResources) 
 graphql {
 	mode = "client"  //This line is here only for the demo, as client is the default mode
 	packageName = "com.graphql_java_generator.samples.forum.client.graphql.forum.client"

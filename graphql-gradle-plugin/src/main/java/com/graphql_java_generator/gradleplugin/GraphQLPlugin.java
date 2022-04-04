@@ -3,6 +3,7 @@
  */
 package com.graphql_java_generator.gradleplugin;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.gradle.api.Action;
@@ -12,6 +13,7 @@ import org.gradle.api.Task;
 import org.gradle.api.file.CopySpec;
 import org.gradle.api.file.DuplicatesStrategy;
 import org.gradle.api.plugins.JavaPlugin;
+import org.gradle.api.tasks.TaskProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +54,7 @@ public class GraphQLPlugin implements Plugin<Project> {
 	public void apply(Project project) {
 		applyGenerateClientCode(project);
 		applyGeneratePojo(project);
-		applyGenerateServerCode(project);
+		TaskProvider<GenerateServerCodeTask> taskProvider = applyGenerateServerCode(project);
 		applyGraphQLGenerateCode(project);
 		applyGenerateGraphQLSchema(project);
 
@@ -94,12 +96,57 @@ public class GraphQLPlugin implements Plugin<Project> {
 				// }
 				// } // for
 
-				Set<Task> tasks = project.getTasksByName("processResources", false);
-				if (tasks.size() == 0) {
+				Set<Task> compileJavaTasks = project.getTasksByName("compileJava", false);
+				Set<Task> processResourcesTasks = project.getTasksByName("processResources", false);
+
+				Set<Task> allDependingTasks = new HashSet<>();
+				allDependingTasks.addAll(compileJavaTasks);
+				allDependingTasks.addAll(processResourcesTasks);
+
+				// Add all tasks for this plugin as dependencies for the compileJava and processResources tasks
+				for (Task t : project.getTasks()) {
+					// GenerateServerCodeExtension e = t.getExtensions().findByType(GenerateServerCodeExtension.class);
+					// Object eName = t.getExtensions().findByName(GENERATE_SERVER_CODE_EXTENSION);
+					// if (e != null) {
+					// logger.info("getTasks(): {}, initialized={}", t.getPath(), e.isInitialized());
+					// } else if (eName != null && eName instanceof GenerateServerCodeExtension) {
+					// logger.info("getTasks(): {}, initialized={}", t.getPath(), t.property("initialized"));
+					// } else if (eName != null) {
+					// logger.info("getTasks(): {}, eName.class={}", t.getPath(), eName.getClass().getName());
+					// } else if (taskProvider.getName().equals(t.getName())) {
+					// // if (taskProvider.isPresent()) {
+					// // logger.info("getTasks(): {}, taskProvider.present={}", t.getPath(),
+					// // taskProvider.isPresent());
+					// // } else if (taskProvider.getName().equals(t.getName()) && !taskProvider.isPresent()) {
+					// // logger.info("getTasks(): {}, taskProvider.present={}", t.getPath(),
+					// // taskProvider.isPresent());
+					// // }
+					// logger.info("getTasks(): {}, taskProvider.present={}, initialized={}", t.getPath(),
+					// taskProvider.isPresent(), t.property("initialized"));
+					if (t.hasProperty("initialized")) {
+						logger.debug("getTasks(): {}, taskProvider.present={}, initialized={}", t.getPath(),
+								taskProvider.isPresent(), t.property("initialized"));
+						if ((boolean) t.property("initialized"))
+							addTaskAsADependencyToAnotherTask(p, t, allDependingTasks);
+					} else {
+						logger.debug("getTasks(): {}", t.getPath());
+					}
+				}
+
+				// project.getTasks().stream()
+				// .forEach(t -> logger.info("getTasks(): {}, extensions={}", t.getPath(), t.getExtensions()));
+				// project.getDefaultTasks().stream().forEach(t -> logger.info("getDefaultTasks(): {}", t));
+				// addThisTaskAsADependencyToAnotherTask(p, GENERATE_CLIENT_CODE_TASK_NAME, allDependingTasks);
+				// addThisTaskAsADependencyToAnotherTask(p, GENERATE_POJO_TASK_NAME, allDependingTasks);
+				// addThisTaskAsADependencyToAnotherTask(p, GENERATE_SERVER_CODE_TASK_NAME, allDependingTasks);
+				// addThisTaskAsADependencyToAnotherTask(p, GRAPHQL_GENERATE_CODE_TASK_NAME, allDependingTasks);
+				// addThisTaskAsADependencyToAnotherTask(p, MERGE_TASK_NAME, allDependingTasks);
+
+				if (processResourcesTasks.size() == 0) {
 					throw new RuntimeException(
 							"Found no 'processResources' task, when executing project.afterEvaluate()");
 				}
-				for (Task t : tasks) { // There should be one.
+				for (Task t : processResourcesTasks) { // There should be one.
 					// Some resources are generated in double. This can generate an error when building the project.
 					// Here is a workaround:
 					((CopySpec) t).setDuplicatesStrategy(DuplicatesStrategy.INCLUDE);
@@ -116,18 +163,13 @@ public class GraphQLPlugin implements Plugin<Project> {
 			 * @return the set of tasks, that has <I>taskName<I> as a name. This set contains at least one item (and
 			 *         should not contain more than one)
 			 */
-			private Set<Task> addDependency(String taskName, Task dependsOnTask) {
-				Set<Task> tasks = project.getTasksByName(taskName, false);
-				if (tasks.size() == 0) {
-					throw new RuntimeException("Found no '" + taskName + taskName + "' task, when trying to execute: "
-							+ taskName + ".dependsOn(\"" + dependsOnTask.getName() + "\"");
+			private void addTaskAsADependencyToAnotherTask(Project p, Task task, Set<Task> dependingTasks) {
+				for (Task dependingTask : dependingTasks) {
+					logger.info("Adding dependency: {}.dependsOn({})", dependingTask.getPath(), task.getPath());
+					dependingTask.dependsOn(task.getPath());
 				}
-				for (Task t : tasks) {
-					logger.info("    Adding task dependency: {}.dependsOn({})", t.getName(), dependsOnTask.getName());
-					t.dependsOn(dependsOnTask);
-				}
-				return tasks;
 			}
+
 		});// project.afterEvaluate
 			//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	}
@@ -175,14 +217,18 @@ public class GraphQLPlugin implements Plugin<Project> {
 	 * Applies the <I>generateServerCode</I> task
 	 * 
 	 * @param project
+	 * @return
 	 */
-	private void applyGenerateServerCode(Project project) {
+	private TaskProvider<GenerateServerCodeTask> applyGenerateServerCode(Project project) {
 		project.getExtensions().create(GENERATE_SERVER_CODE_EXTENSION, GenerateServerCodeExtension.class, project);
-		logger.debug("Applying generateServerCode task");
-		project.getTasks().register(GENERATE_SERVER_CODE_TASK_NAME, GenerateServerCodeTask.class);
+		logger.info("Applying generateServerCode task");
+		TaskProvider<GenerateServerCodeTask> ret = project.getTasks().register(GENERATE_SERVER_CODE_TASK_NAME,
+				GenerateServerCodeTask.class);
 
 		// Apply the java plugin, then add the generated source
 		project.getPlugins().apply(JavaPlugin.class);
+
+		return ret;
 	}
 
 	/**

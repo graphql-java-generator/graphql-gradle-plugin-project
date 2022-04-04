@@ -131,6 +131,8 @@ public class GraphQLGenerateCodeTask extends GenerateServerCodeTask implements G
 
 	public final void setMode(PluginMode mode) {
 		this.mode = mode;
+		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		setInitialized(true);
 	}
 
 	@Input
@@ -141,6 +143,8 @@ public class GraphQLGenerateCodeTask extends GenerateServerCodeTask implements G
 
 	public final void setGenerateDeprecatedRequestResponse(boolean generateDeprecatedRequestResponse) {
 		this.generateDeprecatedRequestResponse = generateDeprecatedRequestResponse;
+		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		setInitialized(true);
 	}
 
 	@Internal
@@ -153,5 +157,4 @@ public class GraphQLGenerateCodeTask extends GenerateServerCodeTask implements G
 	protected GraphQLExtension getExtension() {
 		return (GraphQLExtension) super.getExtension();
 	}
-
 }

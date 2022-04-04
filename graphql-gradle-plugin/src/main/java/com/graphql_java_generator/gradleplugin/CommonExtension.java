@@ -29,6 +29,8 @@ public class CommonExtension implements CommonConfiguration {
 
 	final protected Project project;
 
+	private boolean initialized = false;
+
 	private Integer maxTokens = Integer.parseInt(CommonConfiguration.DEFAULT_MAX_TOKENS);
 	private boolean addRelayConnections = CommonConfiguration.DEFAULT_ADD_RELAY_CONNECTIONS.equals("true");
 	private String schemaFileFolder = GraphQLConfiguration.DEFAULT_SCHEMA_FILE_FOLDER;
@@ -39,6 +41,14 @@ public class CommonExtension implements CommonConfiguration {
 
 	public CommonExtension(Project project) {
 		this.project = project;
+	}
+
+	public boolean isInitialized() {
+		return initialized;
+	}
+
+	public void setInitialized(boolean initialized) {
+		this.initialized = initialized;
 	}
 
 	@Override

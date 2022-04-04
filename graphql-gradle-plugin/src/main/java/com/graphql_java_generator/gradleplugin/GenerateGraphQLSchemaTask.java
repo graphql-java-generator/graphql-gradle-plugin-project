@@ -98,6 +98,9 @@ public class GenerateGraphQLSchemaTask extends CommonTask implements GenerateGra
 	}
 
 	public String setResourceEncoding(String resourceEncoding) {
+		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		setInitialized(true);
+
 		return this.resourceEncoding = resourceEncoding;
 	}
 
@@ -114,6 +117,9 @@ public class GenerateGraphQLSchemaTask extends CommonTask implements GenerateGra
 		getProject().file(targetFolder).mkdirs();
 
 		this.targetFolder = targetFolder;
+
+		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		setInitialized(true);
 	}
 
 	@Override
@@ -124,6 +130,8 @@ public class GenerateGraphQLSchemaTask extends CommonTask implements GenerateGra
 
 	public void setTargetSchemaFileName(String targetSchemaFileName) {
 		this.targetSchemaFileName = targetSchemaFileName;
+		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		setInitialized(true);
 	}
 
 	@Override

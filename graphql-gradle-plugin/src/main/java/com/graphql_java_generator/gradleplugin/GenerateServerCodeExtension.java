@@ -175,6 +175,8 @@ public class GenerateServerCodeExtension extends GenerateCodeCommonExtension
 
 	public void setGenerateBatchLoaderEnvironment(boolean generateBatchLoaderEnvironment) {
 		this.generateBatchLoaderEnvironment = generateBatchLoaderEnvironment;
+		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		setInitialized(true);
 	}
 
 	@Override
@@ -184,6 +186,8 @@ public class GenerateServerCodeExtension extends GenerateCodeCommonExtension
 
 	public void setGenerateJPAAnnotation(boolean generateJPAAnnotation) {
 		this.generateJPAAnnotation = generateJPAAnnotation;
+		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		setInitialized(true);
 	}
 
 	@Override
@@ -193,6 +197,8 @@ public class GenerateServerCodeExtension extends GenerateCodeCommonExtension
 
 	public final void setGenerateDataLoaderForLists(boolean generateDataLoaderForLists) {
 		this.generateDataLoaderForLists = generateDataLoaderForLists;
+		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		setInitialized(true);
 	}
 
 	@Override
@@ -202,6 +208,8 @@ public class GenerateServerCodeExtension extends GenerateCodeCommonExtension
 
 	public void setJavaTypeForIDType(String javaTypeForIDType) {
 		this.javaTypeForIDType = javaTypeForIDType;
+		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		setInitialized(true);
 	}
 
 	/** The mode is forced to {@link PluginMode#server} */
@@ -240,6 +248,8 @@ public class GenerateServerCodeExtension extends GenerateCodeCommonExtension
 
 	public void setScanBasePackages(String scanBasePackages) {
 		this.scanBasePackages = scanBasePackages;
+		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		setInitialized(true);
 	}
 
 	@Override
@@ -250,6 +260,8 @@ public class GenerateServerCodeExtension extends GenerateCodeCommonExtension
 
 	public void setSchemaPersonalizationFile(String schemaPersonalizationFile) {
 		this.schemaPersonalizationFile = schemaPersonalizationFile;
+		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		setInitialized(true);
 	}
 
 }

@@ -5,6 +5,7 @@ package com.graphql_java_generator.gradleplugin;
 
 import java.io.File;
 import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -42,6 +43,8 @@ import groovy.lang.Closure;
 public class CommonTask extends DefaultTask implements CommonConfiguration {
 
 	private static final Logger logger = LoggerFactory.getLogger(CommonTask.class);
+
+	private boolean initialized = false;
 
 	/**
 	 * Defines the options that maximum number of tokens that the GraphQL schema parser may read. The default value is
@@ -184,12 +187,25 @@ public class CommonTask extends DefaultTask implements CommonConfiguration {
 
 	final public void setAddRelayConnections(Boolean addRelayConnections) {
 		this.addRelayConnections = addRelayConnections;
+		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		setInitialized(true);
 	}
 
 	@Internal
 	@Override
 	final public String getDefaultTargetSchemaFileName() {
 		return GenerateGraphQLSchemaConfiguration.DEFAULT_TARGET_SCHEMA_FILE_NAME;
+	}
+
+	/**
+	 * Returns true if either this task or its extension has been initialized, that is: at least one of their setters
+	 * has been called.
+	 * 
+	 * @return
+	 */
+	@Input
+	public boolean isInitialized() {
+		return initialized || getExtension().isInitialized();
 	}
 
 	@Input
@@ -200,6 +216,8 @@ public class CommonTask extends DefaultTask implements CommonConfiguration {
 
 	public void setParserOptions(Integer maxTokens) {
 		this.maxTokens = maxTokens;
+		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		setInitialized(true);
 	}
 
 	@Internal
@@ -222,6 +240,8 @@ public class CommonTask extends DefaultTask implements CommonConfiguration {
 
 	final public void setSkipGenerationIfSchemaHasNotChanged(boolean skipGenerationIfSchemaHasNotChanged) {
 		this.skipGenerationIfSchemaHasNotChanged = skipGenerationIfSchemaHasNotChanged;
+		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		setInitialized(true);
 	}
 
 	@InputDirectory
@@ -233,6 +253,8 @@ public class CommonTask extends DefaultTask implements CommonConfiguration {
 
 	final public void setSchemaFileFolder(String schemaFileFolder) {
 		this.schemaFileFolder = schemaFileFolder;
+		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		setInitialized(true);
 	}
 
 	@Input
@@ -243,6 +265,8 @@ public class CommonTask extends DefaultTask implements CommonConfiguration {
 
 	final public void setSchemaFilePattern(String schemaFilePattern) {
 		this.schemaFilePattern = schemaFilePattern;
+		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		setInitialized(true);
 	}
 
 	@Input
@@ -253,6 +277,8 @@ public class CommonTask extends DefaultTask implements CommonConfiguration {
 
 	final public void setTemplates(Map<String, String> templates) {
 		this.templates = templates;
+		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		setInitialized(true);
 	}
 
 	@Override
@@ -275,6 +301,38 @@ public class CommonTask extends DefaultTask implements CommonConfiguration {
 		// No action in this class, as it manages no sources nor resources folder
 	}
 
+	/**
+	 * This method find the task(s) from the given name, and add the current task as a task that must be executed before
+	 * (dependsOn) the <code>taskName</code> task
+	 * 
+	 * @param taskName
+	 */
+	protected void addThisTaskAsADependencyToAnotherTask(String taskName) {
+		for (Task t : getTasks(taskName)) { // There should be one.
+			logger.info("Adding dependency: {}.dependsOn({})", t.getPath(), getPath());
+			t.dependsOn(getPath());
+		}
+	}
+
+	/** Retrieve the {@link Task} of the given name. There should be one. */
+	private Set<Task> getTasks(String taskName) {
+		Set<Task> tasks = getProject().getTasksByName(taskName, false);
+		if (tasks.size() == 0) {
+			throw new RuntimeException("Found no 'processResources' task, when executing project.afterEvaluate()");
+		}
+		return tasks;
+	}
+
+	/**
+	 * When initialized is set to true, this marks this task as being configured. So we'll mark compileJava and
+	 * processResources as depending on it.
+	 * 
+	 * @param initialized
+	 */
+	protected void setInitialized(boolean initialized) {
+		this.initialized = initialized;
+	}
+
 	// /**
 	// * Let's insure that we declare in all cases the folder where sources or resources are generated
 	// */
@@ -291,8 +349,13 @@ public class CommonTask extends DefaultTask implements CommonConfiguration {
 	@SuppressWarnings("rawtypes")
 	public Task configure(Closure closure) {
 		Task t = super.configure(closure);
-		logger.info("[In configure] Before calling registerGeneratedFolders, for task '" + getName() + "'");
+		logger.info("[In configure] Before calling registerGeneratedFolders, for task '" + getPath() + "'");
 		registerGeneratedFolders();
+
+		// This task is configured. So we add it to the task that depends on it
+		addThisTaskAsADependencyToAnotherTask("compileJava");
+		addThisTaskAsADependencyToAnotherTask("processResources");
+
 		return t;
 	}
 }

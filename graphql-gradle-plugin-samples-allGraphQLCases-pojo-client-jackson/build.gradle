@@ -40,14 +40,11 @@ dependencies {
 	testImplementation "org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}"  
 }
 
-// In this sample, the GraphQL code generation is based on the generated POJOs
-compileJava.dependsOn generatePojo
-processResources.dependsOn generatePojo
-
 // The line below adds the generated sources as a java source folder
 sourceSets.main.java.srcDirs += "$buildDir/generated/sources/generatePojo-client"
 
 // Let's configure the GraphQL Gradle Plugin, for the code generation, for both the client and the server pojo
+// (the plugin will automatically add it as a dependency to compileJava and processResources) 
 generatePojoConf {
 	mode = 'client'
 	packageName = 'org.allGraphQLCases.client.pojo'
