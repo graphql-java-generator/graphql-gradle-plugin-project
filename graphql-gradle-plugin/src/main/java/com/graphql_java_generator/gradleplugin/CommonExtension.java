@@ -102,6 +102,7 @@ public class CommonExtension implements CommonConfiguration {
 	}
 
 	@Override
+	@Deprecated
 	public boolean isSkipGenerationIfSchemaHasNotChanged() {
 		return skipGenerationIfSchemaHasNotChanged;
 	}

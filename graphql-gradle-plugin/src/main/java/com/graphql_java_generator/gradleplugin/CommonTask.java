@@ -201,7 +201,7 @@ public class CommonTask extends DefaultTask implements CommonConfiguration {
 	 * Returns true if either this task or its extension has been initialized, that is: at least one of their setters
 	 * has been called.
 	 * 
-	 * @return
+	 * @return The value for initialized
 	 */
 	@Input
 	public boolean isInitialized() {
@@ -234,6 +234,7 @@ public class CommonTask extends DefaultTask implements CommonConfiguration {
 
 	@Input
 	@Override
+	@Deprecated
 	final public boolean isSkipGenerationIfSchemaHasNotChanged() {
 		return getValue(skipGenerationIfSchemaHasNotChanged, getExtension().isSkipGenerationIfSchemaHasNotChanged());
 	}
@@ -306,6 +307,7 @@ public class CommonTask extends DefaultTask implements CommonConfiguration {
 	 * (dependsOn) the <code>taskName</code> task
 	 * 
 	 * @param taskName
+	 *            The task's name
 	 */
 	protected void addThisTaskAsADependencyToAnotherTask(String taskName) {
 		for (Task t : getTasks(taskName)) { // There should be one.
@@ -328,6 +330,7 @@ public class CommonTask extends DefaultTask implements CommonConfiguration {
 	 * processResources as depending on it.
 	 * 
 	 * @param initialized
+	 *            The new value for initialized
 	 */
 	protected void setInitialized(boolean initialized) {
 		this.initialized = initialized;

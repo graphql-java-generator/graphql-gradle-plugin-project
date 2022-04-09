@@ -9,6 +9,21 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 * skipGenerationIfSchemaHasNotChanged: true _(both client and server mode)_
 
 
+# 1.18.6
+
+All modes:
+* Removed various compilation warnings in the generated code
+
+Client mode:
+* Issue #132 (regression in 1.18.5). The code would not compile when generateDeprecatedRequestResponse=false and separateUtilityClasses=true.
+
+Gradle plugin:
+* As soon as a task defined in the _build.gradle_ , it is added as a dependency for the _compileJava_ and _processResources_ tasks
+    * No more need to write _compileJava.dependsOn(generateServerCode)_ or _processResources.dependsOn(generateServerCode)_
+* Removed a warning (about a missing `javax.annotation.meta.When` annotation), when building from the Gradle plugin
+* No more Gradle 8 compatibility warning
+
+
 # 1.18.5
 
 Both modes (client and server):

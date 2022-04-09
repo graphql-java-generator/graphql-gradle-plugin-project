@@ -60,6 +60,7 @@ class CommonTaskTest {
 	 * 
 	 * @throws IOException
 	 */
+	@SuppressWarnings("deprecation")
 	@Test
 	void test_noExtension() throws IOException {
 		assertEquals(CommonConfiguration.DEFAULT_ADD_RELAY_CONNECTIONS.equals("true"), task.isAddRelayConnections());
@@ -80,6 +81,7 @@ class CommonTaskTest {
 	 * 
 	 * @throws IOException
 	 */
+	@SuppressWarnings("deprecation")
 	@Test
 	void test_withExtensionValues() throws IOException {
 		// Preparation
@@ -109,6 +111,7 @@ class CommonTaskTest {
 	 * 
 	 * @throws IOException
 	 */
+	@SuppressWarnings("deprecation")
 	@Test
 	void test_withTaskValues() throws IOException {
 		// Preparation: Setting values in the task (they should override the default value of the extension)

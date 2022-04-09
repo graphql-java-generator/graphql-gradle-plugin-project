@@ -10,12 +10,12 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputDirectory;
 import org.gradle.api.tasks.SourceSet;
+import org.gradle.api.tasks.SourceSetContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -294,9 +294,8 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 	@Override
 	public void registerGeneratedFolders() {
 		// Let's add the folders where the sources and resources have been generated to the project
-		JavaPluginConvention javaConvention = getProject().getConvention().getPlugin(JavaPluginConvention.class);
-		SourceSet main = javaConvention.getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME);
-
+		SourceSet main = ((SourceSetContainer) getProject().getProperties().get("sourceSets"))
+				.getByName(SourceSet.MAIN_SOURCE_SET_NAME);
 		main.getJava().srcDir(getTargetSourceFolder());
 
 		logger.info("Adding '" + getTargetResourceFolder() + "' folder to the resources folders list for task '"

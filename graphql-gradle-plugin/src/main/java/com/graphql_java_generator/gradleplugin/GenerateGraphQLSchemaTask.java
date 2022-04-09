@@ -6,11 +6,11 @@ package com.graphql_java_generator.gradleplugin;
 import java.io.File;
 import java.io.IOException;
 
-import org.gradle.api.plugins.JavaPluginConvention;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputDirectory;
 import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.SourceSet;
+import org.gradle.api.tasks.SourceSetContainer;
 import org.gradle.api.tasks.TaskAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -148,8 +148,8 @@ public class GenerateGraphQLSchemaTask extends CommonTask implements GenerateGra
 	@Override
 	public void registerGeneratedFolders() {
 		// Let's add the folders where the GraphQL schemas have been generated to the project
-		JavaPluginConvention javaConvention = getProject().getConvention().getPlugin(JavaPluginConvention.class);
-		SourceSet main = javaConvention.getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME);
+		SourceSet main = ((SourceSetContainer) getProject().getProperties().get("sourceSets"))
+				.getByName(SourceSet.MAIN_SOURCE_SET_NAME);
 
 		logger.debug("Adding '" + getTargetFolder() + "' folder to the resources folders list");
 		main.getResources().srcDir(getTargetFolder());
