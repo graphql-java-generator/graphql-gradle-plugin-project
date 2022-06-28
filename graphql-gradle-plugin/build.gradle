@@ -18,10 +18,10 @@ plugins {
 apply from: 'common_conf.gradle'
 
 repositories {
-	mavenCentral()
 	//  mavenLocal is used on development site, to get snapshot of the com.graphql-java-generator maven plugin, 
 	// and relatives dependencies
 	mavenLocal()
+	mavenCentral()
 }
 
 dependencies {
