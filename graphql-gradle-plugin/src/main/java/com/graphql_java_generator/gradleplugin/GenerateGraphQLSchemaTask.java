@@ -79,7 +79,7 @@ public class GenerateGraphQLSchemaTask extends CommonTask implements GenerateGra
 		pluginConfiguration.logConfiguration();
 
 		GenerateGraphQLSchemaDocumentParser documentParser = ctx.getBean(GenerateGraphQLSchemaDocumentParser.class);
-		documentParser.parseDocuments();
+		documentParser.parseGraphQLSchemas();
 
 		GenerateGraphQLSchema merge = ctx.getBean(GenerateGraphQLSchema.class);
 		merge.generateGraphQLSchema();

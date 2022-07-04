@@ -8,6 +8,18 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 * separateUtilityClasses: true _(both client and server mode)_
 * skipGenerationIfSchemaHasNotChanged: true _(both client and server mode)_
 
+# 1.18.7
+
+Dependency upgrade :
+* Upgrade from graphql-java 17.3 to graphql-java 18.0
+* Upgrade from graphql-java-extended-scalars 17.0 to 18.0
+
+All modes:
+* Issue #136: most usages of the `extend` GraphQL keyword where not managed
+* Prevent endless compilation from an IDE (eclipse...) when a type is removed from the GraphQL schema
+* Issue [Gradle n°11](https://github.com/graphql-java-generator/graphql-gradle-plugin-project/issues/11): maxTokens is not set by default to Integer.MAX_VALUE (=2147483647). This prevent errors on big GraphQL schemas
+* Issue #139: Compilation Failures, when keywords used in enum values, or query/execution/subscription fields
+
 
 # 1.18.6
 

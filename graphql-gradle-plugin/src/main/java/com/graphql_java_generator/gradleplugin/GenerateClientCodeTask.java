@@ -68,7 +68,7 @@ public class GenerateClientCodeTask extends GenerateCodeCommonTask implements Ge
 	@TaskAction
 	public void execute() throws IOException {
 
-		logger.debug("Executing " + this.getClass().getName());
+		logger.info("Executing " + this.getClass().getName());
 
 		// We'll use Spring IoC
 		GenerateClientCodeSpringConfiguration.generateClientCodeConf = this;
@@ -80,7 +80,7 @@ public class GenerateClientCodeTask extends GenerateCodeCommonTask implements Ge
 		pluginConfiguration.logConfiguration();
 
 		GenerateCodeDocumentParser documentParser = ctx.getBean(GenerateCodeDocumentParser.class);
-		documentParser.parseDocuments();
+		documentParser.parseGraphQLSchemas();
 
 		GenerateCodeGenerator codeGenerator = ctx.getBean(GenerateCodeGenerator.class);
 		codeGenerator.generateCode();

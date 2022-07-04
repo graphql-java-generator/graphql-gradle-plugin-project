@@ -20,11 +20,19 @@ on FIELD_DEFINITION
 directive @generateDataLoaderForLists
 on FIELD_DEFINITION
 
+directive @testExtendKeyword
+on 
+# ExecutableDirectiveLocation
+	QUERY | MUTATION | SUBSCRIPTION | FIELD | FRAGMENT_DEFINITION | FRAGMENT_SPREAD | INLINE_FRAGMENT |
+# TypeSystemDirectiveLocation
+	SCHEMA | SCALAR | OBJECT | FIELD_DEFINITION | ARGUMENT_DEFINITION | INTERFACE | UNION | ENUM | ENUM_VALUE | INPUT_OBJECT | INPUT_FIELD_DEFINITION
+
+
 schema @testDirective(value:"on Schema") {
 	#A comment on the query
     query: MyQueryType
     mutation: AnotherMutationType
-    subscription: TheSubscriptionType
+    # The subscription is defined in the 'extend schema', here below
 }
 
 type MyQueryType {
@@ -86,6 +94,44 @@ type MyQueryType {
 
 	# test for issue #128 (compilation error when a Query returns a type 'Client')
 	issue128: Client
+	
+	# test for issue #139 (use of java reserved keyword)
+	enumWithReservedJavaKeywordAsValues: EnumWithReservedJavaKeywordAsValues
+	listOfEnumWithReservedJavaKeywordAsValues(
+		param1: EnumWithReservedJavaKeywordAsValues=abstract,
+		param2: [EnumWithReservedJavaKeywordAsValues]=[assert,boolean]
+		): [EnumWithReservedJavaKeywordAsValues]
+    if: String
+    implements: String
+    import: String
+    instanceof: String
+    int: String
+    interface: String
+    long: String
+    native: String
+    new: String
+    package: String
+    private: String
+    protected: String
+    public: String
+    return: String
+    short: String
+    static: String
+    strictfp: String
+    super: String
+    switch: String
+    synchronized: String
+    this: String
+    throw: String
+    throws: String
+    transient: String
+    try: String
+    void: String
+    volatile: String
+    while: String
+	
+	# test for issue #140 (error for type that implements multiple interfaces)
+    foo140: Foo140
 }
 
 type AnotherMutationType {
@@ -94,6 +140,10 @@ type AnotherMutationType {
 	
 	# Tests for issue 51
 	deleteSnacks(id: [ID]) : Boolean
+
+	# test for issue #139 (use of java reserved keyword)
+    if: String
+    implements: String
 }
 
 type TheSubscriptionType {
@@ -117,6 +167,12 @@ type TheSubscriptionType {
     
     # Issue 122: Check Subscription behavior when notification response is null
     subscriptionWithNullResponse: String
+
+	# test for issue #139 (use of java reserved keyword)
+	enumWithReservedJavaKeywordAsValues: EnumWithReservedJavaKeywordAsValues
+	listOfEnumWithReservedJavaKeywordAsValues: [EnumWithReservedJavaKeywordAsValues]
+    if: String
+    implements: String
 }
 
 interface WithID @testDirective(value:"on Interface", anotherValue: "666") {
@@ -172,7 +228,7 @@ input AllFieldCasesWithoutIdSubtypeInput {
 enum Unit {
     YEAR
     MONTH
-    MINUTE
+    DAY
 }
 
 
@@ -539,7 +595,33 @@ type TList implements IList {
 	list: [TFoo1]
 }
 
+#############################
+# test for issue #140
 
+
+interface IBar140 {
+    name: String
+}
+
+interface I2Bar140 implements IBar140 {
+    name: String
+}
+
+type Bar140 implements I2Bar140 & IBar140 {
+    name: String
+}
+
+interface IFoo140 {
+    bar: IBar140
+}
+
+interface I2Foo140 implements IFoo140 {
+    bar: I2Bar140
+}
+
+type Foo140 implements I2Foo140 & IFoo140 {
+    bar: Bar140
+}
 #############################
 # test for issue #128
 
@@ -556,4 +638,121 @@ type Field {
 type Builder {
 	# Generates a clash between the java classname, and the Builder class generated in each POJO
 	someValue: String
+}
+
+#############################
+# test for issue #130: test for all possible 'extend' use
+
+interface interfaceToTestExtendKeyword {
+	extendedField: String
+}
+
+type Pet {
+	id: ID!
+	name: String!
+}
+
+extend enum Unit @testExtendKeyword {
+	HOUR MINUTE SECOND
+}
+
+extend input AllFieldCasesInput @testExtendKeyword {
+	extendedField: String
+}
+
+extend interface AllFieldCasesInterface
+# Interface extension may not add implemented interface to an existing interface (as of juin 2018 GraphQL specs)
+# implements interfaceToTestExtendKeyword 
+@testExtendKeyword {
+	extendedField: String
+}
+# As we added a field in this interface, we need to add this field into every type that implements it
+extend type AllFieldCasesInterfaceType {
+	extendedField: String
+}
+
+extend scalar Long @testExtendKeyword
+
+extend schema @testExtendKeyword {
+    subscription: TheSubscriptionType 
+}
+
+extend type AllFieldCases implements interfaceToTestExtendKeyword @testExtendKeyword {
+	extendedField: String
+}
+
+extend union AnyCharacter @testExtendKeyword
+= Pet
+
+#############################
+# test for issue #139:
+
+
+enum EnumWithReservedJavaKeywordAsValues {
+	abstract, assert, boolean, break, byte, case, catch, char, class, const, continue, default, do, double, else, enum, extends, final, 
+	finally, float, for, goto, if, implements, import, instanceof, int, interface, long, native, new, package, private, protected, public, 
+	return, short, static, strictfp, super, switch, synchronized, this, throw, throws, transient, try, void, volatile, while
+}
+
+type ReservedJavaKeywordAsScalar {
+    if: String
+    implements: String
+    import: String
+    instanceof: String
+    int: String
+    interface: String
+    long: String
+    native: String
+    new: String
+    package: String
+    private: String
+    protected: String
+    public: String
+    return: String
+    short: String
+    static: String
+    strictfp: String
+    super: String
+    switch: String
+    synchronized: String
+    this: String
+    throw: String
+    throws: String
+    transient: String
+    try: String
+    void: String
+    volatile: String
+    while: String
+}
+
+type ReservedJavaKeywordAsObjectField {
+	# Parameters should also be protected
+    if(new: String, package: String, private: String): Human
+    implements: Human
+    import: Human
+    instanceof: Human
+    int: Human
+    interface: Human
+    long: Human
+    native: Human
+    new: Human
+    package: Human
+    private: Human
+    protected: Human
+    public: Human
+    return: Human
+    short: Human
+    static: Human
+    strictfp: Human
+    super: Human
+    switch: Human
+    synchronized: Human
+    this: Human
+    throw: Human
+    throws: Human
+    transient: Human
+    try: Human
+    void: Human
+    volatile: Human
+    while: Human
 }

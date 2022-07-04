@@ -243,7 +243,7 @@ public class GenerateServerCodeTask extends GenerateCodeCommonTask implements Ge
 		pluginConfiguration.logConfiguration();
 
 		GenerateCodeDocumentParser documentParser = ctx.getBean(GenerateCodeDocumentParser.class);
-		documentParser.parseDocuments();
+		documentParser.parseGraphQLSchemas();
 
 		GenerateCodeGenerator codeGenerator = ctx.getBean(GenerateCodeGenerator.class);
 		codeGenerator.generateCode();
