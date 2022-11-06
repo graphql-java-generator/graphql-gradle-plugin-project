@@ -69,6 +69,19 @@ tasks.register('generateClientCodeAllGraphQLCases', com.graphql_java_generator.g
 	separateUtilityClasses = true
 	skipGenerationIfSchemaHasNotChanged = true
 	springBeanSuffix = 'AllGraphQLCases'
+	
+	// Prefixes and suffixes for the generated POJOs
+	inputPrefix = "CINP_"
+	inputSuffix = "_CINS"
+	typePrefix = "CTP_"
+	typeSuffix = "_CTS"
+	interfacePrefix = "CIP_"
+	interfaceSuffix = "_CIS"
+	unionPrefix = "CUP_"
+	unionSuffix = "_CUS"
+	enumPrefix = "CEP_"
+	enumSuffix = "_CES"
+
 	customScalars = [ [
 			graphQLTypeName: "Date",
 			javaType: "java.util.Date",

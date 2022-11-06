@@ -70,6 +70,19 @@ generateServerCodeConf {
 	separateUtilityClasses = true
 	schemaFileFolder = '../graphql-gradle-plugin-samples-allGraphQLCases-client/src/graphqls/allGraphQLCases'
 	skipGenerationIfSchemaHasNotChanged = true
+
+	// prefixes and suffixes for the generated POJOs	
+	inputPrefix = "SINP_"
+	inputSuffix = "_SINS"
+	typePrefix = "STP_"
+	typeSuffix = "_STS"
+	interfacePrefix = "SIP_"
+	interfaceSuffix = "_SIS"
+	unionPrefix = "SUP_"
+	unionSuffix = "_SUS"
+	enumPrefix = "SEP_"
+	enumSuffix = "_SES"
+	
 	customScalars = [ [
 			graphQLTypeName: "Date",
 			javaType: "java.util.Date",

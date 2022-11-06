@@ -116,6 +116,41 @@ public class CommonTask extends DefaultTask implements CommonConfiguration {
 	 */
 	private Boolean addRelayConnections;
 
+	/**
+	 * An optional prefix to add to the classnames of the generated java classes for GraphQL enums. The prefix is added
+	 * at the beginning of the java classname, and must be compatible with java naming rules (no space, dot, comma,
+	 * etc.)
+	 */
+	private String enumPrefix;
+	/**
+	 * An optional suffix to add to the classnames of the generated java classes for GraphQL enums. The suffix is added
+	 * at the end of the java classname, and must be compatible with java naming rules (no space, dot, comma, etc.)
+	 */
+	private String enumSuffix;
+	/**
+	 * An optional prefix to add to the classnames of the generated java classes for GraphQL input objects. The prefix
+	 * is added at the beginning of the java classname, and must be compatible with java naming rules (no space, dot,
+	 * comma, etc.)
+	 */
+	private String inputPrefix;
+	/**
+	 * An optional suffix to add to the classnames of the generated java classes for GraphQL input objects. The suffix
+	 * is added at the end of the java classname, and must be compatible with java naming rules (no space, dot, comma,
+	 * etc.)
+	 */
+	private String inputSuffix;
+	/**
+	 * An optional prefix to add to the classnames of the generated java classes for GraphQL interfaces. The prefix is
+	 * added at the beginning of the java classname, and must be compatible with java naming rules (no space, dot,
+	 * comma, etc.)
+	 */
+	private String interfacePrefix;
+	/**
+	 * An optional suffix to add to the classnames of the generated java classes for GraphQL interfaces. The suffix is
+	 * added at the end of the java classname, and must be compatible with java naming rules (no space, dot, comma,
+	 * etc.)
+	 */
+	private String interfaceSuffix;
 	/** The folder where the graphql schema file(s) will be searched. The default schema is the main resource folder. */
 	private String schemaFileFolder;
 
@@ -160,6 +195,29 @@ public class CommonTask extends DefaultTask implements CommonConfiguration {
 	 */
 	private Map<String, String> templates;
 
+	/**
+	 * An optional prefix to add to the classnames of the generated java classes for GraphQL types. The prefix is added
+	 * at the beginning of the java classname, and must be compatible with java naming rules (no space, dot, comma,
+	 * etc.)
+	 */
+	private String typePrefix;
+	/**
+	 * An optional suffix to add to the classnames of the generated java classes for GraphQL types. The suffix is added
+	 * at the end of the java classname, and must be compatible with java naming rules (no space, dot, comma, etc.)
+	 */
+	private String typeSuffix;
+	/**
+	 * An optional prefix to add to the classnames of the generated java classes for GraphQL unions. The prefix is added
+	 * at the beginning of the java classname, and must be compatible with java naming rules (no space, dot, comma,
+	 * etc.)
+	 */
+	private String unionPrefix;
+	/**
+	 * An optional suffix to add to the classnames of the generated java classes for GraphQL unions. The suffix is added
+	 * at the end of the java classname, and must be compatible with java naming rules (no space, dot, comma, etc.)
+	 */
+	private String unionSuffix;
+
 	/** This is the class of the extension, that contains default value for the task attributes */
 	protected Class<? extends CommonExtension> extensionClass;
 
@@ -198,6 +256,65 @@ public class CommonTask extends DefaultTask implements CommonConfiguration {
 	}
 
 	/**
+	 * An optional prefix to add to the classnames of the generated java classes for GraphQL enums. The prefix is added
+	 * at the beginning of the java classname, and must be compatible with java naming rules (no space, dot, comma,
+	 * etc.)
+	 */
+	@Override
+	@Input
+	public String getEnumPrefix() {
+		return getValue(enumPrefix, getExtension().getEnumPrefix());
+	}
+
+	public void setEnumPrefix(String enumPrefix) {
+		this.enumPrefix = enumPrefix;
+	}
+
+	/**
+	 * An optional suffix to add to the classnames of the generated java classes for GraphQL enums. The suffix is added
+	 * at the end of the java classname, and must be compatible with java naming rules (no space, dot, comma, etc.)
+	 */
+	@Override
+	@Input
+	public String getEnumSuffix() {
+		return getValue(enumSuffix, getExtension().getEnumSuffix());
+	}
+
+	public void setEnumSuffix(String enumSuffix) {
+		this.enumSuffix = enumSuffix;
+	}
+
+	/**
+	 * An optional prefix to add to the classnames of the generated java classes for GraphQL input objects. The prefix
+	 * is added at the beginning of the java classname, and must be compatible with java naming rules (no space, dot,
+	 * comma, etc.)
+	 */
+	@Override
+	@Input
+	public String getInputPrefix() {
+		return getValue(inputPrefix, getExtension().getInputPrefix());
+	}
+
+	public void setInputPrefix(String inputPrefix) {
+		this.inputPrefix = inputPrefix;
+	}
+
+	/**
+	 * An optional suffix to add to the classnames of the generated java classes for GraphQL input objects. The suffix
+	 * is added at the end of the java classname, and must be compatible with java naming rules (no space, dot, comma,
+	 * etc.)
+	 */
+	@Override
+	@Input
+	public String getInputSuffix() {
+		return getValue(inputSuffix, getExtension().getInputSuffix());
+	}
+
+	public void setInputSuffix(String inputSuffix) {
+		this.inputSuffix = inputSuffix;
+	}
+
+	/**
 	 * Returns true if either this task or its extension has been initialized, that is: at least one of their setters
 	 * has been called.
 	 * 
@@ -206,6 +323,36 @@ public class CommonTask extends DefaultTask implements CommonConfiguration {
 	@Input
 	public boolean isInitialized() {
 		return initialized || getExtension().isInitialized();
+	}
+
+	/**
+	 * An optional prefix to add to the classnames of the generated java classes for GraphQL interfaces. The prefix is
+	 * added at the beginning of the java classname, and must be compatible with java naming rules (no space, dot,
+	 * comma, etc.)
+	 */
+	@Override
+	@Input
+	public String getInterfacePrefix() {
+		return getValue(interfacePrefix, getExtension().getInterfacePrefix());
+	}
+
+	public void setInterfacePrefix(String interfacePrefix) {
+		this.interfacePrefix = interfacePrefix;
+	}
+
+	/**
+	 * An optional suffix to add to the classnames of the generated java classes for GraphQL interfaces. The suffix is
+	 * added at the end of the java classname, and must be compatible with java naming rules (no space, dot, comma,
+	 * etc.)
+	 */
+	@Override
+	@Input
+	public String getInterfaceSuffix() {
+		return getValue(interfaceSuffix, getExtension().getInterfaceSuffix());
+	}
+
+	public void setInterfaceSuffix(String interfaceSuffix) {
+		this.interfaceSuffix = interfaceSuffix;
 	}
 
 	@Input
@@ -224,6 +371,64 @@ public class CommonTask extends DefaultTask implements CommonConfiguration {
 	@Override
 	final public File getProjectDir() {
 		return getProject().getProjectDir();
+	}
+
+	/**
+	 * An optional prefix to add to the classnames of the generated java classes for GraphQL types. The prefix is added
+	 * at the beginning of the java classname, and must be compatible with java naming rules (no space, dot, comma,
+	 * etc.)
+	 */
+	@Override
+	@Input
+	public String getTypePrefix() {
+		return getValue(typePrefix, getExtension().getTypePrefix());
+	}
+
+	public void setTypePrefix(String typePrefix) {
+		this.typePrefix = typePrefix;
+	}
+
+	/**
+	 * An optional suffix to add to the classnames of the generated java classes for GraphQL types. The suffix is added
+	 * at the end of the java classname, and must be compatible with java naming rules (no space, dot, comma, etc.)
+	 */
+	@Override
+	@Input
+	public String getTypeSuffix() {
+		return getValue(typeSuffix, getExtension().getTypeSuffix());
+	}
+
+	public void setTypeSuffix(String typeSuffix) {
+		this.typeSuffix = typeSuffix;
+	}
+
+	/**
+	 * An optional prefix to add to the classnames of the generated java classes for GraphQL unions. The prefix is added
+	 * at the beginning of the java classname, and must be compatible with java naming rules (no space, dot, comma,
+	 * etc.)
+	 */
+	@Override
+	@Input
+	public String getUnionPrefix() {
+		return getValue(unionPrefix, getExtension().getUnionPrefix());
+	}
+
+	public void setUnionPrefix(String unionPrefix) {
+		this.unionPrefix = unionPrefix;
+	}
+
+	/**
+	 * An optional suffix to add to the classnames of the generated java classes for GraphQL unions. The suffix is added
+	 * at the end of the java classname, and must be compatible with java naming rules (no space, dot, comma, etc.)
+	 */
+	@Override
+	@Input
+	public String getUnionSuffix() {
+		return getValue(unionSuffix, getExtension().getUnionSuffix());
+	}
+
+	public void setUnionSuffix(String unionSuffix) {
+		this.unionSuffix = unionSuffix;
 	}
 
 	@Internal
