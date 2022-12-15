@@ -9,7 +9,13 @@ plugins {
 apply from: 'graphql-gradle-plugin/common_conf.gradle'
 
 subprojects {
-	
+
+	// The '-parameters' compiler parameter allows to keep the parameter names in the generated code. It's useful for some tests.
+	// It has no impact on the plugin, as it is in a separate build.
+    tasks.withType(JavaCompile) {
+        options.compilerArgs << '-parameters'
+    }	
+
 	/**
 	 * For samples project, we add the copySamplesFromMavenPlugin task.
 	 *
