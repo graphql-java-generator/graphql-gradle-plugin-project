@@ -84,6 +84,10 @@ generateServerCodeConf {
 	enumSuffix = "_SES"
 	
 	customScalars = [ [
+			graphQLTypeName: "Base64String",
+			javaType: "byte[]",
+			graphQLScalarTypeStaticField: "com.graphql_java_generator.customscalars.GraphQLScalarTypeBase64String.GraphQLBase64String"
+		], [
 			graphQLTypeName: "Date",
 			javaType: "java.util.Date",
 			graphQLScalarTypeStaticField: "com.graphql_java_generator.customscalars.GraphQLScalarTypeDate.Date"

@@ -8,6 +8,25 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 * separateUtilityClasses: true _(both client and server mode)_
 * skipGenerationIfSchemaHasNotChanged: true _(both client and server mode)_
 
+# 1.18.10
+
+Dependency upgrade: 
+* Upgrade from graphql-java 19.2 to 20.0
+* Upgrade from graphql-java-extended-scalars 19.0 to 20.0
+
+Both modes:
+* PR #171: Add descriptions for input parameters if they exist
+* Field that are java reserved keywords of either GraphQL types or GraphQL input types would cause error during request execution
+    * Subject started thanks to the PR #177 (Modifying the getGetter method to accept reserved keywords)
+
+
+Client mode:
+* Issue #173: introspection query from graphql-java 19.2 would not work (the plugin was using an old introspection schema)
+* Issue #174: request execution error with Custom scalar that are arrays
+* Issue #175: adding the `@JsonProperty("xxx")` annotation on getter of the generated POJO would solve some issues when generating an openAPI based on the generated file, with field having case issues
+* Issue #176: the `GraphQLRequestExecutionException` class has now a `getErrors()` method, that allows to retrieve the list of `GraphQLError` returned by the server, including the extension field.
+
+
 # 1.18.9
 
 Dependency upgrade: 

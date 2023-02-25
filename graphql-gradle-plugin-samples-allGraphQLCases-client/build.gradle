@@ -83,6 +83,10 @@ tasks.register('generateClientCodeAllGraphQLCases', com.graphql_java_generator.g
 	enumSuffix = "_CES"
 
 	customScalars = [ [
+			graphQLTypeName: "Base64String",
+			javaType: "byte[]",
+			graphQLScalarTypeStaticField: "com.graphql_java_generator.customscalars.GraphQLScalarTypeBase64String.GraphQLBase64String"
+		], [
 			graphQLTypeName: "Date",
 			javaType: "java.util.Date",
 			graphQLScalarTypeStaticField: "com.graphql_java_generator.customscalars.GraphQLScalarTypeDate.Date"
@@ -120,6 +124,10 @@ tasks.register('generateClientCodeAllGraphQLCases2', com.graphql_java_generator.
 	springBeanSuffix = 'AllGraphQLCases2'
 	targetSourceFolder = "$buildDir/generated/sources/graphqlGradlePlugin2"
 	customScalars = [ [
+			graphQLTypeName: "Base64String",
+			javaType: "byte[]",
+			graphQLScalarTypeStaticField: "com.graphql_java_generator.customscalars.GraphQLScalarTypeBase64String.GraphQLBase64String"
+		], [
 			graphQLTypeName: "Date",
 			javaType: "java.util.Date",
 			graphQLScalarTypeStaticField: "com.graphql_java_generator.customscalars.GraphQLScalarTypeDate.Date"
