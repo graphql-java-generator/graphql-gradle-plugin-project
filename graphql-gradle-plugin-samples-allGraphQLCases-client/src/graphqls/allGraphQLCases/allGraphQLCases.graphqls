@@ -100,6 +100,15 @@ type MyQueryType {
     """
     directiveOnField: Character!
 
+    ################################################################################
+    # test for various queries that return enum, list of enum, list of nullable enums...
+    returnEnum: EnumWithReservedJavaKeywordAsValues
+    returnMandatoryEnum: EnumWithReservedJavaKeywordAsValues!
+    returnListOfEnums: [EnumWithReservedJavaKeywordAsValues]
+    returnListOfListOfEnums: [[EnumWithReservedJavaKeywordAsValues]]
+    returnListOfMandatoryEnums: [EnumWithReservedJavaKeywordAsValues!]
+    returnMandatoryListOfEnums: [EnumWithReservedJavaKeywordAsValues]!
+    returnMandatoryListOfMandatoryEnums: [EnumWithReservedJavaKeywordAsValues!]!
     
     ################################################################################
     # queries to check the addRelayConnections capability
@@ -204,6 +213,16 @@ type TheSubscriptionType {
     """
     subscriptionTest(param: SubscriptionTestParam!): String!
     
+    ################################################################################
+    # test for various queries that return enum, list of enum, list of nullable enums...
+    returnEnum: EnumWithReservedJavaKeywordAsValues
+    returnMandatoryEnum: EnumWithReservedJavaKeywordAsValues!
+    returnListOfEnums: [EnumWithReservedJavaKeywordAsValues]
+    returnListOfMandatoryEnums: [EnumWithReservedJavaKeywordAsValues!]
+    returnListOfListOfEnums: [[EnumWithReservedJavaKeywordAsValues]]
+    returnMandatoryListOfEnums: [EnumWithReservedJavaKeywordAsValues]!
+    returnMandatoryListOfMandatoryEnums: [EnumWithReservedJavaKeywordAsValues!]!
+
     """ Issue 122: Check Subscription behavior when notification response is null """
     subscriptionWithNullResponse: String
 

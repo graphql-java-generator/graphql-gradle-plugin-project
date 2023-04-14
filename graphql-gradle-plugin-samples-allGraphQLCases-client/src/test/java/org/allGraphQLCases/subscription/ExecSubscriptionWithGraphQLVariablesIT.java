@@ -12,10 +12,10 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.allGraphQLCases.SpringTestConfig;
-import org.allGraphQLCases.client.CTP_AllFieldCases_CTS;
 import org.allGraphQLCases.client.CINP_AllFieldCasesInput_CINS;
 import org.allGraphQLCases.client.CINP_AllFieldCasesWithoutIdSubtypeInput_CINS;
-import org.allGraphQLCases.client.util.GraphQLRequest;
+import org.allGraphQLCases.client.CTP_AllFieldCases_CTS;
+import org.allGraphQLCases.client.util.GraphQLRequestAllGraphQLCases;
 import org.allGraphQLCases.client.util.TheSubscriptionTypeExecutorAllGraphQLCases;
 import org.assertj.core.util.Arrays;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,7 +25,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.graphql_java_generator.client.GraphQLReactiveWebSocketHandler;
 import com.graphql_java_generator.client.SubscriptionClient;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
@@ -37,7 +36,7 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 public class ExecSubscriptionWithGraphQLVariablesIT {
 
 	/** Logger for this class */
-	private static Logger logger = LoggerFactory.getLogger(GraphQLReactiveWebSocketHandler.class);
+	private static Logger logger = LoggerFactory.getLogger(ExecSubscriptionWithGraphQLVariablesIT.class);
 
 	@Autowired
 	TheSubscriptionTypeExecutorAllGraphQLCases subscriptionExecutor;
@@ -66,6 +65,7 @@ public class ExecSubscriptionWithGraphQLVariablesIT {
 	@SuppressWarnings("unchecked")
 	@BeforeEach
 	void setup() {
+
 		// matrix
 		matrix.add((List<Double>) (Object) Arrays.asList(list0));
 		matrix.add((List<Double>) (Object) Arrays.asList(list1));
@@ -100,7 +100,7 @@ public class ExecSubscriptionWithGraphQLVariablesIT {
 		input.setAliases((List<String>) (Object) Arrays.asList(aliases));
 		input.setWithoutIdSubtype(listWithoutIdSubtype);
 
-		GraphQLRequest subscriptionRequest = subscriptionExecutor.getGraphQLRequest(
+		GraphQLRequestAllGraphQLCases subscriptionRequest = subscriptionExecutor.getGraphQLRequest(
 				"subscription sub($nbItems: Long!, $input: AllFieldCasesInput!){allGraphQLCasesInput(input: $input){id name age date dates matrix oneWithoutIdSubType listWithoutIdSubTypes(nbItems: $nbItems)}}");
 
 		// Go, go, go
@@ -125,7 +125,7 @@ public class ExecSubscriptionWithGraphQLVariablesIT {
 		// Let's wait for the subscription to close (the server will send back only one item)
 		callback.latchForClosure.await(20, TimeUnit.SECONDS);
 		assertNull(callback.lastReceivedError);
-		assertEquals("Complete", callback.closureReason);
+		assertNull(callback.closureReason, "Null since 2.0");
 
 		// Check of the received values
 		assertNotNull(callback.lastReceivedMessage);
@@ -184,7 +184,7 @@ public class ExecSubscriptionWithGraphQLVariablesIT {
 		// Let's wait for the subscription to close (the server will send back only one item)
 		callback.latchForClosure.await(20, TimeUnit.SECONDS);
 		assertNull(callback.lastReceivedError);
-		assertEquals("Complete", callback.closureReason);
+		assertNull(callback.closureReason, "Null since 2.0");
 
 		// Check of the received values
 		assertNotNull(callback.lastReceivedMessage);
@@ -221,7 +221,7 @@ public class ExecSubscriptionWithGraphQLVariablesIT {
 		SubscriptionCallbackToAllFieldCases callback = new SubscriptionCallbackToAllFieldCases(
 				"test_GraphQLVariables_allGraphQLCasesInput");
 
-		GraphQLRequest subscriptionRequest = subscriptionExecutor.getGraphQLRequest(
+		GraphQLRequestAllGraphQLCases subscriptionRequest = subscriptionExecutor.getGraphQLRequest(
 				"subscription sub($nbItems: Long!, $id: String!, $name: String!, $age: Long!, $i: Int!, $date: Date!, $dates: [Date!]!, $matrix: [[Float]!]!, $oneWithoutIdSubtype: AllFieldCasesWithoutIdSubtypeInput!, $listWithoutIdSubtype: [AllFieldCasesWithoutIdSubtypeInput!]!)"
 						+ "{allGraphQLCasesParam(id: $id, name: $name, age: $age, integer: $i, date: $date, dates: $dates, matrix: $matrix, oneWithoutIdSubtype: $oneWithoutIdSubtype, listWithoutIdSubtype: $listWithoutIdSubtype)"
 						+ "{id name age date dates matrix oneWithoutIdSubType listWithoutIdSubTypes(nbItems: $nbItems)}}");
@@ -256,7 +256,7 @@ public class ExecSubscriptionWithGraphQLVariablesIT {
 		// Let's wait for the subscription to close (the server will send back only one item)
 		callback.latchForClosure.await(20, TimeUnit.SECONDS);
 		assertNull(callback.lastReceivedError);
-		assertEquals("Complete", callback.closureReason);
+		assertNull(callback.closureReason, "Null since 2.0");
 
 		// Check of the received values
 		assertNotNull(callback.lastReceivedMessage);

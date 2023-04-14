@@ -1,4 +1,5 @@
 # List of task that should be done
+* Remove the graphql-gradle-plugin/userHome from git
 * Manage the below warning, during the Gradle build:
     * Task :graphql-gradle-plugin-samples-Forum-client:compileJava
         * warning: unknown enum constant When.MAYBE

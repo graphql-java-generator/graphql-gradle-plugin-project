@@ -13,6 +13,7 @@ import org.gradle.api.Project;
 import com.graphql_java_generator.plugin.conf.CustomScalarDefinition;
 import com.graphql_java_generator.plugin.conf.GenerateCodeCommonConfiguration;
 import com.graphql_java_generator.plugin.conf.PluginMode;
+import com.graphql_java_generator.plugin.conf.QueryMutationExecutionProtocol;
 
 import graphql.schema.GraphQLScalarType;
 
@@ -96,6 +97,14 @@ public class GenerateCodeCommonExtension extends CommonExtension implements Gene
 	private String packageName = GenerateCodeCommonConfiguration.DEFAULT_PACKAGE_NAME;
 
 	/**
+	 * (since 2.0RC1) The {@link QueryMutationExecutionProtocol} to use for GraphQL queries and mutations (not
+	 * subscriptions). The allowed values are: http and webSocket.<br/>
+	 * The default value is http.
+	 */
+	QueryMutationExecutionProtocol queryMutationExecutionProtocol = QueryMutationExecutionProtocol
+			.valueOf(GenerateCodeCommonConfiguration.DEFAULT_QUERY_MUTATION_EXECUTION_PROTOCOL);
+
+	/**
 	 * <P>
 	 * Indicates whether the utility classes (that is: the classes that are not match an item in the GraphQL schema) are
 	 * generated in the same package than the classes that matches the GraphQL schema.
@@ -131,6 +140,12 @@ public class GenerateCodeCommonExtension extends CommonExtension implements Gene
 
 	/** The folder where the source code for the generated classes will be generated */
 	protected String targetSourceFolder = "./build/generated/sources/graphqlGradlePlugin";
+
+	/**
+	 * (since 2.0RC) If false, it uses jakarta EE8 imports (that begins by javax.). If true, it uses jakarta EE8 imports
+	 * (that begins by jakarta.).
+	 */
+	protected boolean useJakartaEE9;
 
 	public GenerateCodeCommonExtension(Project project) {
 		super(project);
@@ -170,6 +185,17 @@ public class GenerateCodeCommonExtension extends CommonExtension implements Gene
 
 	final public void setPackageName(String packageName) {
 		this.packageName = packageName;
+		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		setInitialized(true);
+	}
+
+	@Override
+	final public QueryMutationExecutionProtocol getQueryMutationExecutionProtocol() {
+		return queryMutationExecutionProtocol;
+	}
+
+	final public void setQueryMutationExecutionProtocol(QueryMutationExecutionProtocol queryMutationExecutionProtocol) {
+		this.queryMutationExecutionProtocol = queryMutationExecutionProtocol;
 		// This task as being configured. So we'll mark compileJava and processResources as depending on it
 		setInitialized(true);
 	}
@@ -230,6 +256,17 @@ public class GenerateCodeCommonExtension extends CommonExtension implements Gene
 
 	final public void setTargetSourceFolder(String targetSourceFolder) {
 		this.targetSourceFolder = targetSourceFolder;
+		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		setInitialized(true);
+	}
+
+	@Override
+	final public boolean isUseJakartaEE9() {
+		return useJakartaEE9;
+	}
+
+	final public void setUseJakartaEE9(boolean useJakartaEE9) {
+		this.useJakartaEE9 = useJakartaEE9;
 		// This task as being configured. So we'll mark compileJava and processResources as depending on it
 		setInitialized(true);
 	}

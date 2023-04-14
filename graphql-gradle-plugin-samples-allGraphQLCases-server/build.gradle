@@ -17,15 +17,14 @@ buildscript {
         
         classpath 'org.springframework.boot:spring-boot-gradle-plugin:2.4.0'
     }
-    
 }
 
-apply plugin: 'java'
-apply plugin: 'org.springframework.boot'
-apply plugin: 'com.graphql_java_generator.graphql-gradle-plugin'
-
-// Let's get the group and version for this project
-apply from: '../graphql-gradle-plugin/common_conf.gradle'
+plugins {
+	id 'java'
+	id 'com.graphql_java_generator.graphql-gradle-plugin'
+	id 'org.springframework.boot' version "${springBootVersion}"
+	id 'io.spring.dependency-management' version "${springDependencyManagementPluginVersion}"
+}
 
 repositories {
 	// The plugin depends on the graphql-maven-plugin plugin logic module, which is in mavenCentral (for releases), and in mavenLocal 
@@ -36,25 +35,20 @@ repositories {
 
 dependencies {
 	// The graphql-java-client-dependencies module agregates all dependencies for the generated code
-    implementation (group: 'com.graphql-java-generator', name: 'graphql-java-server-runtime', version: "${graphQLJavaGeneratorVersion}") 
+    implementation "com.graphql-java-generator:graphql-java-server-runtime:${project.version}" 
+
+	// Then, the dependencies that are specific to this project
+	implementation "org.springframework.boot:spring-boot-starter-websocket"  // Mandatory to activate the web sockets (mandatory for subscription)
+	implementation "org.springframework.boot:spring-boot-starter-security"
+	implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
+
     // This project uses some custom scalars from the graphql-java-extended-scalars module
     implementation "com.graphql-java:graphql-java-extended-scalars:${graphqlJavaExtendedScalarsVersion}"
+	
     implementation "com.github.dozermapper:dozer-core:${dozerVersion}"
-    implementation "org.springframework.boot:spring-boot-starter-security:${springBootVersion}"
-    implementation "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
-    implementation "org.springframework.boot:spring-boot-starter-webflux:${springBootVersion}"
-    implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server:${springBootVersion}"
-    implementation "org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.4.0"
-    implementation "org.apache.commons:commons-lang3:${commonsLang3Version}"
-    runtimeOnly "com.nimbusds:oauth2-oidc-sdk:${oauth2OidcSdkVersion}"
-    
-    // Gives a GraphQL test UI available at http://localhost:8180/graphiql 
-    runtimeOnly "com.graphql-java-kickstart:graphiql-spring-boot-starter:${graphiqlSpringBootStarterVersion}"
 
 	// Dependencies for tests
-	testImplementation "org.springframework:spring-test:${springFrameworkVersion}"
-	testImplementation "org.junit.jupiter:junit-jupiter-api:${junitJupiterVersion}"
-	testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}"
+	testImplementation "org.springframework.boot:spring-boot-starter-test"
 }
 
 // The line below adds the generated sources as a java source folder, in the IDE

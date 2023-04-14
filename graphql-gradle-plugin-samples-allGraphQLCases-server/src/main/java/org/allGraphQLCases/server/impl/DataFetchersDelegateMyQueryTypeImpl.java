@@ -1,6 +1,7 @@
 package org.allGraphQLCases.server.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -26,6 +27,7 @@ import org.allGraphQLCases.server.STP_MyQueryType_STS;
 import org.allGraphQLCases.server.STP_ReservedJavaKeywordAllFieldCases_STS;
 import org.allGraphQLCases.server.STP_break_STS;
 import org.allGraphQLCases.server.SUP_AnyCharacter_SUS;
+import org.allGraphQLCases.server.config.GraphQlException;
 import org.allGraphQLCases.server.util.DataFetchersDelegateMyQueryType;
 import org.springframework.stereotype.Component;
 
@@ -141,7 +143,7 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 	@Override
 	public SIP_Character_SIS error(DataFetchingEnvironment dataFetchingEnvironment, String errorLabel) {
 		// This method is here only to test the error behavior.
-		throw new RuntimeException("This is an error: " + errorLabel);
+		throw new GraphQlException("This is an error: " + errorLabel);
 	}
 
 	@Override
@@ -550,6 +552,54 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 	@Override
 	public byte[] testBase64String(DataFetchingEnvironment dataFetchingEnvironment, byte[] input) {
 		return input;
+	}
+
+	@Override
+	public SEP_EnumWithReservedJavaKeywordAsValues_SES returnEnum(DataFetchingEnvironment dataFetchingEnvironment) {
+		return null;
+	}
+
+	@Override
+	public SEP_EnumWithReservedJavaKeywordAsValues_SES returnMandatoryEnum(
+			DataFetchingEnvironment dataFetchingEnvironment) {
+		return SEP_EnumWithReservedJavaKeywordAsValues_SES._assert;
+	}
+
+	@Override
+	public List<SEP_EnumWithReservedJavaKeywordAsValues_SES> returnListOfEnums(
+			DataFetchingEnvironment dataFetchingEnvironment) {
+		return null;
+	}
+
+	@Override
+	public List<List<SEP_EnumWithReservedJavaKeywordAsValues_SES>> returnListOfListOfEnums(
+			DataFetchingEnvironment dataFetchingEnvironment) {
+		return Arrays.asList(//
+				Arrays.asList(SEP_EnumWithReservedJavaKeywordAsValues_SES._boolean, null,
+						SEP_EnumWithReservedJavaKeywordAsValues_SES._break), //
+				null, //
+				Arrays.asList(SEP_EnumWithReservedJavaKeywordAsValues_SES._default, null,
+						SEP_EnumWithReservedJavaKeywordAsValues_SES._implements));
+	}
+
+	@Override
+	public List<SEP_EnumWithReservedJavaKeywordAsValues_SES> returnListOfMandatoryEnums(
+			DataFetchingEnvironment dataFetchingEnvironment) {
+		return null;
+	}
+
+	@Override
+	public List<SEP_EnumWithReservedJavaKeywordAsValues_SES> returnMandatoryListOfEnums(
+			DataFetchingEnvironment dataFetchingEnvironment) {
+		return Arrays.asList(SEP_EnumWithReservedJavaKeywordAsValues_SES._boolean, null,
+				SEP_EnumWithReservedJavaKeywordAsValues_SES._break);
+	}
+
+	@Override
+	public List<SEP_EnumWithReservedJavaKeywordAsValues_SES> returnMandatoryListOfMandatoryEnums(
+			DataFetchingEnvironment dataFetchingEnvironment) {
+		return Arrays.asList(SEP_EnumWithReservedJavaKeywordAsValues_SES._byte,
+				SEP_EnumWithReservedJavaKeywordAsValues_SES._case);
 	}
 
 }

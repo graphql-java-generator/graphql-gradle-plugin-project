@@ -19,7 +19,7 @@ import com.graphql_java_generator.plugin.conf.CommonConfiguration;
 import com.graphql_java_generator.plugin.conf.GenerateGraphQLSchemaConfiguration;
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
 
-class CommonTaskTest {
+public class CommonTaskTest {
 
 	static final String PROJECT_NAME = "A Dummy project";
 	File projectDir;

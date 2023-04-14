@@ -11,8 +11,6 @@ rootProject.name = 'graphql-gradle-plugin-project'
 
 includeBuild 'graphql-gradle-plugin'
 
-//include 'graphql-gradle-plugin-docs'
-//include 'graphql-gradle-plugin-issue10'
 include 'graphql-gradle-plugin-samples-allGraphQLCases-pojo-client'
 include 'graphql-gradle-plugin-samples-allGraphQLCases-pojo-client-jackson'
 include 'graphql-gradle-plugin-samples-allGraphQLCases-pojo-server'

@@ -20,12 +20,14 @@ buildscript {
     
 }
 
-apply plugin: 'java'
-apply plugin: 'org.springframework.boot'
-apply plugin: 'com.graphql_java_generator.graphql-gradle-plugin'
-
-// Let's get the group and version for this project
-apply from: '../graphql-gradle-plugin/common_conf.gradle'
+plugins {
+	id 'java-library'
+	id 'application'
+	id 'com.graphql_java_generator.graphql-gradle-plugin'
+	id 'org.springframework.boot' version "${spring3_springBootVersion}"
+	id 'io.spring.dependency-management' version "${spring3_DependencyManagementPluginVersion}"
+}
+sourceCompatibility = '17'
 
 repositories {
 	// The plugin depends on the graphql-maven-plugin plugin logic module, which is in mavenCentral (for releases), and in mavenLocal 
@@ -36,22 +38,16 @@ repositories {
 
 dependencies {
 	// The graphql-java-client-dependencies module agregates all dependencies for the generated code
-    implementation "com.graphql-java-generator:graphql-java-server-dependencies:${graphQLJavaGeneratorVersion}"
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa:${springBootVersion}") {
-        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
-    }
-    runtimeOnly "com.h2database:h2:${h2databaseVersion}"
+    implementation "com.graphql-java-generator:graphql-java-server-dependencies:${project.version}" 
 
-	// Needed for Reactive implementation, to support the Subscription
-	implementation "io.reactivex.rxjava2:rxjava:2.2.19"
-    
-    // Gives a GraphQL test UI available at http://localhost:8180/graphiql 
-    runtimeOnly "com.graphql-java-kickstart:graphiql-spring-boot-starter:${graphiqlSpringBootStarterVersion}"
+	// Then, the dependencies that are specific to this project
+	implementation "org.springframework.boot:spring-boot-starter-websocket"  // Mandatory to activate the web sockets (mandatory for subscription)
+	implementation "org.springframework.boot:spring-boot-starter-data-jpa"
+	
+	runtimeOnly "com.h2database:h2"
 
 	// Dependencies for tests
-	testImplementation "org.springframework:spring-test:${springFrameworkVersion}"
-	testImplementation "org.junit.jupiter:junit-jupiter-api:${junitJupiterVersion}"
-	testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}"
+	testImplementation "org.springframework.boot:spring-boot-starter-test" 
 }
 
 // The line below adds the generated sources as a java source folder, in the IDE

@@ -17,8 +17,8 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.graphql.ResponseError;
 
-import com.graphql_java_generator.client.response.Error;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 
@@ -52,10 +52,10 @@ public class ErrorIT {
 
 		assertTrue(ex.getMessage().contains("add a SourceLocation"), "The exception message is: " + ex.getMessage());
 
-		List<Error> errors = ex.getErrors();
+		List<ResponseError> errors = ex.getErrors();
 		assertEquals(1, errors.size());
 
-		Error error = errors.get(0);
+		ResponseError error = errors.get(0);
 		assertTrue(error.getMessage().contains("add a SourceLocation"), "The error message is: " + error.getMessage());
 
 		List<SourceLocation> locations = error.getLocations();
@@ -68,7 +68,8 @@ public class ErrorIT {
 		//
 		assertEquals(22, locations.get(1).getLine());
 		assertEquals(222, locations.get(1).getColumn());
-		assertEquals(null, locations.get(1).getSourceName());
+		assertEquals(null, locations.get(1).getSourceName(),
+				"Should be 'Another source name', but it is cleared on server side, somewhere on the process");
 	}
 
 	/**
@@ -87,10 +88,10 @@ public class ErrorIT {
 
 		assertTrue(ex.getMessage().contains("add an extension"), "The exception message is: " + ex.getMessage());
 
-		List<Error> errors = ex.getErrors();
+		List<ResponseError> errors = ex.getErrors();
 		assertEquals(1, errors.size());
 
-		Error error = errors.get(0);
+		ResponseError error = errors.get(0);
 		assertTrue(error.getMessage().contains("add an extension"), "The error message is: " + error.getMessage());
 
 		Map<String, Object> extensions = error.getExtensions();

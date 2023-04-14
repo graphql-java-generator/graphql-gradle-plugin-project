@@ -3,23 +3,21 @@
  */
 package org.forum.server.specific_code;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 import org.forum.server.graphql.Board;
 import org.forum.server.graphql.Post;
 import org.forum.server.graphql.Topic;
 import org.forum.server.jpa.BoardRepository;
 import org.forum.server.jpa.TopicRepository;
-import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.Flowable;
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.subjects.PublishSubject;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Sinks;
+import reactor.core.publisher.Sinks.EmitResult;
+import reactor.core.publisher.Sinks.Many;
 
 /**
  * This class is responsible for Publishing new Posts. This allows to send the notifications, when an application
@@ -30,6 +28,8 @@ import io.reactivex.subjects.PublishSubject;
 @Component
 public class PostPublisher {
 
+	static int MESSAGE_BUFFER_SIZE = 100;
+
 	/** The logger for this instance */
 	protected Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -38,36 +38,10 @@ public class PostPublisher {
 	@Resource
 	BoardRepository boardRepository;
 
-	PublishSubject<Post> subject = PublishSubject.create();
-
-	public PostPublisher() {
-		// in debug mode, we'll log each new entry in this subject, to check that the subject properly received the
-		// events, and that the subscribers to receive them
-		if (logger.isDebugEnabled()) {
-			subject.subscribe(new Observer<Post>() {
-
-				@Override
-				public void onSubscribe(Disposable d) {
-					logger.debug("[Debug subscriber] onSubscribe");
-				}
-
-				@Override
-				public void onNext(Post t) {
-					logger.debug("[Debug subscriber] onNext: " + t);
-				}
-
-				@Override
-				public void onError(Throwable e) {
-					logger.debug("[Debug subscriber] onError: " + e);
-				}
-
-				@Override
-				public void onComplete() {
-					logger.debug("[Debug subscriber] onComplete");
-				}
-			});
-		}
-	}
+	// onBackpressureBuffer : autoCancel=false, so that the Sink doesn't fully shutdown (not publishing anymore) when
+	// the last subscriber cancels. Otherwise it would not been possible to emit messages once one consumer has
+	// subscribed then unsubscribed.
+	Many<Post> sink = Sinks.many().multicast().directBestEffort();
 
 	/**
 	 * Let's emit this new {@link Post}
@@ -76,7 +50,12 @@ public class PostPublisher {
 	 */
 	void onNext(Post post) {
 		logger.trace("Emitting subscription notification for {}", post);
-		subject.onNext(post);
+		EmitResult result = sink.tryEmitNext(post);
+		if (result.isFailure()) {
+			logger.error("Error while emitting subscription notification for {}", post);
+		} else if (logger.isTraceEnabled()) {
+			logger.trace("  Successful emitting of subscription notification for {}", post);
+		}
 	}
 
 	/**
@@ -84,20 +63,20 @@ public class PostPublisher {
 	 * 
 	 * @return
 	 */
-	Publisher<Post> getPublisher(String boardName) {
-		logger.debug("Executing Subscription for {}", boardName);
+	Flux<Post> getPublisher(String boardName) {
+		logger.debug("Subscribing on sink for {}", boardName);
 
-		Flowable<Post> publisher = subject.toFlowable(BackpressureStrategy.BUFFER);
+		Flux<Post> flux = sink.asFlux();
 
 		if (boardName != null) {
-			publisher.filter((post) -> {
+			flux.filter((post) -> {
 				Topic topic = topicRepository.findById(post.getTopicId()).get();
 				Board board = boardRepository.findById(topic.getBoardId()).get();
 				return board.getName().equals(boardName);
 			});
 		}
 
-		return publisher;
+		return flux;
 	}
 
 }

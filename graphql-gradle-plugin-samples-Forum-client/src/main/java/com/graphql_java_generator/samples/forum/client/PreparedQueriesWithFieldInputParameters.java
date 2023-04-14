@@ -3,6 +3,11 @@ package com.graphql_java_generator.samples.forum.client;
 import java.util.Date;
 import java.util.List;
 
+import jakarta.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 import com.graphql_java_generator.samples.forum.client.graphql.forum.client.GraphQLRequest;
@@ -17,15 +22,15 @@ import com.graphql_java_generator.samples.forum.client.graphql.forum.client.Topi
  * @author etienne-sf
  *
  */
+@Component
 public class PreparedQueriesWithFieldInputParameters {
 
-	public static String GRAPHQL_ENDPOINT_URL = "http://localhost:8182/graphql";
+	@Autowired
+	QueryExecutor queryType;
+	GraphQLRequest topicAuthorPostAuthorResponse;
 
-	final QueryExecutor queryType;
-	final GraphQLRequest topicAuthorPostAuthorResponse;
-
-	public PreparedQueriesWithFieldInputParameters() throws GraphQLRequestPreparationException {
-		queryType = new QueryExecutor(GRAPHQL_ENDPOINT_URL);
+	@PostConstruct
+	public void postConstruct() throws GraphQLRequestPreparationException {
 		topicAuthorPostAuthorResponse = queryType.getTopicsGraphQLRequest(
 				"{id date author{name email alias id type} nbPosts title content posts(memberId:?memberId, memberName:?memberName, since:?since){id date author{name email alias} title content}}");
 	}
@@ -37,7 +42,7 @@ public class PreparedQueriesWithFieldInputParameters {
 	 * 
 	 * @throws GraphQLRequestExecutionException
 	 */
-	List<Topic> boardsWithPostSince(String boardName, String memberId, String memberName, Date since)
+	public List<Topic> boardsWithPostSince(String boardName, String memberId, String memberName, Date since)
 			throws GraphQLRequestExecutionException {
 		return queryType.topics(topicAuthorPostAuthorResponse, boardName, "memberId", memberId, "memberName",
 				memberName, "since", since);

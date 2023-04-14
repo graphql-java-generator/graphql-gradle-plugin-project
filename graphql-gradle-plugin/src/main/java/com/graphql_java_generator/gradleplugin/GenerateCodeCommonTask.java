@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import com.graphql_java_generator.plugin.conf.CustomScalarDefinition;
 import com.graphql_java_generator.plugin.conf.GenerateCodeCommonConfiguration;
 import com.graphql_java_generator.plugin.conf.PluginMode;
+import com.graphql_java_generator.plugin.conf.QueryMutationExecutionProtocol;
 
 import graphql.schema.GraphQLScalarType;
 
@@ -111,6 +112,12 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 
 	/** The packageName in which the generated classes will be created */
 	private String packageName;
+	/**
+	 * (since 2.0RC1) The {@link QueryMutationExecutionProtocol} to use for GraphQL queries and mutations (not
+	 * subscriptions). The allowed values are: http and webSocket.<br/>
+	 * The default value is http.
+	 */
+	QueryMutationExecutionProtocol queryMutationExecutionProtocol;
 
 	/**
 	 * <P>
@@ -147,6 +154,12 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 
 	/** The folder where the source code for the generated classes will be generated */
 	protected String targetSourceFolder;
+
+	/**
+	 * (since 2.0RC) If false, it uses jakarta EE8 imports (that begins by javax.). If true, it uses jakarta EE8 imports
+	 * (that begins by jakarta.).
+	 */
+	protected boolean useJakartaEE9;
 
 	@Inject
 	public GenerateCodeCommonTask(Class<? extends GenerateCodeCommonExtension> extensionClazz) {
@@ -199,6 +212,18 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 
 	final public void setPackageName(String packageName) {
 		this.packageName = packageName;
+		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		setInitialized(true);
+	}
+
+	@Input
+	@Override
+	final public QueryMutationExecutionProtocol getQueryMutationExecutionProtocol() {
+		return getValue(queryMutationExecutionProtocol, getExtension().getQueryMutationExecutionProtocol());
+	}
+
+	final public void setQueryMutationExecutionProtocol(QueryMutationExecutionProtocol queryMutationExecutionProtocol) {
+		this.queryMutationExecutionProtocol = queryMutationExecutionProtocol;
 		// This task as being configured. So we'll mark compileJava and processResources as depending on it
 		setInitialized(true);
 	}
@@ -276,6 +301,18 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 
 	final public void setTargetSourceFolder(String targetSourceFolder) {
 		this.targetSourceFolder = targetSourceFolder;
+		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		setInitialized(true);
+	}
+
+	@Input
+	@Override
+	public boolean isUseJakartaEE9() {
+		return getValue(useJakartaEE9, getExtension().isUseJakartaEE9());
+	}
+
+	final public void setUseJakartaEE9(boolean useJakartaEE9) {
+		this.useJakartaEE9 = useJakartaEE9;
 		// This task as being configured. So we'll mark compileJava and processResources as depending on it
 		setInitialized(true);
 	}

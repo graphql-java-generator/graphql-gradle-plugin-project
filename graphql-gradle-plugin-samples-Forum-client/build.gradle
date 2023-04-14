@@ -15,8 +15,14 @@ buildscript {
     }
 }
 
-apply plugin:  'java-library'
-apply plugin:  'com.graphql_java_generator.graphql-gradle-plugin'
+plugins {
+	id 'java-library'
+	id 'application'
+	id 'com.graphql_java_generator.graphql-gradle-plugin'
+	id 'org.springframework.boot' version "${spring3_springBootVersion}"
+	id 'io.spring.dependency-management' version "${spring3_DependencyManagementPluginVersion}"
+}
+sourceCompatibility = '17'
 
 repositories {
 	mavenCentral()
@@ -25,22 +31,13 @@ repositories {
 	mavenLocal()
 }
 
-// Let's get the group and version for this project
-apply from: '../graphql-gradle-plugin/common_conf.gradle'
-
 dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-graphql'
 	// The graphql-java-client-dependencies module agregates all dependencies for the generated code
-    implementation "com.graphql-java-generator:graphql-java-client-dependencies:${graphQLJavaGeneratorVersion}"
-
-	// Dependencies for Web Socket. In the next version, they will be integratd into the graphql-java-client-dependencies module
-	implementation "javax.websocket:javax.websocket-api:1.1"
-	implementation "org.eclipse.jetty:jetty-webapp:9.4.27.v20200227"
-	implementation "org.eclipse.jetty:jetty-server:9.4.27.v20200227"
-	implementation "org.eclipse.jetty.websocket:javax-websocket-server-impl:9.4.27.v20200227"
-	implementation "org.eclipse.jetty:jetty-annotations:9.4.27.v20200227"
+    implementation "com.graphql-java-generator:graphql-java-client-dependencies:${project.version}"
 	
 	// Dependencies for tests
-	testImplementation "org.springframework.boot:spring-boot-starter-test:${springBootVersion}" 
+	testImplementation "org.springframework.boot:spring-boot-starter-test" 
 }
 
 // The line below adds the generated sources as a java source folder, in the IDE

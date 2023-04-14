@@ -15,8 +15,13 @@ buildscript {
     }
 }
 
-apply plugin:  'java-library'
-apply plugin:  'com.graphql_java_generator.graphql-gradle-plugin'
+plugins {
+	id 'java-library'
+	id 'application'
+	id 'com.graphql_java_generator.graphql-gradle-plugin'
+	id 'org.springframework.boot' version "${springBootVersion}"
+	id 'io.spring.dependency-management' version "${springDependencyManagementPluginVersion}"
+}
 
 repositories {
 	mavenCentral()
@@ -25,17 +30,12 @@ repositories {
 	mavenLocal()
 }
 
-// Let's get the group and version for this project
-apply from: '../graphql-gradle-plugin/common_conf.gradle'
-
 dependencies {
     // This project uses some custom scalars from the graphql-java-extended-scalars module
     implementation "com.graphql-java:graphql-java-extended-scalars:${graphqlJavaExtendedScalarsVersion}"
 
 	// Dependencies for tests
-	testImplementation "org.springframework:spring-test:${springFrameworkVersion}"
-	testImplementation "org.junit.jupiter:junit-jupiter-api:${junitJupiterVersion}"
-	testImplementation "org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}"  
+	testImplementation "org.springframework.boot:spring-boot-starter-test"
 }
 
 // The line below adds the generated sources as a java source folder

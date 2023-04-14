@@ -1,9 +1,9 @@
 package org.allGraphQLCases.subscription;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -20,10 +20,13 @@ import org.allGraphQLCases.client.util.TheSubscriptionTypeExecutorAllGraphQLCase
 import org.allGraphQLCases.client2.util.TheSubscriptionTypeExecutorAllGraphQLCases2;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.graphql.client.GraphQlTransportException;
 
 import com.graphql_java_generator.client.SubscriptionClient;
 import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
@@ -33,7 +36,7 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 //"No qualifying bean of type 'ReactiveClientRegistrationRepository' available"
 //More details here: https://stackoverflow.com/questions/62558552/error-when-using-enablewebfluxsecurity-in-springboot
 @SpringBootTest(classes = SpringTestConfig.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
-// //@Execution(ExecutionMode.CONCURRENT)
+@Execution(ExecutionMode.CONCURRENT)
 public class ExecSubscriptionIT {
 
 	/** Logger for this class */
@@ -74,7 +77,7 @@ public class ExecSubscriptionIT {
 	}
 
 	@Test
-	// @Execution(ExecutionMode.CONCURRENT)
+	@Execution(ExecutionMode.CONCURRENT)
 	public void test_multiSubscribersToAList()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, InterruptedException {
 		final int NB_THREADS = 10;
@@ -140,7 +143,7 @@ public class ExecSubscriptionIT {
 	}
 
 	@Test
-	// @Execution(ExecutionMode.CONCURRENT)
+	@Execution(ExecutionMode.CONCURRENT)
 	public void test_subscribeToADate_issue53()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, InterruptedException {
 		logger.info("------------------------------------------------------------------------------------------------");
@@ -175,7 +178,7 @@ public class ExecSubscriptionIT {
 	}
 
 	@Test
-	// @Execution(ExecutionMode.CONCURRENT)
+	@Execution(ExecutionMode.CONCURRENT)
 	public void test_subscribeToANullableString()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, InterruptedException {
 		logger.info("------------------------------------------------------------------------------------------------");
@@ -198,7 +201,7 @@ public class ExecSubscriptionIT {
 
 	/** Tests a subscription that returns a list of Custom Scalars */
 	@Test
-	// @Execution(ExecutionMode.CONCURRENT)
+	@Execution(ExecutionMode.CONCURRENT)
 	public void test_subscribeToAListOfDates()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, InterruptedException {
 		logger.info("------------------------------------------------------------------------------------------------");
@@ -234,8 +237,8 @@ public class ExecSubscriptionIT {
 	 * @throws InterruptedException
 	 */
 	@Test
-	// @Execution(ExecutionMode.CONCURRENT)
-	public void test_subscribeToADate_serverComplete()
+	@Execution(ExecutionMode.CONCURRENT)
+	public void test_subscriptionTest_serverComplete()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, InterruptedException {
 		logger.info("------------------------------------------------------------------------------------------------");
 		logger.info("Starting test_subscribeToADate_serverComplete");
@@ -268,8 +271,8 @@ public class ExecSubscriptionIT {
 	 * @throws InterruptedException
 	 */
 	@Test
-	// @Execution(ExecutionMode.CONCURRENT)
-	public void test_subscribeToADate_clientComplete()
+	@Execution(ExecutionMode.CONCURRENT)
+	public void test_subscriptionTest_clientComplete()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, InterruptedException {
 		logger.info("------------------------------------------------------------------------------------------------");
 		logger.info("Starting test_subscribeToADate_clientComplete");
@@ -298,13 +301,18 @@ public class ExecSubscriptionIT {
 	}
 
 	@Test
-	// @Execution(ExecutionMode.CONCURRENT)
-	void test_connectionError() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+	@Execution(ExecutionMode.CONCURRENT)
+	void test_connectionError()
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, InterruptedException {
 		Date date = new Calendar.Builder().setDate(2018, 02, 01).build().getTime();
 		SubscriptionCallbackToADate callback = new SubscriptionCallbackToADate("test_connectionError");
-		GraphQLRequestExecutionException e = assertThrows(GraphQLRequestExecutionException.class,
-				() -> subscriptionExecutor2.issue53("", callback, date));
-		assertTrue(e.getMessage().contains("Connection refused"), "The received error message is: " + e.getMessage());
+		SubscriptionClient sub = subscriptionExecutor2.issue53("", callback, date);
+		callback.latchForMessageReception.await(20, TimeUnit.SECONDS);
+		assertInstanceOf(GraphQlTransportException.class, callback.lastReceivedError);
+		assertTrue(callback.lastReceivedError.getMessage().contains("Connection refused"),
+				"The received error message is: " + callback.lastReceivedError.getMessage());
+
+		sub.unsubscribe();
 	}
 
 	/**
@@ -316,7 +324,7 @@ public class ExecSubscriptionIT {
 	 * @throws InterruptedException
 	 */
 	@Test
-	// @Execution(ExecutionMode.CONCURRENT)
+	@Execution(ExecutionMode.CONCURRENT)
 	public void test_subscribeToADate_subscriptionError()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, InterruptedException {
 		logger.info("------------------------------------------------------------------------------------------------");
@@ -334,7 +342,7 @@ public class ExecSubscriptionIT {
 		assertNotNull(callback.lastExceptionReceived, "we should have received an exception");
 		assertTrue(
 				callback.lastExceptionReceived.getMessage()
-						.endsWith("Oups, the subscriber asked for an error during the subscription"),
+						.contains("Oups, the subscriber asked for an error during the subscription"),
 				"The received error message is: " + callback.lastExceptionReceived.getMessage());
 
 		// Let's unsubscribe from this subscription
@@ -351,7 +359,7 @@ public class ExecSubscriptionIT {
 	 */
 	@Test
 	// @Execution(ExecutionMode.CONCURRENT)
-	public void test_subscribeToADate_nextError()
+	public void test_subscriptionTest_nextError()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, InterruptedException {
 		logger.info("------------------------------------------------------------------------------------------------");
 		logger.info("Starting test_subscribeToADate_nextError");
@@ -368,7 +376,7 @@ public class ExecSubscriptionIT {
 		assertNotNull(callback.lastExceptionReceived, "we must have received an exception");
 		assertTrue(
 				callback.lastExceptionReceived.getMessage()
-						.endsWith("Oups, the subscriber asked for an error for each next message"),
+						.contains("Oups, the subscriber asked for an error for each next message"),
 				"The received error message is: " + callback.lastExceptionReceived.getMessage());
 
 		// Let's unsubscribe from this subscription
@@ -384,7 +392,7 @@ public class ExecSubscriptionIT {
 	 * @throws InterruptedException
 	 */
 	@Test
-	// @Execution(ExecutionMode.CONCURRENT)
+	@Execution(ExecutionMode.CONCURRENT)
 	public void test_subscribeToADate_webSocketCloseError()
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException, InterruptedException {
 		logger.info("------------------------------------------------------------------------------------------------");
@@ -401,9 +409,10 @@ public class ExecSubscriptionIT {
 
 		// Let's test this exception
 		assertNotNull(callback.lastExceptionReceived, "we must have received an exception");
-		assertTrue(callback.lastExceptionReceived.getMessage().endsWith(
-				"Oups, the subscriber asked that the web socket get disconnected before the first notification"),
-				"The received error message is: " + callback.lastExceptionReceived.getMessage());
+		assertTrue(callback.lastExceptionReceived.getMessage().contains(
+				"message=Oups, the subscriber asked that the web socket get disconnected before the first notification"));
+		assertTrue(callback.lastExceptionReceived.getMessage().contains("classification=ExecutionAborted"),
+				"The error message is: " + callback.lastExceptionReceived.getMessage());
 
 		// Let's unsubscribe from this subscription
 		sub.unsubscribe();
@@ -448,14 +457,15 @@ public class ExecSubscriptionIT {
 		// Let's test this exception
 		assertNull(callback.lastExceptionReceived, "we must have received no exception");
 		assertNotNull(callback.lastReceivedMessage, "we must have received a message");
-		assertEquals(3, callback.lastReceivedMessage.size(),
-				"each received notifiation should contain a list of 3 items");
+		assertEquals(4, callback.lastReceivedMessage.size(),
+				"each received notifiation should contain a list of 4 items");
 		assertEquals(CEP_EnumWithReservedJavaKeywordAsValues_CES._int, callback.lastReceivedMessage.get(0),
 				"First item should be the 'int' value of the enum");
 		assertEquals(CEP_EnumWithReservedJavaKeywordAsValues_CES._interface, callback.lastReceivedMessage.get(1),
 				"Second item should be the 'interface' value of the enum");
 		assertEquals(CEP_EnumWithReservedJavaKeywordAsValues_CES._long, callback.lastReceivedMessage.get(2),
 				"Third item should be the 'long' value of the enum");
+		assertNull(callback.lastReceivedMessage.get(3), "Fourth item is null");
 
 		// Let's unsubscribe from this subscription
 		sub.unsubscribe();

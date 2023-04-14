@@ -115,6 +115,11 @@ public class IntrospectionIT {
 	@Test
 	void test_IntrospectionQuery() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 		// Go, go, go
+
+		// Note: in order to properly get the return of this query, the max buffer size of spring boot must be
+		// increased.
+		// See the 'spring.codec.max-in-memory-size' parameter in the application.properties file.
+		// See https://github.com/spring-projects/spring-framework/issues/23961
 		String query = IntrospectionQuery.INTROSPECTION_QUERY;
 		CTP_MyQueryType_CTS response = myQuery.exec(query);
 

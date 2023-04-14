@@ -475,6 +475,17 @@ public class CommonTask extends DefaultTask implements CommonConfiguration {
 		setInitialized(true);
 	}
 
+	/**
+	 * <p>
+	 * This method is overriden here only to mark it as "@Internal", and allow the plugin validation by Gradle.
+	 * </p>
+	 */
+	@Override
+	@Internal
+	public String getTargetSchemaSubFolder() {
+		return DEFAULT_SCHEMA_SUB_FOLDER;
+	}
+
 	@Input
 	@Override
 	final public Map<String, String> getTemplates() {

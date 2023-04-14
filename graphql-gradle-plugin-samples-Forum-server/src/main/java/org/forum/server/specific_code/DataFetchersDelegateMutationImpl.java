@@ -6,8 +6,6 @@ package org.forum.server.specific_code;
 import java.util.List;
 import java.util.Random;
 
-import javax.annotation.Resource;
-
 import org.forum.server.graphql.Board;
 import org.forum.server.graphql.DataFetchersDelegateMutation;
 import org.forum.server.graphql.Member;
@@ -19,16 +17,21 @@ import org.forum.server.graphql.TopicInput;
 import org.forum.server.jpa.BoardRepository;
 import org.forum.server.jpa.PostRepository;
 import org.forum.server.jpa.TopicRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import graphql.schema.DataFetchingEnvironment;
-import io.reactivex.subjects.Subject;
+import jakarta.annotation.Resource;
 
 /**
  * @author etienne-sf
  */
 @Component
 public class DataFetchersDelegateMutationImpl implements DataFetchersDelegateMutation {
+
+	/** The logger for this class */
+	static protected Logger logger = LoggerFactory.getLogger(DataFetchersDelegateMutationImpl.class);
 
 	@Resource
 	BoardRepository boardRepository;
@@ -38,8 +41,8 @@ public class DataFetchersDelegateMutationImpl implements DataFetchersDelegateMut
 	PostRepository postRepository;
 
 	/**
-	 * This {@link Subject} will be notified for each Post creation. This is the basis for the <I>subscribeToNewPost</I>
-	 * subscription
+	 * This {@link PostPublisher} will be notified for each Post creation. This is the basis for the
+	 * <I>subscribeToNewPost</I> subscription
 	 */
 	@Resource
 	PostPublisher postPublisher;
@@ -84,6 +87,7 @@ public class DataFetchersDelegateMutationImpl implements DataFetchersDelegateMut
 			newPost.setContent(postParam.getInput().getContent());
 		}
 		postRepository.save(newPost);
+		logger.debug("After creation of post, in createPost (id={})", newPost.getId());
 
 		// Let's publish that new post, in case someone subscribed to the subscribeToNewPost GraphQL subscription
 		postPublisher.onNext(newPost);
@@ -95,7 +99,7 @@ public class DataFetchersDelegateMutationImpl implements DataFetchersDelegateMut
 	public List<Post> createPosts(DataFetchingEnvironment dataFetchingEnvironment, List<PostInput> spam) {
 		// Actually, this mutation is for sample only. We don't want to implement it !
 		// :)
-		throw new RuntimeException("Spamming is forbidden");
+		throw new GraphQlException("Spamming is forbidden");
 	}
 
 	@Override

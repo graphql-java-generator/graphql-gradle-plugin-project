@@ -19,11 +19,13 @@ buildscript {
     
 }
 
-apply plugin: 'java'
-apply plugin: 'org.springframework.boot'
-
-// Let's get the group and version for this project
-apply from: '../graphql-gradle-plugin/common_conf.gradle'
+plugins {
+	id 'java-library'
+	id 'application'
+	id 'com.graphql_java_generator.graphql-gradle-plugin'
+	id 'org.springframework.boot' version "${springBootVersion}"
+	id 'io.spring.dependency-management' version "${springDependencyManagementPluginVersion}"
+}
 
 repositories {
 	// The plugin depends on the graphql-maven-plugin plugin logic module, which is in mavenCentral (for releases), and in mavenLocal 
@@ -33,16 +35,15 @@ repositories {
 }
 
 dependencies {
-    implementation "org.springframework.boot:spring-boot-starter-jdbc:${springBootVersion}"
-    implementation "org.springframework.boot:spring-boot-starter-security:${springBootVersion}"
-    implementation "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
-    implementation "org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.1.2.RELEASE"
-    runtimeOnly "com.h2database:h2:1.4.199"
-    // Gives a GraphQL test UI available at http://localhost:8180/graphiql 
-    runtimeOnly "com.graphql-java-kickstart:graphiql-spring-boot-starter:${graphiqlSpringBootStarterVersion}"
-
+    implementation "org.springframework.boot:spring-boot-starter-web"
+    implementation "org.springframework.boot:spring-boot-starter-security"
+    implementation "org.springframework.security:spring-security-oauth2-authorization-server:${oauth2AuthorizationServerVersion}"
+    
+    // Dependencies mandatory to build with java 17
+    implementation "com.sun.xml.bind:jaxb-impl:${jaxbImplVersion}"
+    implementation "com.sun.xml.messaging.saaj:saaj-impl:${saajImplVersion}"
+    
 	// Dependencies for tests
-	testImplementation "org.springframework:spring-test:${springFrameworkVersion}"
-	testImplementation "org.junit.jupiter:junit-jupiter-api:${junitJupiterVersion}"
-	testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}"
+	testImplementation "org.springframework.boot:spring-boot-starter-test"
+	testImplementation "org.springframework.security:spring-security-test" 
 }

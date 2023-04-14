@@ -15,8 +15,15 @@ buildscript {
     }
 }
 
-apply plugin:  'java-library'
-apply plugin:  'com.graphql_java_generator.graphql-gradle-plugin'
+plugins {
+	id 'java-library'
+	id 'application'
+	id 'com.graphql_java_generator.graphql-gradle-plugin'
+	id 'org.springframework.boot' version "${springBootVersion}"
+	id 'io.spring.dependency-management' version "${springDependencyManagementPluginVersion}"
+}
+
+mainClassName = 'org.allGraphQLCases.demo.Main'
 
 repositories {
 	mavenCentral()
@@ -25,26 +32,17 @@ repositories {
 	mavenLocal()
 }
 
-// Let's get the group and version for this project
-apply from: '../graphql-gradle-plugin/common_conf.gradle'
-
 dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-graphql'
 	// The graphql-java-client-dependencies module agregates all dependencies for the generated code
-    implementation "com.graphql-java-generator:graphql-java-client-dependencies:${graphQLJavaGeneratorVersion}"
+    implementation "com.graphql-java-generator:graphql-java-client-dependencies:${project.version}"
     // This project uses some custom scalars from the graphql-java-extended-scalars module
     implementation "com.graphql-java:graphql-java-extended-scalars:${graphqlJavaExtendedScalarsVersion}"
-	
-	// Dependencies for Web Socket. In the next version, they will be integratd into the graphql-java-client-dependencies module
-    implementation "javax.websocket:javax.websocket-api:1.1"
-    implementation "org.eclipse.jetty:jetty-webapp:9.4.27.v20200227"
-    implementation "org.eclipse.jetty:jetty-server:9.4.27.v20200227"
-    implementation "org.eclipse.jetty.websocket:javax-websocket-server-impl:9.4.27.v20200227"
-    implementation "org.eclipse.jetty:jetty-annotations:9.4.27.v20200227"
+    // This project checks OAuth 
+    implementation 'org.springframework.security:spring-security-oauth2-client' 
 
 	// Dependencies for tests
-	testImplementation "org.springframework.boot:spring-boot-starter-test:${springBootVersion}"
-	testImplementation "org.junit.jupiter:junit-jupiter-api:${junitJupiterVersion}"
-	testImplementation "org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}"
+	testImplementation "org.springframework.boot:spring-boot-starter-test"
 }
 
 
@@ -176,6 +174,9 @@ tasks.register('generateClientCodeForum', com.graphql_java_generator.gradleplugi
 test {
 	// enable JUnit Platform (a.k.a. JUnit 5) support
 	useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
 }
 
 //Let's import the custom plugin we defined in buildSrc of the root project

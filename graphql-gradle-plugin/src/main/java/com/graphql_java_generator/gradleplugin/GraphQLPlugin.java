@@ -3,7 +3,10 @@
  */
 package com.graphql_java_generator.gradleplugin;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashSet;
+import java.util.Properties;
 import java.util.Set;
 
 import org.gradle.api.Action;
@@ -50,6 +53,13 @@ public class GraphQLPlugin implements Plugin<Project> {
 	/** The name of the task that generates a GraphqL that merges several GraphQL schemas */
 	final public static String MERGE_TASK_NAME = "generateGraphQLSchema";
 
+	/**
+	 * The properties loaded from application.properties
+	 * 
+	 * @see #getProperties()
+	 */
+	private Properties properties = null;
+
 	@Override
 	public void apply(Project project) {
 		applyGenerateClientCode(project);
@@ -64,6 +74,7 @@ public class GraphQLPlugin implements Plugin<Project> {
 		// So we create a dedicated Action for that. Let's register it, so that it is executed once the project is
 		// evaluated.
 		project.afterEvaluate(new Action<Project>() {
+
 			@Override
 			public void execute(Project p) {
 				logger.info("[in project.afterEvaluate2] Before registering generated folders for project '"
@@ -173,6 +184,29 @@ public class GraphQLPlugin implements Plugin<Project> {
 		});// project.afterEvaluate
 			//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	}
+
+	/**
+	 * Retrieve the gradle project.version, that has been copied into the 'plugin.version' property of the
+	 * 'application.properties' file
+	 */
+	public String getVersion() {
+		return getProperties().get("plugin.version").toString();
+	}
+
+	/** Manual reading of the application.properties file, as this is not a spring boot project. */
+	private Properties getProperties() {
+		if (properties == null) {
+			properties = new Properties();
+			try {
+				try (InputStream is = getClass().getResourceAsStream("/application.properties")) {
+					properties.load(is);
+				}
+			} catch (IOException e) {
+				throw new RuntimeException(e.getMessage(), e);
+			} // try
+		} // if
+		return properties;
+	}// getProperties()
 
 	/**
 	 * Applies the <I>generateClientCode</I> task
