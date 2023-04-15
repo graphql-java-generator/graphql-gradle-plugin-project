@@ -145,7 +145,7 @@ public class GenerateCodeCommonExtension extends CommonExtension implements Gene
 	 * (since 2.0RC) If false, it uses jakarta EE8 imports (that begins by javax.). If true, it uses jakarta EE8 imports
 	 * (that begins by jakarta.).
 	 */
-	protected boolean useJakartaEE9;
+	protected boolean useJakartaEE9 = GenerateCodeCommonConfiguration.DEFAULT_USE_JAKARTA_EE9.equals("true");
 
 	public GenerateCodeCommonExtension(Project project) {
 		super(project);

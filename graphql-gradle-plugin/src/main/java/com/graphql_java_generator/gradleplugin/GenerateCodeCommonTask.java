@@ -159,7 +159,7 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 	 * (since 2.0RC) If false, it uses jakarta EE8 imports (that begins by javax.). If true, it uses jakarta EE8 imports
 	 * (that begins by jakarta.).
 	 */
-	protected boolean useJakartaEE9;
+	protected Boolean useJakartaEE9;
 
 	@Inject
 	public GenerateCodeCommonTask(Class<? extends GenerateCodeCommonExtension> extensionClazz) {

@@ -76,19 +76,3 @@ subprojects {
 		}
 	}
 }
-
-
-
-/*
-//Let's include the documentation in the distribution archive
-distZip {
-    from project(':graphql-gradle-plugin-docs').asciidoctor, { 
-        into "${project.name}-${version}"
-    }
-}
-distTar {
-    from project(':graphql-gradle-plugin-docs').asciidoctor, {
-        into "${project.name}-${version}"
-    }
-}
-*/

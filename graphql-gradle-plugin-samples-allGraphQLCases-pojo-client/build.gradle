@@ -17,10 +17,17 @@ buildscript {
 
 plugins {
 	id 'java-library'
-	id 'application'
 	id 'com.graphql_java_generator.graphql-gradle-plugin'
 	id 'org.springframework.boot' version "${springBootVersion}"
 	id 'io.spring.dependency-management' version "${springDependencyManagementPluginVersion}"
+}
+
+// The two configurations below are mandatory, as there is no main class in this module
+bootJar {
+    enabled = false
+}
+jar {
+    enabled = true
 }
 
 repositories {

@@ -16,14 +16,15 @@ buildscript {
 }
 
 plugins {
-	id 'java-library'
+	id 'java'
 	id 'application'
 	id 'com.graphql_java_generator.graphql-gradle-plugin'
 	id 'org.springframework.boot' version "${spring3_springBootVersion}"
 	id 'io.spring.dependency-management' version "${spring3_DependencyManagementPluginVersion}"
 }
 sourceCompatibility = '17'
-
+mainClassName = 'com.graphql_java_generator.samples.forum.SpringMain'
+ 
 repositories {
 	mavenCentral()
 	// The plugin depends on the graphql-maven-plugin, whose snapshot versions are on the local maven repository.
@@ -34,7 +35,7 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-graphql'
 	// The graphql-java-client-dependencies module agregates all dependencies for the generated code
-    implementation "com.graphql-java-generator:graphql-java-client-dependencies:${project.version}"
+    implementation "com.graphql-java-generator:graphql-java-client-runtime:${project.version}"
 	
 	// Dependencies for tests
 	testImplementation "org.springframework.boot:spring-boot-starter-test" 
@@ -46,6 +47,7 @@ sourceSets.main.java.srcDirs += '/build/generated/sources/graphqlGradlePlugin'
 // Let's configure the GraphQL Gradle Plugin
 // (the plugin will automatically add it as a dependency to compileJava and processResources) 
 graphql {
+	copyRuntimeSources = false
 	mode = "client"  //This line is here only for the demo, as client is the default mode
 	packageName = "com.graphql_java_generator.samples.forum.client.graphql.forum.client"
 	skipGenerationIfSchemaHasNotChanged = true

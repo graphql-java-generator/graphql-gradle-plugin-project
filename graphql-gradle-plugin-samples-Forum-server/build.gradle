@@ -22,7 +22,7 @@ buildscript {
 
 plugins {
 	id 'java-library'
-	id 'application'
+	// id 'application'
 	id 'com.graphql_java_generator.graphql-gradle-plugin'
 	id 'org.springframework.boot' version "${spring3_springBootVersion}"
 	id 'io.spring.dependency-management' version "${spring3_DependencyManagementPluginVersion}"
@@ -64,6 +64,7 @@ generateServerCodeConf {
 	scanBasePackages = "org.forum.server.jpa ,  org.forum.server.specific_code"
 	schemaPersonalizationFile = "src/main/graphql/forum_personalization.json"
 	skipGenerationIfSchemaHasNotChanged = true
+	useJakartaEE9 = true
 	customScalars = [ [
 			graphQLTypeName: "Date",
 			javaType: "java.util.Date",
