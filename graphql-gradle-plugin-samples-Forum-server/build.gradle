@@ -38,7 +38,7 @@ repositories {
 
 dependencies {
 	// The graphql-java-client-dependencies module agregates all dependencies for the generated code
-    implementation "com.graphql-java-generator:graphql-java-server-dependencies:${project.version}" 
+    implementation "com.graphql-java-generator:graphql-java-server-dependencies:${graphqlPluginRuntimeVersion}" 
 
 	// Then, the dependencies that are specific to this project
 	implementation "org.springframework.boot:spring-boot-starter-websocket"  // Mandatory to activate the web sockets (mandatory for subscription)

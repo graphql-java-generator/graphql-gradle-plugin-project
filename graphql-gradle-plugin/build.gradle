@@ -24,7 +24,7 @@ repositories {
 
 dependencies {
 	// This plugin is a wrapper of the logic already implemented in our maven plugin
-	implementation ("com.graphql-java-generator:graphql-maven-plugin-logic:${project.version}") {
+	implementation ("com.graphql-java-generator:graphql-maven-plugin-logic:${graphqlPluginRuntimeVersion}") {
 		exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
 		exclude group: 'net.minidev', module: 'json-smart'
 	}
@@ -59,7 +59,7 @@ test {
 
 gradlePlugin {
 	website = 'https://github.com/graphql-java-generator/graphql-gradle-plugin-project'
-	vcsUrl = 'https://github.com/graphql-java-generator/graphql-gradle-plugin-project'
+	vcsUrl = 'https://github.com/graphql-java-generator/graphql-gradle-plugin-project.git'
 	
 	plugins {
 		graphqlPlugin {

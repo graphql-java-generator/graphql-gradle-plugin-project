@@ -17,11 +17,11 @@ if (graphQLplugin == null) {
 	throw new ProjectConfigurationException("[Internal error] The GraphQL plugin should have been added to the main build")
 }
 println "graphQLplugin.getVersion(): " + graphQLplugin.getVersion()
-println "project version: ${version}" 
-if (graphQLplugin.getVersion() != "${version}") {
+println "project plugin version: ${graphqlPluginVersion}" 
+if (graphQLplugin.getVersion() != "${graphqlPluginVersion}") {
 	throw new GradleException(
 		"The plugin version and the project version should be identical, but plugin version is '"
-			+ graphQLplugin.getVersion()+ "' whereas the project version is '${version}'")
+			+ graphQLplugin.getVersion()+ "' whereas the project version is '${graphqlPluginVersion}'")
 }
 
 subprojects {

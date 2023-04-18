@@ -9,6 +9,17 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 * skipGenerationIfSchemaHasNotChanged: true _(both client and server mode)_
 
 
+# 2.0RC1b
+
+Due to a gradle error during the publishing of the 2.0RC1 version, a 2.0RC1bis release has been done.
+
+The main consequence is that, to use this version, you must use:
+* The 2.0RC1bis version for the plugin
+* The 2.0RC1 version for the runtime
+
+You'll find sample of this in the [GraphQL-Forum-Gradle-Tutorial-client git repository](https://github.com/graphql-java-generator/GraphQL-Forum-Gradle-Tutorial-client) and in the [GraphQL-Forum-Gradle-Tutorial-server git repository](https://github.com/graphql-java-generator/GraphQL-Forum-Gradle-Tutorial-server).
+
+
 # 2.0RC1
 
 Release Candidate version for the 2.x versions.

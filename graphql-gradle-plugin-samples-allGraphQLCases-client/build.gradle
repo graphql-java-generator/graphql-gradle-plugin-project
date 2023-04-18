@@ -35,7 +35,7 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-graphql'
 	// The graphql-java-client-dependencies module agregates all dependencies for the generated code
-    implementation "com.graphql-java-generator:graphql-java-client-dependencies:${project.version}"
+    implementation "com.graphql-java-generator:graphql-java-client-dependencies:${graphqlPluginRuntimeVersion}"
     // This project uses some custom scalars from the graphql-java-extended-scalars module
     implementation "com.graphql-java:graphql-java-extended-scalars:${graphqlJavaExtendedScalarsVersion}"
     // This project checks OAuth 
@@ -186,7 +186,7 @@ import com.graphql_java_generator.gradle_task.StopApp
 
 task startAllGraphQLCasesServer(type: StartApp) {
 	// Let's start the server that matches the current client project
-	jarFile = file("../${project.name}/build/libs/${project.name}-${project.version}.jar".replaceAll('client', 'server'))
+	jarFile = file("../${project.name}/build/libs/${project.name}-${graphqlPluginRuntimeVersion}.jar".replaceAll('client', 'server'))
 	url = 'http://localhost:8180/helloworld.html'
 
 	// The next lines insures that the relevant server project is built before starting the integration test from this client module.
@@ -207,7 +207,7 @@ task stopAllGraphQLCasesServer(type: StopApp) {
 
 task startForumServer(type: StartApp) {
 	// Let's start the server that matches the current client project
-	jarFile = file("../graphql-gradle-plugin-samples-Forum-server/build/libs/graphql-gradle-plugin-samples-Forum-server-${project.version}.jar")
+	jarFile = file("../graphql-gradle-plugin-samples-Forum-server/build/libs/graphql-gradle-plugin-samples-Forum-server-${graphqlPluginRuntimeVersion}.jar")
 	url = 'http://localhost:8182/graphiql'
 
 	// The next lines insures that the relevant server project is built before starting the integration test from this client module.
@@ -228,7 +228,7 @@ task stopForumServer(type: StopApp) {
 
 task startAuthorizationServer(type: StartApp) {
 	// Let's start the server that matches the current client project
-	jarFile = file("../graphql-gradle-plugin-samples-OAuth-authorization-server/build/libs/graphql-gradle-plugin-samples-OAuth-authorization-server-${project.version}.jar")
+	jarFile = file("../graphql-gradle-plugin-samples-OAuth-authorization-server/build/libs/graphql-gradle-plugin-samples-OAuth-authorization-server-${graphqlPluginRuntimeVersion}.jar")
 	url = 'http://localhost:8181/helloworld.html'
 
 	// The next lines insures that the relevant server project is built before starting the integration test from this client module.
