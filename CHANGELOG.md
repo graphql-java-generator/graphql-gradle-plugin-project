@@ -9,7 +9,7 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 * skipGenerationIfSchemaHasNotChanged: true _(both client and server mode)_
 
 
-# 2.0RC1b
+# 2.0RC1c
 
 Due to a gradle error during the publishing of the 2.0RC1 version, a 2.0RC1bis release has been done.
 
