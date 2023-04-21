@@ -17,7 +17,7 @@ buildscript {
 
 plugins {
 	id 'java-library'
-	id 'com.graphql_java_generator.graphql-gradle-plugin'
+	id 'com.graphql-java-generator.graphql-gradle-plugin'
 	id 'org.springframework.boot' version "${springBootVersion}"
 	id 'io.spring.dependency-management' version "${springDependencyManagementPluginVersion}"
 }

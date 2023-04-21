@@ -5,23 +5,23 @@ plugins {
 	id 'org.asciidoctor.convert' version '1.5.6' apply false
 	
 	// The GraphQL plugin is activated here only to check its version
-	id 'com.graphql_java_generator.graphql-gradle-plugin'
+	id 'com.graphql-java-generator.graphql-gradle-plugin'
 }
 
 
 // Let's get the group and version for this project
 //apply from: 'graphql-gradle-plugin/gradle.properties'
 
-def graphQLplugin = getPlugins().getPlugin('com.graphql_java_generator.graphql-gradle-plugin')
+def graphQLplugin = getPlugins().getPlugin('com.graphql-java-generator.graphql-gradle-plugin')
 if (graphQLplugin == null) {
 	throw new ProjectConfigurationException("[Internal error] The GraphQL plugin should have been added to the main build")
 }
 println "graphQLplugin.getVersion(): " + graphQLplugin.getVersion()
-println "project plugin version: ${graphqlPluginVersion}" 
-if (graphQLplugin.getVersion() != "${graphqlPluginVersion}") {
+println "project plugin version: ${project.version}" 
+if (graphQLplugin.getVersion() != "${project.version}") {
 	throw new GradleException(
 		"The plugin version and the project version should be identical, but plugin version is '"
-			+ graphQLplugin.getVersion()+ "' whereas the project version is '${graphqlPluginVersion}'")
+			+ graphQLplugin.getVersion()+ "' whereas the project version is '${project.version}'")
 }
 
 subprojects {

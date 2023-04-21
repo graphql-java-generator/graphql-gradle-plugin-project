@@ -8,16 +8,11 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 * separateUtilityClasses: true _(both client and server mode)_
 * skipGenerationIfSchemaHasNotChanged: true _(both client and server mode)_
 
+__Caution:__ since 2.0RC1, the plugin's changed from `com.graphql_java_generator.graphql-gradle-plugin` to `com.graphql-java-generator.graphql-gradle-plugin`
 
-# 2.0RC1b
 
-Due to a gradle error during the publishing of the 2.0RC1 version, a 2.0RC1bis release has been done.
 
-The main consequence is that, to use this version, you must use:
-* The 2.0RC1bis version for the plugin
-* The 2.0RC1 version for the runtime
-
-You'll find sample of this in the [GraphQL-Forum-Gradle-Tutorial-client git repository](https://github.com/graphql-java-generator/GraphQL-Forum-Gradle-Tutorial-client) and in the [GraphQL-Forum-Gradle-Tutorial-server git repository](https://github.com/graphql-java-generator/GraphQL-Forum-Gradle-Tutorial-server).
+TODO : document the new 'com.graphql-java-generator.graphql-gradle-plugin' 
 
 
 # 2.0RC1
@@ -30,6 +25,7 @@ Main changes:
 * Needs JDK 17 to be build, but the generated artifact is compatible with Java 8
 * Compatibility with Spring Boot 3.
     * For a sample of this, you can check the [graphql-maven-plugin-samples-Forum-client](https://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master_2.x/graphql-maven-plugin-samples/graphql-maven-plugin-samples-Forum-client) and the [graphql-maven-plugin-samples-Forum-server](https://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master_2.x/graphql-maven-plugin-samples/graphql-maven-plugin-samples-Forum-server) samples that are part of the build.
+* __gradle plugin__: The id changed from `com.graphql_java_generator.graphql-gradle-plugin` to `com.graphql-java-generator.graphql-gradle-plugin`
 
 You can check these pages for more information on how to migrate from 1.x versions:
 * [[Client migration from 1.x to 2.x|client_migrate_1-x_to_2-x]]

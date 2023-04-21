@@ -18,7 +18,7 @@ buildscript {
 plugins {
 	id 'java'
 	id 'application'
-	id 'com.graphql_java_generator.graphql-gradle-plugin'
+	id 'com.graphql-java-generator.graphql-gradle-plugin'
 	id 'org.springframework.boot' version "${spring3_springBootVersion}"
 	id 'io.spring.dependency-management' version "${spring3_DependencyManagementPluginVersion}"
 }
@@ -35,7 +35,7 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-graphql'
 	// The graphql-java-client-dependencies module agregates all dependencies for the generated code
-    implementation "com.graphql-java-generator:graphql-java-client-runtime:${graphqlPluginRuntimeVersion}"
+    implementation "com.graphql-java-generator:graphql-java-client-runtime:${project.version}"
 	
 	// Dependencies for tests
 	testImplementation "org.springframework.boot:spring-boot-starter-test" 
@@ -76,7 +76,7 @@ import com.graphql_java_generator.gradle_task.StopApp
 
 task startForumServer(type: StartApp) {
 	// Let's start the server that matches the current client project
-	jarFile = file("../${project.name}/build/libs/${project.name}-${graphqlPluginRuntimeVersion}.jar".replaceAll('client', 'server'))
+	jarFile = file("../${project.name}/build/libs/${project.name}-${project.version}.jar".replaceAll('client', 'server'))
 	url = 'http://localhost:8182/graphiql'
 
 	// The next lines insures that the relevant server project is built before starting the integration test from this client module.

@@ -24,7 +24,7 @@ repositories {
 
 dependencies {
 	// This plugin is a wrapper of the logic already implemented in our maven plugin
-	implementation ("com.graphql-java-generator:graphql-maven-plugin-logic:${graphqlPluginRuntimeVersion}") {
+	implementation ("com.graphql-java-generator:graphql-maven-plugin-logic:${project.version}") {
 		exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
 		exclude group: 'net.minidev', module: 'json-smart'
 	}
@@ -63,7 +63,7 @@ gradlePlugin {
 	
 	plugins {
 		graphqlPlugin {
-			id = 'com.graphql_java_generator.graphql-gradle-plugin'
+			id = 'com.graphql-java-generator.graphql-gradle-plugin'
 			displayName = 'graphql-gradle-plugin'
 			description = 'graphql-gradle-plugin is a Gradle Plugin for GraphQL, based on graphql-java. It accelerates the development for both the client and the server, by generating the Java code.  It allows a quicker development when in contract-first approach, by avoiding to code the boilerplate code.'
 			tags.set(['graphql', 'graphql-java', 'graphql-java-generator', 'java', 'codegeneration', 'code generation', 'code-generation', 'generation', 'generate', 'template', 'templates'])
