@@ -12,9 +12,6 @@ __Caution:__ since 2.0RC1, the plugin's changed from `com.graphql_java_generator
 
 
 
-TODO : document the new 'com.graphql-java-generator.graphql-gradle-plugin' 
-
-
 # 2.0RC1
 
 Release Candidate version for the 2.x versions.

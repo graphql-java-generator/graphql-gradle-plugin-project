@@ -38,7 +38,7 @@ repositories {
 
 dependencies {
 	// The graphql-java-client-dependencies module agregates all dependencies for the generated code
-    implementation "com.graphql-java-generator:graphql-java-server-dependencies:${graphqlPluginRuntimeVersion}" 
+    implementation "com.graphql-java-generator:graphql-java-server-dependencies:${project.version}" 
 
 	// Then, the dependencies that are specific to this project
 	implementation "org.springframework.boot:spring-boot-starter-websocket"  // Mandatory to activate the web sockets (mandatory for subscription)
@@ -52,6 +52,7 @@ dependencies {
 
 // The line below adds the generated sources as a java source folder, in the IDE
 sourceSets.main.java.srcDirs += '/build/generated/sources/graphqlGradlePlugin'
+sourceSets.main.resources.srcDirs += '/build/generated/resources/graphqlGradlePlugin'
 
 // Let's configure the GraphQL Gradle Plugin
 // (the plugin will automatically add it as a dependency to compileJava and processResources) 
