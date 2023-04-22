@@ -11,17 +11,6 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 __Caution:__ since 2.0RC1, the plugin's changed from `com.graphql_java_generator.graphql-gradle-plugin` to `com.graphql-java-generator.graphql-gradle-plugin`
 
 
-
-# 2.0RC1b
-
-This version has been released only for the Gradle plugin (not for the Maven plugin).
-
-Main change:
-* This version is compatible with Spring Boot 3
-
-The __plugin runtime is still 2.0RC1__. Please have a look to the [graphql-maven-plugin-samples-Forum-client](https://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master_2.x/graphql-maven-plugin-samples/graphql-maven-plugin-samples-Forum-client) or the [graphql-maven-plugin-samples-Forum-server](https://github.com/graphql-java-generator/graphql-maven-plugin-project/tree/master_2.x/graphql-maven-plugin-samples/graphql-maven-plugin-samples-Forum-server) tutorial to have a sample.
-
-
 # 2.0RC1
 
 Release Candidate version for the 2.x versions.
