@@ -24,7 +24,7 @@ repositories {
 
 dependencies {
 	// This plugin is a wrapper of the logic already implemented in our maven plugin
-	implementation ("com.graphql-java-generator:graphql-maven-plugin-logic:${project.version}") {
+	implementation ("com.graphql-java-generator:graphql-maven-plugin-logic:${graphqlPluginRuntimeVersion}") {
 		exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
 		exclude group: 'net.minidev', module: 'json-smart'
 	}
@@ -47,7 +47,7 @@ tasks.withType(JavaCompile) {
 
 processResources {
 	// Allows to get the project version in the application.properties resource file
-    expand projectVersion: project.version
+    expand (projectVersion: project.version, graphqlMavenPluginLogicVersion: project.graphqlPluginRuntimeVersion)
 }
 
 test {

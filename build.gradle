@@ -16,8 +16,9 @@ def graphQLplugin = getPlugins().getPlugin('com.graphql-java-generator.graphql-g
 if (graphQLplugin == null) {
 	throw new ProjectConfigurationException("[Internal error] The GraphQL plugin should have been added to the main build")
 }
-println "graphQLplugin.getVersion(): " + graphQLplugin.getVersion()
-println "project plugin version: ${project.version}" 
+println "graphQLplugin version is " + graphQLplugin.getVersion()
+println "graphql-maven-plugin-logic version: " + graphQLplugin.getDependenciesVersion()
+println "project version is ${project.version}" 
 if (graphQLplugin.getVersion() != "${project.version}") {
 	throw new GradleException(
 		"The plugin version and the project version should be identical, but plugin version is '"

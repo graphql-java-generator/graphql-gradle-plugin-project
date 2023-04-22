@@ -1,4 +1,4 @@
-
+/*
 buildscript {
     repositories {
 		// The plugin depends on the graphql-maven-plugin, whose snapshot versions are on the local maven repository.
@@ -14,14 +14,13 @@ buildscript {
     	// Of course, for a real use of the plugin in your project, you'll have to replace by the last plugin's version,
     	// or better: put this version number in the gradle.properties file, to use it for both the plugin and the dependencies version
         classpath 'com.graphql-java-generator:graphql-gradle-plugin:dummy'
-        
-        classpath 'org.springframework.boot:spring-boot-gradle-plugin:2.4.0'
     }
-    
+   
 }
+*/
 
 plugins {
-	id 'java-library'
+	id 'java'
 	// id 'application'
 	id 'com.graphql-java-generator.graphql-gradle-plugin'
 	id 'org.springframework.boot' version "${spring3_springBootVersion}"
@@ -38,7 +37,7 @@ repositories {
 
 dependencies {
 	// The graphql-java-client-dependencies module agregates all dependencies for the generated code
-    implementation "com.graphql-java-generator:graphql-java-server-dependencies:${project.version}" 
+    implementation "com.graphql-java-generator:graphql-java-server-dependencies:${project.pluginRuntimeVersion}" 
 
 	// Then, the dependencies that are specific to this project
 	implementation "org.springframework.boot:spring-boot-starter-websocket"  // Mandatory to activate the web sockets (mandatory for subscription)

@@ -22,4 +22,11 @@ public class GraphQLPluginTest {
 		assertNotEquals("${projectVersion}", version, "version is: '" + version + "'");
 	}
 
+	@Test
+	void test_getDependenciesVersion() {
+		String version = graphQLPlugin.getDependenciesVersion();
+		assertNotNull(version);
+		assertNotEquals("${graphqlMavenPluginLogicVersion}", version, "version is: '" + version + "'");
+	}
+
 }

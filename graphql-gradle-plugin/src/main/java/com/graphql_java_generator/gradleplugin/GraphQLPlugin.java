@@ -193,6 +193,14 @@ public class GraphQLPlugin implements Plugin<Project> {
 		return getProperties().get("plugin.version").toString();
 	}
 
+	/**
+	 * Retrieve the version of the <i>graphql-maven-plugin-logic</i> library, that contains all the plugin logic. This
+	 * version has been copied into the 'plugin.version' property of the 'application.properties' file
+	 */
+	public String getDependenciesVersion() {
+		return getProperties().get("graphqlMavenPluginLogic.version").toString();
+	}
+
 	/** Manual reading of the application.properties file, as this is not a spring boot project. */
 	private Properties getProperties() {
 		if (properties == null) {
