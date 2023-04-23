@@ -3,10 +3,17 @@
 New developments __should not use the graphql Maven goal or generateCode Gradle task__. 
 Instead, they should use the new __generateClientCode__ and __generateServerCode__ goals/tasks.
 Whether the application uses the _graphql_, the _generateClientCode_ or the _generateServerCode_ goal/task, it should use the parameters below, to be compliant with default values of the 2.0 version:
+* copyRuntimeSources: false _(both client and server mode)_
 * generateBatchLoaderEnvironment: true _(server only)_
 * generateDeprecatedRequestResponse: false _(client only)_
-* separateUtilityClasses: true _(both client and server mode)_
 * skipGenerationIfSchemaHasNotChanged: true _(both client and server mode)_
+
+Note about the _separateUtilityClasses_ plugin parameter:
+It was initally planned to force it to true. But this may have a real impact on the existing code.
+As a consequence, on 2.x versions:
+* Its default value changed from false to true
+* It is recommended to accept this default value, and adapt your code, as this separates the generated code that maps the GraphQL schema from the utility code that helps to start the server or execute the requests.
+* You can define its value to false, to avoid impact on your code.
 
 __Caution:__ since 2.0RC1, the plugin's changed from `com.graphql_java_generator.graphql-gradle-plugin` to `com.graphql-java-generator.graphql-gradle-plugin`
 
