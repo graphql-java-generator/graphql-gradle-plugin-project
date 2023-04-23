@@ -244,6 +244,8 @@ public class GenerateServerCodeTask extends GenerateCodeCommonTask implements Ge
 
 		GenerateCodeDocumentParser documentParser = ctx.getBean(GenerateCodeDocumentParser.class);
 		documentParser.parseGraphQLSchemas();
+		
+		Il faut supprimer les javax du projet principal (peut-être bon déjà, à tester)
 
 		GenerateCodeGenerator codeGenerator = ctx.getBean(GenerateCodeGenerator.class);
 		codeGenerator.generateCode();

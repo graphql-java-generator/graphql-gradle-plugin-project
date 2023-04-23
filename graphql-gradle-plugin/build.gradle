@@ -12,7 +12,17 @@
 plugins {
   id "com.gradle.plugin-publish" version '1.2.0'
   id "java-gradle-plugin"
+  id 'maven-publish'
   id "eclipse" // For use of this project within eclipse. For refresh, use: gradlew cleanEclipse eclipse
+}
+
+publishing {
+    repositories {
+        maven {
+            name = 'localPluginRepository'
+            url = 'build/local-plugin-repository'
+        }
+    }
 }
 
 repositories {
