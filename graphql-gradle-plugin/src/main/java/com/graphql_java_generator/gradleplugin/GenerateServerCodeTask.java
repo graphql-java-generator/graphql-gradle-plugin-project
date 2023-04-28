@@ -121,7 +121,8 @@ public class GenerateServerCodeTask extends GenerateCodeCommonTask implements Ge
 	 * value.
 	 * </P>
 	 * <P>
-	 * <B><I>Default value is false</I></B>
+	 * <B><I>The default value changed since 2.0 version: it is false in 1.x version, and true since the 2.0
+	 * version</I></B>
 	 * </P>
 	 */
 	private Boolean generateBatchLoaderEnvironment;
@@ -244,8 +245,6 @@ public class GenerateServerCodeTask extends GenerateCodeCommonTask implements Ge
 
 		GenerateCodeDocumentParser documentParser = ctx.getBean(GenerateCodeDocumentParser.class);
 		documentParser.parseGraphQLSchemas();
-		
-		Il faut supprimer les javax du projet principal (peut-être bon déjà, à tester)
 
 		GenerateCodeGenerator codeGenerator = ctx.getBean(GenerateCodeGenerator.class);
 		codeGenerator.generateCode();

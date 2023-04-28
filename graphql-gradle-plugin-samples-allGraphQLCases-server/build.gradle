@@ -62,9 +62,8 @@ generateServerCodeConf {
 	copyRuntimeSources = false
 	generateBatchLoaderEnvironment = true
 	packageName = 'org.allGraphQLCases.server'
-	separateUtilityClasses = true
+	separateUtilityClasses = false
 	schemaFileFolder = '../graphql-gradle-plugin-samples-allGraphQLCases-client/src/graphqls/allGraphQLCases'
-	skipGenerationIfSchemaHasNotChanged = true
 
 	// prefixes and suffixes for the generated POJOs	
 	inputPrefix = "SINP_"

@@ -35,7 +35,7 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-graphql'
 	// The graphql-java-client-dependencies module agregates all dependencies for the generated code
-    implementation "com.graphql-java-generator:graphql-java-client-dependencies:${project.pluginRuntimeVersion}"
+    implementation "com.graphql-java-generator:graphql-java-client-runtime:${project.pluginRuntimeVersion}"
     // This project uses some custom scalars from the graphql-java-extended-scalars module
     implementation "com.graphql-java:graphql-java-extended-scalars:${graphqlJavaExtendedScalarsVersion}"
     // This project checks OAuth 
@@ -50,6 +50,7 @@ dependencies {
 // Let's configure the GraphQL Gradle Plugin, for the merge task
 // (the plugin will automatically add it as a dependency to compileJava and processResources) 
 generateGraphQLSchema {
+	addRelayConnections = true
 	schemaFileFolder = 'src/graphqls/allGraphQLCases/'
 	targetFolder = "$buildDir/generated/resources/generateGraphQLSchema"
 	targetSchemaFileName = 'merged_schemas.graphqls'
@@ -62,9 +63,10 @@ tasks.register('generateClientCodeAllGraphQLCases', com.graphql_java_generator.g
 	dependsOn generateGraphQLSchema
 	
 	// Task properties
+	generateDeprecatedRequestResponse = true
 	packageName = 'org.allGraphQLCases.client'
 	schemaFileFolder = "$buildDir/generated/resources/generateGraphQLSchema" // Let's read the merged GraphQL schema
-	separateUtilityClasses = true
+	separateUtilityClasses = false
 	skipGenerationIfSchemaHasNotChanged = true
 	springBeanSuffix = 'AllGraphQLCases'
 	

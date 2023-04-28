@@ -52,11 +52,11 @@ sourceSets.main.java.srcDirs += "$buildDir/generated/sources/generatePojo-server
 // Let's configure the GraphQL Gradle Plugin, for the code generation, for both the client and the server pojo
 // (the plugin will automatically add it as a dependency to compileJava and processResources) 
 tasks.register('generateClientPojo', com.graphql_java_generator.gradleplugin.GeneratePojoTask) {
+	copyRuntimeSources = true
 	mode = 'client'
 	generateJacksonAnnotations = false
 	packageName = 'org.allGraphQLCases.client.pojo'
 	schemaFileFolder = '../graphql-gradle-plugin-samples-allGraphQLCases-client/src/graphqls/allGraphQLCases'
-	skipGenerationIfSchemaHasNotChanged = true
 	targetSourceFolder = "$buildDir/generated/sources/generatePojo-client"
 	targetResourceFolder = "$buildDir/generated/resources/generatePojo-client"
 	customScalars = [ [

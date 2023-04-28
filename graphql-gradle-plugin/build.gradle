@@ -9,6 +9,14 @@
  * https://github.com/graphql-java-generator/graphql-gradle-plugin-project
  * 
  */
+buildscript {
+    repositories {
+		// The plugin depends on the graphql-maven-plugin, whose snapshot versions are on the local maven repository.
+		// So, for development reason, we need to access to the local maven repository. It's useless for standard use of the plugin
+        mavenLocal()
+        mavenCentral()
+    }
+}
 plugins {
   id "com.gradle.plugin-publish" version '1.2.0'
   id "java-gradle-plugin"

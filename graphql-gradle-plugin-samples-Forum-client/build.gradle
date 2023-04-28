@@ -46,11 +46,8 @@ sourceSets.main.java.srcDirs += '/build/generated/sources/graphqlGradlePlugin'
 
 // Let's configure the GraphQL Gradle Plugin
 // (the plugin will automatically add it as a dependency to compileJava and processResources) 
-graphql {
-	copyRuntimeSources = false
-	mode = "client"  //This line is here only for the demo, as client is the default mode
+generateClientCode {
 	packageName = "com.graphql_java_generator.samples.forum.client.graphql.forum.client"
-	skipGenerationIfSchemaHasNotChanged = true
 	customScalars = [ [
 			graphQLTypeName: "Date",
 			javaType: "java.util.Date",
