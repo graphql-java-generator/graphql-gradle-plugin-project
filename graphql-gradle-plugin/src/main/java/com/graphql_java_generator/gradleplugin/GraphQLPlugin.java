@@ -13,6 +13,8 @@ import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
+import org.gradle.api.artifacts.Configuration;
+import org.gradle.api.artifacts.Dependency;
 import org.gradle.api.file.CopySpec;
 import org.gradle.api.file.DuplicatesStrategy;
 import org.gradle.api.plugins.JavaPlugin;
@@ -163,6 +165,24 @@ public class GraphQLPlugin implements Plugin<Project> {
 					((CopySpec) t).setDuplicatesStrategy(DuplicatesStrategy.INCLUDE);
 					logger.info(" Setting property: {}.duplicatesStrategy = {}", t.getName(),
 							DuplicatesStrategy.INCLUDE);
+				}
+
+				// For internal tests, to be removed
+				String prefix = "    ";
+				for (Configuration conf : project.getBuildscript().getConfigurations()) {
+					System.out.println("Reading buildScript configuration " + conf.getName() + ":");
+					if (!conf.isCanBeResolved()) {
+						System.out.println(prefix + "can not be resolved");
+					} else if (conf.getName().startsWith("test")) {
+						System.out.println(prefix + "test dependencies are ignored");
+					} else {
+						// TODO: conf: try to add spring-context 6.0.8
+						// conf.getDependencies(): list of the declared dependencies
+						// conf.getAllDependencies(): list of the declared dependencies + super configuration
+						for (Dependency dep : conf.getAllDependencies()) {
+							System.out.println(prefix + dep.getGroup() + ":" + dep.getName() + ":" + dep.getVersion());
+						}
+					}
 				}
 			}
 
