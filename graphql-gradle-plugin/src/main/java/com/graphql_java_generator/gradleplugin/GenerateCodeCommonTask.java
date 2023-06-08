@@ -253,8 +253,8 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 	@Override
 	@Internal
 	public String getSpringAutoConfigurationPackage() {
-		return GenerateCodeCommonConfiguration.getSpringAutoConfigurationPackage(isSeparateUtilityClasses(),
-				getPackageName());
+		// Let's call the default implementation
+		return GenerateCodeCommonConfiguration.super.getSpringAutoConfigurationPackage();
 	}
 
 	@Input

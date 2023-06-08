@@ -92,6 +92,27 @@ task stopForumServer(type: StopApp) {
 	mustRunAfter test
 }
 
-// The next lines insures that the Basic-server is built before starting the integration test from the client.
-// Using mustRunAfter instead of dependsOn allows to manually start the server, then just execute the test task.
+task startAuthorizationServer(type: StartApp) {
+	// Let's start the server that matches the current client project
+	jarFile = file("../graphql-gradle-plugin-samples-OAuth-authorization-server/build/libs/graphql-gradle-plugin-samples-OAuth-authorization-server-${project.version}.jar")
+	url = 'http://localhost:8181/helloworld.html'
+
+	// The next lines insures that the relevant server project is built before starting the integration test from this client module.
+	dependsOn ":graphql-gradle-plugin-samples-OAuth-authorization-server:bootJar"
+
+	// The stopWebApp must be attached here. And must run after tests
+	finalizedBy 'stopAuthorizationServer'
+}
+
+task stopAuthorizationServer(type: StopApp) {
+	// The line blow is executed during configuration phase. So the process is unknown. 
+	// We just define the Task object. The StopApp task will read the process id at execution time
+	startAppTask = tasks["startAuthorizationServer"]
+
+	// The stopWebApp is attached to startWebApp, and must run after tests
+	mustRunAfter test
+}
+
+// The next lines insures that the necessary servers are started before starting the integration test from the client.
+test.dependsOn startAuthorizationServer
 test.dependsOn startForumServer

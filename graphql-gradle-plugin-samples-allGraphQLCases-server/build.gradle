@@ -59,7 +59,6 @@ sourceSets.main.resources.srcDirs += '/build/generated/resources/graphqlGradlePl
 // (the plugin will automatically add it as a dependency to compileJava and processResources) 
 generateServerCodeConf {
 	addRelayConnections = true
-	copyRuntimeSources = false
 	generateBatchLoaderEnvironment = true
 	packageName = 'org.allGraphQLCases.server'
 	separateUtilityClasses = false

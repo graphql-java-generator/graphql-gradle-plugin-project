@@ -118,6 +118,8 @@ type MyQueryType {
     ################################################################################
     # queries created to test some issues
     
+    checkOverridedController: String!
+    
     """
     #issue53 is about custom scalars as parameter for a query/mutation/subscription, 
     that was not properly serialized/deserialized
@@ -151,6 +153,8 @@ type MyQueryType {
     long: String
     native: String
     new: String
+    "Issue #188: null is not identified as a java keyword"
+    null: String
     package: String
     private: String
     protected: String
@@ -231,6 +235,9 @@ type TheSubscriptionType {
 	listOfEnumWithReservedJavaKeywordAsValues: [EnumWithReservedJavaKeywordAsValues]
     if: String
     implements: String
+
+    "Issue #188: null is not identified as a java keyword"
+    null: String
 }
 
 interface WithID @testDirective(value:"on Interface", anotherValue: "666") {
@@ -268,6 +275,8 @@ input AllFieldCasesInput @testDirective(value:"on Input Type") {
     matrix: [[Float]]!
     withIdSubtype: [AllFieldCasesWithIdSubtypeInput!]
     withoutIdSubtype: [AllFieldCasesWithoutIdSubtypeInput!]
+    "Issue #188: null is not identified as a java keyword"
+    null: String
 }
 
 input AllFieldCasesWithIdSubtypeInput {

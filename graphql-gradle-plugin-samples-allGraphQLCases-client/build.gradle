@@ -6,6 +6,10 @@ buildscript {
         mavenCentral()
     }
     dependencies {
+        // The below dependency is used to test the custom templates from a built jar
+        classpath 'com.graphql-java-generator:graphql-gradle-plugin-samples-CustomTemplates-resttemplate:dummy'
+        //classpath 'com.graphql-java-generator:graphql-maven-plugin-samples-CustomTemplates-resttemplate:local-SNAPSHOT'
+
     	// The version number is not used in this multi-module project: the included build of graphql-gradle-plugin
     	// will replace this declaration. But this dummy declaration is needed!
     	//
@@ -67,7 +71,6 @@ tasks.register('generateClientCodeAllGraphQLCases', com.graphql_java_generator.g
 	packageName = 'org.allGraphQLCases.client'
 	schemaFileFolder = "$buildDir/generated/resources/generateGraphQLSchema" // Let's read the merged GraphQL schema
 	separateUtilityClasses = false
-	skipGenerationIfSchemaHasNotChanged = true
 	springBeanSuffix = 'AllGraphQLCases'
 	
 	// Prefixes and suffixes for the generated POJOs
@@ -120,7 +123,6 @@ tasks.register('generateClientCodeAllGraphQLCases2', com.graphql_java_generator.
 	packageName = 'org.allGraphQLCases.client2'
 	schemaFileFolder = "$buildDir/generated/resources/generateGraphQLSchema" // Let's read the merged GraphQL schema
 	separateUtilityClasses = true
-	skipGenerationIfSchemaHasNotChanged = true
 	springBeanSuffix = 'AllGraphQLCases2'
 	targetSourceFolder = "$buildDir/generated/sources/graphqlGradlePlugin2"
 	customScalars = [ [
@@ -150,14 +152,16 @@ tasks.register('generateClientCodeAllGraphQLCases2', com.graphql_java_generator.
 	] ]
 }
 
+
 // Then, a last code generation, to do a real integration test with another GraphQL server  
 // (the plugin will automatically add it as a dependency to compileJava and processResources) 
 tasks.register('generateClientCodeForum', com.graphql_java_generator.gradleplugin.GraphQLGenerateCodeTask) {
 	mode = 'client'
 	copyRuntimeSources = false
+	generateDeprecatedRequestResponse = true
 	packageName = 'org.forum.client'
 	schemaFileFolder = "/src/graphqls/forum/"
-	separateUtilityClasses = true
+	separateUtilityClasses = false
 	skipGenerationIfSchemaHasNotChanged = true
 	springBeanSuffix = 'Forum'
 	targetSourceFolder = "$buildDir/generated/sources/graphqlGradlePluginForum"
@@ -166,6 +170,12 @@ tasks.register('generateClientCodeForum', com.graphql_java_generator.gradleplugi
 			javaType: 'java.util.Date',
 			graphQLScalarTypeStaticField: 'com.graphql_java_generator.customscalars.GraphQLScalarTypeDate.Date'
 	] ]
+/*
+	templates = [
+		QUERY_MUTATION: "templates/resttemplate/client_query_mutation_type.vm.java",
+		SUBSCRIPTION: "src/graphqls/customtemplates/client_subscription_type.vm.java"
+	]
+*/
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -249,8 +259,7 @@ task stopAuthorizationServer(type: StopApp) {
 	mustRunAfter test
 }
 
-// The next lines insures that the Basic-server is built before starting the integration test from the client.
-// Using mustRunAfter instead of dependsOn allows to manually start the server, then just execute the test task.
+// The next lines insures that the necessary servers are started before starting the integration test from the client.
 test.dependsOn startAuthorizationServer
 test.dependsOn startAllGraphQLCasesServer
 test.dependsOn startForumServer
