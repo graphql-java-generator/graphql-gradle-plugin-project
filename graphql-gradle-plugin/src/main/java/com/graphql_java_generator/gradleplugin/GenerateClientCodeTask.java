@@ -79,6 +79,15 @@ public class GenerateClientCodeTask extends GenerateCodeCommonTask implements Ge
 		GenerateClientCodeConfiguration pluginConfiguration = ctx.getBean(GenerateClientCodeConfiguration.class);
 		pluginConfiguration.logConfiguration();
 
+		// The commented code, below, is use to check the access to a velocity custom template that would be added to
+		// buildscript classpath. It works fine with Maven, but doesn't seem to be possible with Gradle. This code
+		// remains, in case a hint is found.
+		// String path = "classpath:templates/resttemplate/client_query_mutation_type.vm.java";
+		// Resource res = ctx.getResource(path);
+		// System.out.println(res.getFilename());
+		// res.getInputStream().close(); // Just to check that the resource exists
+		// System.out.println(res.getFilename() + " actually exists");
+
 		GenerateCodeDocumentParser documentParser = ctx.getBean(GenerateCodeDocumentParser.class);
 		documentParser.parseGraphQLSchemas();
 

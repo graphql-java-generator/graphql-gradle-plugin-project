@@ -170,12 +170,11 @@ tasks.register('generateClientCodeForum', com.graphql_java_generator.gradleplugi
 			javaType: 'java.util.Date',
 			graphQLScalarTypeStaticField: 'com.graphql_java_generator.customscalars.GraphQLScalarTypeDate.Date'
 	] ]
-/*
-	templates = [
-		QUERY_MUTATION: "templates/resttemplate/client_query_mutation_type.vm.java",
+	templates = [		
+		// This custom template is commented: custom templates embedded in an external library doesn't seem to be readable from a Gradle plugin
+		// QUERY_MUTATION: "templates/resttemplate/client_query_mutation_type.vm.java"
 		SUBSCRIPTION: "src/graphqls/customtemplates/client_subscription_type.vm.java"
 	]
-*/
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
