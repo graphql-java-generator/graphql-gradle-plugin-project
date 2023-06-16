@@ -56,17 +56,16 @@ repositories {
 
 dependencies {
 	// This plugin is a wrapper of the logic already implemented in our maven plugin
-	implementation ("com.graphql-java-generator:graphql-maven-plugin-logic:${project.version}") {
+	implementation ("com.graphql-java-generator:graphql-maven-plugin-logic:${graphqlPluginLogicVersion}") {
 		exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
 		exclude group: 'net.minidev', module: 'json-smart'
 	}
 	implementation 'org.slf4j:slf4j-api:1.7.9'
 	
-	// Dependencies that will be used only if the feature springBoot3Support is activated
-	springBoot3SupportImplementation "org.springframework:spring-context:${spring3_springFrameworkVersion}"
+	implementation "org.springframework:spring-context:${spring3_springFrameworkVersion}"
 
 	// Dependencies for tests
-	testImplementation "org.springframework.boot:spring-boot-starter-test:${springBootVersion}"
+	testImplementation "org.springframework.boot:spring-boot-starter-test:${spring3_springBootVersion}"
 	testImplementation "org.junit.jupiter:junit-jupiter-api:${junitJupiterVersion}"
 	testImplementation "org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}"  
 }
