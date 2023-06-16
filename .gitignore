@@ -2,8 +2,8 @@
 .gradle
 
 # Ignore Gradle build output directory
-build
-**/userHome/
+build/
+userHome/
 
 # Some files (including unit test log) coming from the maven part are still generated in target/ folders
 target

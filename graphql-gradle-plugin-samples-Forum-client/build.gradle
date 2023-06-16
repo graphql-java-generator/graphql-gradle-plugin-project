@@ -11,14 +11,14 @@ buildscript {
     	//
     	// Of course, for a real use of the plugin in your project, you'll have to replace by the last plugin's version,
     	// or better: put this version number in the gradle.properties file, to use it for both the plugin and the dependencies version
-        classpath 'com.graphql-java-generator:graphql-gradle-plugin:dummy'
+        classpath 'com.graphql-java-generator:graphql-gradle-plugin3:dummy'
     }
 }
 
 plugins {
 	id 'java'
 	id 'application'
-	id 'com.graphql-java-generator.graphql-gradle-plugin'
+	id 'com.graphql-java-generator.graphql-gradle-plugin3'
 	id 'org.springframework.boot' version "${spring3_springBootVersion}"
 	id 'io.spring.dependency-management' version "${spring3_DependencyManagementPluginVersion}"
 }

@@ -9,8 +9,11 @@ Server mode:
 Client mode:
 * Issue #189: using OAuth2 in spring 6 (with copyRuntimeSource=true only) would through this error: "missing createError() method in OAuthTokenExtractor.GetOAuthTokenClientResponse"
 
+Gradle:
+* A `graphql-gradle-plugin3` is now available, that is compiled for Spring Boot 3.x and Spring Framework 6.x
 
-#2.0 
+
+# 2.0 
 
 Change of some plugin parameters value (please read either [[Client migration from 1.x to 2.x|client_migrate_1-x_to_2-x]] or [[Server migration from 1.x to 2.x|server_migrate_1-x_to_2-x]] for more information) changed of default value:
 * copyRuntimeSources: false _(both client and server mode)_

@@ -1,4 +1,4 @@
-# List of task that should be done
+# List of tasks that should be done
 * The `graphql-gradle-plugin-samples-CustomTemplates-resttemplate` should also be copied in the `copySamplesFromMavenPlugin` task
 * Restore the `ValidateCustomQueryIT` custom templates IT test
     * Which means, solve this issue: custom templates embedded in an external library doesn't seem to be readable from a Gradle plugin

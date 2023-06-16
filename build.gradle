@@ -5,6 +5,15 @@ buildscript {
         mavenLocal()
         mavenCentral()
     }
+    dependencies {
+    	// The version number is not used in this multi-module project: the included build of graphql-gradle-plugin
+    	// will replace this declaration. But this dummy declaration is needed!
+    	//
+    	// Of course, for a real use of the plugin in your project, you'll have to replace by the last plugin's version,
+    	// or better: put this version number in the gradle.properties file, to use it for both the plugin and the dependencies version
+        classpath 'com.graphql-java-generator:graphql-gradle-plugin:dummy'
+        classpath 'com.graphql-java-generator:graphql-gradle-plugin3:dummy'
+    }
 }
 
 plugins {
@@ -13,6 +22,7 @@ plugins {
 	
 	// The GraphQL plugin is activated here only to check its version
 	id 'com.graphql-java-generator.graphql-gradle-plugin'
+	id 'com.graphql-java-generator.graphql-gradle-plugin3'
 }
 
 
@@ -23,13 +33,23 @@ def graphQLplugin = getPlugins().getPlugin('com.graphql-java-generator.graphql-g
 if (graphQLplugin == null) {
 	throw new ProjectConfigurationException("[Internal error] The GraphQL plugin should have been added to the main build")
 }
+def graphQLplugin3 = getPlugins().getPlugin('com.graphql-java-generator.graphql-gradle-plugin3')
+if (graphQLplugin3 == null) {
+	throw new ProjectConfigurationException("[Internal error] The GraphQL plugin 3 should have been added to the main build")
+}
 println "graphQLplugin version is " + graphQLplugin.getVersion()
-println "graphql-maven-plugin-logic version: " + graphQLplugin.getDependenciesVersion()
+println "graphQLplugin3 version is " + graphQLplugin3.getVersion()
+println "graphql-maven-plugin-logic version is " + graphQLplugin.getDependenciesVersion()
 println "project version is ${project.version}" 
 if (graphQLplugin.getVersion() != "${project.version}") {
 	throw new GradleException(
 		"The plugin version and the project version should be identical, but plugin version is '"
 			+ graphQLplugin.getVersion()+ "' whereas the project version is '${project.version}'")
+}
+if (graphQLplugin3.getVersion() != "${project.version}") {
+	throw new GradleException(
+		"The plugin3 version and the project version should be identical, but plugin version is '"
+			+ graphQLplugin3.getVersion()+ "' whereas the project version is '${project.version}'")
 }
 
 subprojects {
@@ -84,3 +104,37 @@ subprojects {
 		}
 	}
 }
+
+
+
+
+task cleanPlugin3Code() {
+	group = 'Preparation'
+	description = "Delete the graphql-gradle-plugin3/src folder (to allow fresh copy of the sources from the graphql-gradle-plugin's code)"
+
+	// The action for this task is to delete the src folder
+	doLast {
+		delete 'graphql-gradle-plugin3/src'
+	}
+}
+/**
+ * This task copies the code and dependencies version (in the gradle.properties file) from this project into the graphql-gradle-plugin3 folder  
+ */
+task copyPluginCodeToPlugin3(type: Copy) {
+	group = 'Preparation'
+	description = 'Copy the plugin code from the graphql-gradle-plugin to the graphql-gradle-plugin3 folder'
+
+	doLast {
+		println 'Coping the src folder (and gradle.properties) from graphql-gradle-plugin to graphql-gradle-plugin3'
+	}
+						
+    from('graphql-gradle-plugin') {
+    	include "gradle.properties"
+	    include "src/**"
+    }
+    into 'graphql-gradle-plugin3'
+
+    dependsOn cleanPlugin3Code
+    mustRunAfter cleanPlugin3Code
+}
+
