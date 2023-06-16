@@ -25,6 +25,7 @@ dependencies {
 }
 ```
 
+Samples are available for the [client side](https://github.com/graphql-java-generator/GraphQL-Forum-Gradle-Tutorial-client) and for the [server side](https://github.com/graphql-java-generator/GraphQL-Forum-Gradle-Tutorial-server).
 
 # 2.1
 
