@@ -2,7 +2,7 @@
 
 Gradle:
 * A `graphql-gradle-plugin3` is now available, that is compiled for Spring Boot 3.x and Spring Framework 6.x
-    * Due to an issue during the plugin publishing, the plugin3 version is 2.1b, whereas the plugin login version is 2.1, like this:
+    * Due to an issue during the plugin publishing, the plugin3 version is 2.1b, whereas the runtime version is 2.1, like this:
 
 ```
 plugins {
