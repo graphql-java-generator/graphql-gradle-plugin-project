@@ -39,7 +39,6 @@ if (graphQLplugin3 == null) {
 }
 println "graphQLplugin version is " + graphQLplugin.getVersion()
 println "graphQLplugin3 version is " + graphQLplugin3.getVersion()
-println "graphql-maven-plugin-logic version is " + graphQLplugin.getDependenciesVersion()
 println "project version is ${project.version}" 
 if (graphQLplugin.getVersion() != "${project.version}") {
 	throw new GradleException(

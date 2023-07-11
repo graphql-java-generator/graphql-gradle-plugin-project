@@ -1,6 +1,5 @@
 package com.graphql_java_generator.gradleplugin;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -9,9 +8,7 @@ import javax.inject.Inject;
 
 import org.dataloader.BatchLoaderEnvironment;
 import org.gradle.api.tasks.Input;
-import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.Internal;
-import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.TaskAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -180,8 +177,8 @@ public class GenerateServerCodeTask extends GenerateCodeCommonTask implements Ge
 	 * </P>
 	 * <P>
 	 * Note: you can override this, by using the schema personalization capability. For more information, please have a
-	 * look at the
-	 * <A HREF="https://graphql-maven-plugin-project.graphql-java-generator.com/schema_personalization.html">Schema
+	 * look at the <A HREF=
+	 * "https://github.com/graphql-java-generator.com/graphql-maven-plugin-project/wiki/usage_schema_personalization">Schema
 	 * Personalization doc page</A>.
 	 * </P>
 	 * 
@@ -204,21 +201,6 @@ public class GenerateServerCodeTask extends GenerateCodeCommonTask implements Ge
 	 * </P>
 	 */
 	private String scanBasePackages;
-
-	/**
-	 * <P>
-	 * schemaPersonalizationFile is the file name where the GraphQL maven plugin will find personalization that it must
-	 * apply before generating the code. This applies to the <B>server</B> mode only. See
-	 * <A HREF="https://graphql-maven-plugin-project.graphql-java-generator.com/schema_personalization.html">the doc on
-	 * the plugin web site</A> for more details.
-	 * </P>
-	 * <P>
-	 * The standard file would be something like /src/main/graphql/schemaPersonalizationFile.json, which avoids to embed
-	 * this compile time file within your maven artifact (as it is not in the /src/main/java nor in the
-	 * /src/main/resources folders).
-	 * </P>
-	 */
-	private String schemaPersonalizationFile;
 
 	@Inject
 	public GenerateServerCodeTask() {
@@ -296,19 +278,6 @@ public class GenerateServerCodeTask extends GenerateCodeCommonTask implements Ge
 
 	public final void setScanBasePackages(String scanBasePackages) {
 		this.scanBasePackages = scanBasePackages;
-		// This task as being configured. So we'll mark compileJava and processResources as depending on it
-		setInitialized(true);
-	}
-
-	@Override
-	@InputFile
-	@Optional
-	final public File getSchemaPersonalizationFile() {
-		return getFileValue(schemaPersonalizationFile, getExtension().getSchemaPersonalizationFile());
-	}
-
-	public final void setSchemaPersonalizationFile(String schemaPersonalizationFile) {
-		this.schemaPersonalizationFile = schemaPersonalizationFile;
 		// This task as being configured. So we'll mark compileJava and processResources as depending on it
 		setInitialized(true);
 	}

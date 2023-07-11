@@ -70,6 +70,7 @@ tasks.register('generateClientCodeAllGraphQLCases', com.graphql_java_generator.g
 	generateDeprecatedRequestResponse = true
 	packageName = 'org.allGraphQLCases.client'
 	schemaFileFolder = "$buildDir/generated/resources/generateGraphQLSchema" // Let's read the merged GraphQL schema
+	schemaPersonalizationFile = '/src/graphqls/schema_personalization/schema_personalization.json'
 	separateUtilityClasses = false
 	springBeanSuffix = 'AllGraphQLCases'
 	

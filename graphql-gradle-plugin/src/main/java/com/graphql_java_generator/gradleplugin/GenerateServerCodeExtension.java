@@ -3,7 +3,6 @@
  */
 package com.graphql_java_generator.gradleplugin;
 
-import java.io.File;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
@@ -124,8 +123,8 @@ public class GenerateServerCodeExtension extends GenerateCodeCommonExtension
 	 * </P>
 	 * <P>
 	 * Note: you can override this, by using the schema personalization capability. For more information, please have a
-	 * look at the
-	 * <A HREF="https://graphql-maven-plugin-project.graphql-java-generator.com/schema_personalization.html">Schema
+	 * look at the <A HREF=
+	 * "https://github.com/graphql-java-generator.com/graphql-maven-plugin-project/wiki/usage_schema_personalization">Schema
 	 * Personalization doc page</A>.
 	 * </P>
 	 * 
@@ -148,21 +147,6 @@ public class GenerateServerCodeExtension extends GenerateCodeCommonExtension
 	 * </P>
 	 */
 	private String scanBasePackages = GraphQLConfiguration.DEFAULT_SCAN_BASE_PACKAGES;
-
-	/**
-	 * <P>
-	 * schemaPersonalizationFile is the file name where the GraphQL maven plugin will find personalization that it must
-	 * apply before generating the code. This applies to the <B>server</B> mode only. See
-	 * <A HREF="https://graphql-maven-plugin-project.graphql-java-generator.com/schema_personalization.html">the doc on
-	 * the plugin web site</A> for more details.
-	 * </P>
-	 * <P>
-	 * The standard file would be something like /src/main/graphql/schemaPersonalizationFile.json, which avoids to embed
-	 * this compile time file within your maven artifact (as it is not in the /src/main/java nor in the
-	 * /src/main/resources folders).
-	 * </P>
-	 */
-	private String schemaPersonalizationFile = GraphQLConfiguration.DEFAULT_SCHEMA_PERSONALIZATION_FILE;
 
 	public GenerateServerCodeExtension(Project project) {
 		super(project);
@@ -248,18 +232,6 @@ public class GenerateServerCodeExtension extends GenerateCodeCommonExtension
 
 	public void setScanBasePackages(String scanBasePackages) {
 		this.scanBasePackages = scanBasePackages;
-		// This task as being configured. So we'll mark compileJava and processResources as depending on it
-		setInitialized(true);
-	}
-
-	@Override
-	public File getSchemaPersonalizationFile() {
-		return (GraphQLConfiguration.DEFAULT_SCHEMA_PERSONALIZATION_FILE.equals(schemaPersonalizationFile)) ? null
-				: project.file(schemaPersonalizationFile);
-	}
-
-	public void setSchemaPersonalizationFile(String schemaPersonalizationFile) {
-		this.schemaPersonalizationFile = schemaPersonalizationFile;
 		// This task as being configured. So we'll mark compileJava and processResources as depending on it
 		setInitialized(true);
 	}

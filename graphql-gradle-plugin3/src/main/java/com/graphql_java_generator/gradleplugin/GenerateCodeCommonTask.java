@@ -11,6 +11,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import org.gradle.api.tasks.Input;
+import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputDirectory;
@@ -122,6 +123,28 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 
 	/**
 	 * <P>
+	 * schemaPersonalizationFile is the file name where the GraphQL maven plugin will find personalization that it must
+	 * apply before generating the code. Since the 2.2 release, it is available for both client and server. Before, it
+	 * applies to the <B>server</B> mode only.
+	 * <P>
+	 * <P>
+	 * This allows to:
+	 * <UL>
+	 * <LI>Add or modify fields</LI>
+	 * <LI>Add interface and annotation to classes (GraphQL types, input types, interfaces, unions and enums) or fields.
+	 * </LI>
+	 * </UL>
+	 * </P>
+	 * <P>
+	 * See <A HREF=
+	 * "https://github.com/graphql-java-generator.com/graphql-maven-plugin-project/wiki/usage_schema_personalization">the
+	 * doc on the project's wiki</A> for more details.
+	 * </P>
+	 */
+	private String schemaPersonalizationFile;
+
+	/**
+	 * <P>
 	 * Indicates whether the utility classes (that is: the classes that are not match an item in the GraphQL schema) are
 	 * generated in the same package than the classes that matches the GraphQL schema.
 	 * </P>
@@ -222,6 +245,19 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 
 	final public void setQueryMutationExecutionProtocol(QueryMutationExecutionProtocol queryMutationExecutionProtocol) {
 		this.queryMutationExecutionProtocol = queryMutationExecutionProtocol;
+		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		setInitialized(true);
+	}
+
+	@Override
+	@InputFile
+	@Optional
+	final public File getSchemaPersonalizationFile() {
+		return getFileValue(schemaPersonalizationFile, getExtension().getSchemaPersonalizationFile());
+	}
+
+	public final void setSchemaPersonalizationFile(String schemaPersonalizationFile) {
+		this.schemaPersonalizationFile = schemaPersonalizationFile;
 		// This task as being configured. So we'll mark compileJava and processResources as depending on it
 		setInitialized(true);
 	}
