@@ -35,7 +35,7 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-graphql'
 	// The graphql-java-client-dependencies module agregates all dependencies for the generated code
-    implementation "com.graphql-java-generator:graphql-java-client-runtime:${project.pluginRuntimeVersion}"
+    implementation "com.graphql-java-generator:graphql-java-client-runtime:${project.version}"
 	
 	// Dependencies for tests
 	testImplementation "org.springframework.boot:spring-boot-starter-test" 
