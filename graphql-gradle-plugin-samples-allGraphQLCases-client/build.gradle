@@ -172,8 +172,12 @@ tasks.register('generateClientCodeForum', com.graphql_java_generator.gradleplugi
 			graphQLScalarTypeStaticField: 'com.graphql_java_generator.customscalars.GraphQLScalarTypeDate.Date'
 	] ]
 	templates = [		
-		// This custom template is commented: custom templates embedded in an external library doesn't seem to be readable from a Gradle plugin
-		// QUERY_MUTATION: "templates/resttemplate/client_query_mutation_type.vm.java"
+		// This custom template should come from an external project, like in the maven plugin project.
+		// But custom templates embedded in an external library doesn't seem to be readable from a Gradle plugin, so
+		// this custom template has been copied into the ./CustomTemplates-resttemplate of this project, so that the
+		// JUnit tests coming from the Maven project still work.
+		QUERY_MUTATION: "CustomTemplates-resttemplate/client_query_mutation_type.vm.java",
+		//
 		SUBSCRIPTION: "src/graphqls/customtemplates/client_subscription_type.vm.java"
 	]
 }
