@@ -8,13 +8,12 @@ import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
-import org.gradle.api.file.CopySpec;
-import org.gradle.api.file.DuplicatesStrategy;
 import org.gradle.api.plugins.JavaPlugin;
 import org.gradle.api.tasks.TaskProvider;
 import org.slf4j.Logger;
@@ -77,92 +76,33 @@ public class GraphQLPlugin implements Plugin<Project> {
 
 			@Override
 			public void execute(Project p) {
-				logger.info("[in project.afterEvaluate2] Before registering generated folders for project '"
-						+ p.getName() + "'");
-				// Below is an attempt to automatically say to Gradle, that the codeGeneration must occur before the
-				// compilation. But this fails, as doing the code below would activate all the plugin's tasks.
-				// And I found no way to identify all the task that will be executed before the Project is evaluated,
-				// and the TaskExecutionGraph (that can be retrieved from the Gradle instance) is populated. But at this
-				// time, it's too late to change the tasks execution order
-				// for (Task task : p.getTasks()) {
-				// if (!task.getEnabled()) {
-				// logger.info(" Ignoring disabled task '" + task.getName() + "'");
-				// } else if (task.getState().getSkipped()) {
-				// logger.info(" Ignoring skipped task '" + task.getName() + "'");
-				// } else if (task instanceof CommonTask) {
-				// logger.info(" Registering generated folders for task '" + task.getName() + "'");
-				// ((CommonTask) task).registerGeneratedFolders();
-				//
-				// // This task generates the code. So it must be executed before the compilation and the resource
-				// // processing
-				// addDependency("compileJava", task);
-				// for (Task t : addDependency("processResources", task)) {
-				// // Some resources are generated in double. Here is a workaround
-				// ((CopySpec) t).setDuplicatesStrategy(DuplicatesStrategy.INCLUDE);
-				// logger.info(" Setting property: {}.duplicatesStrategy = {}", t.getName(),
-				// DuplicatesStrategy.INCLUDE);
-				// }
-				// } else {
-				// logger.info(" Ignoring task '" + task.getName() + "'");
-				// }
-				// } // for
-
 				Set<Task> compileJavaTasks = project.getTasksByName("compileJava", false);
 				Set<Task> processResourcesTasks = project.getTasksByName("processResources", false);
-
 				Set<Task> allDependingTasks = new HashSet<>();
 				allDependingTasks.addAll(compileJavaTasks);
 				allDependingTasks.addAll(processResourcesTasks);
 
-				// Add all tasks for this plugin as dependencies for the compileJava and processResources tasks
-				for (Task t : project.getTasks()) {
-					// GenerateServerCodeExtension e = t.getExtensions().findByType(GenerateServerCodeExtension.class);
-					// Object eName = t.getExtensions().findByName(GENERATE_SERVER_CODE_EXTENSION);
-					// if (e != null) {
-					// logger.info("getTasks(): {}, initialized={}", t.getPath(), e.isInitialized());
-					// } else if (eName != null && eName instanceof GenerateServerCodeExtension) {
-					// logger.info("getTasks(): {}, initialized={}", t.getPath(), t.property("initialized"));
-					// } else if (eName != null) {
-					// logger.info("getTasks(): {}, eName.class={}", t.getPath(), eName.getClass().getName());
-					// } else if (taskProvider.getName().equals(t.getName())) {
-					// // if (taskProvider.isPresent()) {
-					// // logger.info("getTasks(): {}, taskProvider.present={}", t.getPath(),
-					// // taskProvider.isPresent());
-					// // } else if (taskProvider.getName().equals(t.getName()) && !taskProvider.isPresent()) {
-					// // logger.info("getTasks(): {}, taskProvider.present={}", t.getPath(),
-					// // taskProvider.isPresent());
-					// // }
-					// logger.info("getTasks(): {}, taskProvider.present={}, initialized={}", t.getPath(),
-					// taskProvider.isPresent(), t.property("initialized"));
+				Set<String> list = new TreeSet<>();
+				for (Task t : p.getTasks()) {
 					if (t.hasProperty("initialized")) {
-						logger.debug("getTasks(): {}, taskProvider.present={}, initialized={}", t.getPath(),
-								taskProvider.isPresent(), t.property("initialized"));
-						if ((boolean) t.property("initialized"))
+						list.add(String.format(
+								"[in project.afterEvaluate (getTasks)]   %1s %2s (initialized=[%3s]%4s, enabled=%5s, extensions=%6s)",
+								p.getName(), t.getPath(), t.property("initialized").getClass().getSimpleName(),
+								t.property("initialized"), t.getEnabled(), t.getExtensions()));
+						if ((boolean) t.property("initialized")) {
+							logger.info(
+									"Adding the {} task as a dependency for the compileJava and processResources tasks",
+									t.getName());
 							addTaskAsADependencyToAnotherTask(p, t, allDependingTasks);
-					} else {
-						logger.debug("getTasks(): {}", t.getPath());
+						} else {
+							logger.debug(
+									"Task {} ignored, as its initialized state is {} (it will not be added as a dependency for the compileJava and processResources tasks)",
+									t.getName(), t.property("initialized"));
+						}
 					}
 				}
-
-				// project.getTasks().stream()
-				// .forEach(t -> logger.info("getTasks(): {}, extensions={}", t.getPath(), t.getExtensions()));
-				// project.getDefaultTasks().stream().forEach(t -> logger.info("getDefaultTasks(): {}", t));
-				// addThisTaskAsADependencyToAnotherTask(p, GENERATE_CLIENT_CODE_TASK_NAME, allDependingTasks);
-				// addThisTaskAsADependencyToAnotherTask(p, GENERATE_POJO_TASK_NAME, allDependingTasks);
-				// addThisTaskAsADependencyToAnotherTask(p, GENERATE_SERVER_CODE_TASK_NAME, allDependingTasks);
-				// addThisTaskAsADependencyToAnotherTask(p, GRAPHQL_GENERATE_CODE_TASK_NAME, allDependingTasks);
-				// addThisTaskAsADependencyToAnotherTask(p, MERGE_TASK_NAME, allDependingTasks);
-
-				if (processResourcesTasks.size() == 0) {
-					throw new RuntimeException(
-							"Found no 'processResources' task, when executing project.afterEvaluate()");
-				}
-				for (Task t : processResourcesTasks) { // There should be one.
-					// Some resources are generated in double. This can generate an error when building the project.
-					// Here is a workaround:
-					((CopySpec) t).setDuplicatesStrategy(DuplicatesStrategy.INCLUDE);
-					logger.info(" Setting property: {}.duplicatesStrategy = {}", t.getName(),
-							DuplicatesStrategy.INCLUDE);
+				for (String s : list) {
+					logger.debug(s);
 				}
 			}
 
@@ -176,13 +116,11 @@ public class GraphQLPlugin implements Plugin<Project> {
 			 */
 			private void addTaskAsADependencyToAnotherTask(Project p, Task task, Set<Task> dependingTasks) {
 				for (Task dependingTask : dependingTasks) {
-					logger.info("Adding dependency: {}.dependsOn({})", dependingTask.getPath(), task.getPath());
 					dependingTask.dependsOn(task.getPath());
 				}
 			}
+		});
 
-		});// project.afterEvaluate
-			//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	}
 
 	/**
@@ -203,17 +141,17 @@ public class GraphQLPlugin implements Plugin<Project> {
 
 	/** Manual reading of the application.properties file, as this is not a spring boot project. */
 	private Properties getProperties() {
-		if (properties == null) {
-			properties = new Properties();
+		if (this.properties == null) {
+			this.properties = new Properties();
 			try {
 				try (InputStream is = getClass().getResourceAsStream("/application.properties")) {
-					properties.load(is);
+					this.properties.load(is);
 				}
 			} catch (IOException e) {
 				throw new RuntimeException(e.getMessage(), e);
 			} // try
 		} // if
-		return properties;
+		return this.properties;
 	}// getProperties()
 
 	/**

@@ -240,7 +240,7 @@ public class CommonTask extends DefaultTask implements CommonConfiguration {
 	@Input
 	@Override
 	final public boolean isAddRelayConnections() {
-		return getValue(addRelayConnections, getExtension().isAddRelayConnections());
+		return getValue(this.addRelayConnections, getExtension().isAddRelayConnections());
 	}
 
 	final public void setAddRelayConnections(Boolean addRelayConnections) {
@@ -263,7 +263,7 @@ public class CommonTask extends DefaultTask implements CommonConfiguration {
 	@Override
 	@Input
 	public String getEnumPrefix() {
-		return getValue(enumPrefix, getExtension().getEnumPrefix());
+		return getValue(this.enumPrefix, getExtension().getEnumPrefix());
 	}
 
 	public void setEnumPrefix(String enumPrefix) {
@@ -277,7 +277,7 @@ public class CommonTask extends DefaultTask implements CommonConfiguration {
 	@Override
 	@Input
 	public String getEnumSuffix() {
-		return getValue(enumSuffix, getExtension().getEnumSuffix());
+		return getValue(this.enumSuffix, getExtension().getEnumSuffix());
 	}
 
 	public void setEnumSuffix(String enumSuffix) {
@@ -292,7 +292,7 @@ public class CommonTask extends DefaultTask implements CommonConfiguration {
 	@Override
 	@Input
 	public String getInputPrefix() {
-		return getValue(inputPrefix, getExtension().getInputPrefix());
+		return getValue(this.inputPrefix, getExtension().getInputPrefix());
 	}
 
 	public void setInputPrefix(String inputPrefix) {
@@ -307,7 +307,7 @@ public class CommonTask extends DefaultTask implements CommonConfiguration {
 	@Override
 	@Input
 	public String getInputSuffix() {
-		return getValue(inputSuffix, getExtension().getInputSuffix());
+		return getValue(this.inputSuffix, getExtension().getInputSuffix());
 	}
 
 	public void setInputSuffix(String inputSuffix) {
@@ -322,7 +322,7 @@ public class CommonTask extends DefaultTask implements CommonConfiguration {
 	 */
 	@Input
 	public boolean isInitialized() {
-		return initialized || getExtension().isInitialized();
+		return this.initialized || getExtension().isInitialized();
 	}
 
 	/**
@@ -333,7 +333,7 @@ public class CommonTask extends DefaultTask implements CommonConfiguration {
 	@Override
 	@Input
 	public String getInterfacePrefix() {
-		return getValue(interfacePrefix, getExtension().getInterfacePrefix());
+		return getValue(this.interfacePrefix, getExtension().getInterfacePrefix());
 	}
 
 	public void setInterfacePrefix(String interfacePrefix) {
@@ -348,7 +348,7 @@ public class CommonTask extends DefaultTask implements CommonConfiguration {
 	@Override
 	@Input
 	public String getInterfaceSuffix() {
-		return getValue(interfaceSuffix, getExtension().getInterfaceSuffix());
+		return getValue(this.interfaceSuffix, getExtension().getInterfaceSuffix());
 	}
 
 	public void setInterfaceSuffix(String interfaceSuffix) {
@@ -358,7 +358,7 @@ public class CommonTask extends DefaultTask implements CommonConfiguration {
 	@Input
 	@Override
 	public Integer getMaxTokens() {
-		return getValue(maxTokens, getExtension().getMaxTokens());
+		return getValue(this.maxTokens, getExtension().getMaxTokens());
 	}
 
 	public void setParserOptions(Integer maxTokens) {
@@ -381,7 +381,7 @@ public class CommonTask extends DefaultTask implements CommonConfiguration {
 	@Override
 	@Input
 	public String getTypePrefix() {
-		return getValue(typePrefix, getExtension().getTypePrefix());
+		return getValue(this.typePrefix, getExtension().getTypePrefix());
 	}
 
 	public void setTypePrefix(String typePrefix) {
@@ -395,7 +395,7 @@ public class CommonTask extends DefaultTask implements CommonConfiguration {
 	@Override
 	@Input
 	public String getTypeSuffix() {
-		return getValue(typeSuffix, getExtension().getTypeSuffix());
+		return getValue(this.typeSuffix, getExtension().getTypeSuffix());
 	}
 
 	public void setTypeSuffix(String typeSuffix) {
@@ -410,7 +410,7 @@ public class CommonTask extends DefaultTask implements CommonConfiguration {
 	@Override
 	@Input
 	public String getUnionPrefix() {
-		return getValue(unionPrefix, getExtension().getUnionPrefix());
+		return getValue(this.unionPrefix, getExtension().getUnionPrefix());
 	}
 
 	public void setUnionPrefix(String unionPrefix) {
@@ -424,7 +424,7 @@ public class CommonTask extends DefaultTask implements CommonConfiguration {
 	@Override
 	@Input
 	public String getUnionSuffix() {
-		return getValue(unionSuffix, getExtension().getUnionSuffix());
+		return getValue(this.unionSuffix, getExtension().getUnionSuffix());
 	}
 
 	public void setUnionSuffix(String unionSuffix) {
@@ -441,7 +441,8 @@ public class CommonTask extends DefaultTask implements CommonConfiguration {
 	@Override
 	@Deprecated
 	final public boolean isSkipGenerationIfSchemaHasNotChanged() {
-		return getValue(skipGenerationIfSchemaHasNotChanged, getExtension().isSkipGenerationIfSchemaHasNotChanged());
+		return getValue(this.skipGenerationIfSchemaHasNotChanged,
+				getExtension().isSkipGenerationIfSchemaHasNotChanged());
 	}
 
 	final public void setSkipGenerationIfSchemaHasNotChanged(boolean skipGenerationIfSchemaHasNotChanged) {
@@ -454,7 +455,7 @@ public class CommonTask extends DefaultTask implements CommonConfiguration {
 	@Optional
 	@Override
 	final public File getSchemaFileFolder() {
-		return getFileValue(schemaFileFolder, getExtension().getSchemaFileFolder());
+		return getFileValue(this.schemaFileFolder, getExtension().getSchemaFileFolder());
 	}
 
 	final public void setSchemaFileFolder(String schemaFileFolder) {
@@ -466,7 +467,7 @@ public class CommonTask extends DefaultTask implements CommonConfiguration {
 	@Input
 	@Override
 	final public String getSchemaFilePattern() {
-		return getValue(schemaFilePattern, getExtension().getSchemaFilePattern());
+		return getValue(this.schemaFilePattern, getExtension().getSchemaFilePattern());
 	}
 
 	final public void setSchemaFilePattern(String schemaFilePattern) {
@@ -489,7 +490,7 @@ public class CommonTask extends DefaultTask implements CommonConfiguration {
 	@Input
 	@Override
 	final public Map<String, String> getTemplates() {
-		return getValue(templates, getExtension().getTemplates());
+		return getValue(this.templates, getExtension().getTemplates());
 	}
 
 	final public void setTemplates(Map<String, String> templates) {
@@ -505,10 +506,10 @@ public class CommonTask extends DefaultTask implements CommonConfiguration {
 
 	@Internal
 	protected CommonExtension getExtension() {
-		if (extension == null) {
-			extension = getProject().getExtensions().getByType(extensionClass);
+		if (this.extension == null) {
+			this.extension = getProject().getExtensions().getByType(this.extensionClass);
 		}
-		return extension;
+		return this.extension;
 	}
 
 	/**
@@ -527,7 +528,7 @@ public class CommonTask extends DefaultTask implements CommonConfiguration {
 	 */
 	protected void addThisTaskAsADependencyToAnotherTask(String taskName) {
 		for (Task t : getTasks(taskName)) { // There should be one.
-			logger.info("Adding dependency: {}.dependsOn({})", t.getPath(), getPath());
+			logger.debug("Adding dependency: {}.dependsOn({})", t.getPath(), getPath());
 			t.dependsOn(getPath());
 		}
 	}
@@ -568,12 +569,12 @@ public class CommonTask extends DefaultTask implements CommonConfiguration {
 	@SuppressWarnings("rawtypes")
 	public Task configure(Closure closure) {
 		Task t = super.configure(closure);
-		logger.info("[In configure] Before calling registerGeneratedFolders, for task '" + getPath() + "'");
+		logger.debug("[In configure] Before calling registerGeneratedFolders, for task '" + getPath() + "'");
 		registerGeneratedFolders();
 
 		// This task is configured. So we add it to the task that depends on it
-		addThisTaskAsADependencyToAnotherTask("compileJava");
-		addThisTaskAsADependencyToAnotherTask("processResources");
+		// addThisTaskAsADependencyToAnotherTask("compileJava");
+		// addThisTaskAsADependencyToAnotherTask("processResources");
 
 		return t;
 	}
