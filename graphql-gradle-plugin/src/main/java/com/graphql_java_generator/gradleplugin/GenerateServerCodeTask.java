@@ -233,15 +233,13 @@ public class GenerateServerCodeTask extends GenerateCodeCommonTask implements Ge
 
 		ctx.close();
 
-		registerGeneratedFolders();
-
 		logger.debug("Finished generation of java classes from graphqls files (5)");
 	}
 
 	@Override
 	@Input
 	final public String getJavaTypeForIDType() {
-		return getValue(javaTypeForIDType, getExtension().getJavaTypeForIDType());
+		return getValue(this.javaTypeForIDType, getExtension().getJavaTypeForIDType());
 	}
 
 	public final void setJavaTypeForIDType(String javaTypeForIDType) {
@@ -273,7 +271,7 @@ public class GenerateServerCodeTask extends GenerateCodeCommonTask implements Ge
 	@Input
 	@Override
 	final public String getScanBasePackages() {
-		return getValue(scanBasePackages, getExtension().getScanBasePackages());
+		return getValue(this.scanBasePackages, getExtension().getScanBasePackages());
 	}
 
 	public final void setScanBasePackages(String scanBasePackages) {
@@ -285,7 +283,7 @@ public class GenerateServerCodeTask extends GenerateCodeCommonTask implements Ge
 	@Override
 	@Input
 	final public boolean isGenerateBatchLoaderEnvironment() {
-		return getValue(generateBatchLoaderEnvironment, getExtension().isGenerateBatchLoaderEnvironment());
+		return getValue(this.generateBatchLoaderEnvironment, getExtension().isGenerateBatchLoaderEnvironment());
 	}
 
 	public final void setGenerateBatchLoaderEnvironment(boolean generateBatchLoaderEnvironment) {
@@ -303,7 +301,7 @@ public class GenerateServerCodeTask extends GenerateCodeCommonTask implements Ge
 	@Override
 	@Input
 	final public boolean isGenerateJPAAnnotation() {
-		return getValue(generateJPAAnnotation, getExtension().isGenerateJPAAnnotation());
+		return getValue(this.generateJPAAnnotation, getExtension().isGenerateJPAAnnotation());
 	}
 
 	public final void setGenerateJPAAnnotation(boolean generateJPAAnnotation) {
@@ -315,7 +313,7 @@ public class GenerateServerCodeTask extends GenerateCodeCommonTask implements Ge
 	@Override
 	@Input
 	public boolean isGenerateDataLoaderForLists() {
-		return getValue(generateDataLoaderForLists, getExtension().isGenerateDataLoaderForLists());
+		return getValue(this.generateDataLoaderForLists, getExtension().isGenerateDataLoaderForLists());
 	}
 
 	public final void setGenerateDataLoaderForLists(boolean generateDataLoaderForLists) {

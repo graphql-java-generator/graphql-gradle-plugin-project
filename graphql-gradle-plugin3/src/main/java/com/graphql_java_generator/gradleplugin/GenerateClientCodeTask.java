@@ -96,15 +96,13 @@ public class GenerateClientCodeTask extends GenerateCodeCommonTask implements Ge
 
 		ctx.close();
 
-		registerGeneratedFolders();
-
 		logger.debug("Finished generation of java classes from graphqls files (5)");
 	}
 
 	@Input
 	@Override
 	public boolean isGenerateDeprecatedRequestResponse() {
-		return getValue(generateDeprecatedRequestResponse, getExtension().isGenerateDeprecatedRequestResponse());
+		return getValue(this.generateDeprecatedRequestResponse, getExtension().isGenerateDeprecatedRequestResponse());
 	}
 
 	public final void setGenerateDeprecatedRequestResponse(boolean generateDeprecatedRequestResponse) {

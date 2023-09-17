@@ -9,8 +9,6 @@ import java.io.IOException;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputDirectory;
 import org.gradle.api.tasks.Internal;
-import org.gradle.api.tasks.SourceSet;
-import org.gradle.api.tasks.SourceSetContainer;
 import org.gradle.api.tasks.TaskAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,15 +84,13 @@ public class GenerateGraphQLSchemaTask extends CommonTask implements GenerateGra
 
 		ctx.close();
 
-		registerGeneratedFolders();
-
 		logger.debug("Finished generation of the merged schema");
 	}
 
 	@Override
 	@Input
 	public String getResourceEncoding() {
-		return getValue(resourceEncoding, getExtension().getResourceEncoding());
+		return getValue(this.resourceEncoding, getExtension().getResourceEncoding());
 	}
 
 	public String setResourceEncoding(String resourceEncoding) {
@@ -107,7 +103,7 @@ public class GenerateGraphQLSchemaTask extends CommonTask implements GenerateGra
 	@Override
 	@InputDirectory
 	public File getTargetFolder() {
-		File file = getFileValue(targetFolder, getExtension().getTargetFolder());
+		File file = getFileValue(this.targetFolder, getExtension().getTargetFolder());
 		file.mkdirs();
 		return file;
 	}
@@ -125,7 +121,7 @@ public class GenerateGraphQLSchemaTask extends CommonTask implements GenerateGra
 	@Override
 	@Input
 	public String getTargetSchemaFileName() {
-		return getValue(targetSchemaFileName, getExtension().getTargetSchemaFileName());
+		return getValue(this.targetSchemaFileName, getExtension().getTargetSchemaFileName());
 	}
 
 	public void setTargetSchemaFileName(String targetSchemaFileName) {
@@ -148,11 +144,7 @@ public class GenerateGraphQLSchemaTask extends CommonTask implements GenerateGra
 	@Override
 	public void registerGeneratedFolders() {
 		// Let's add the folders where the GraphQL schemas have been generated to the project
-		SourceSet main = ((SourceSetContainer) getProject().getProperties().get("sourceSets"))
-				.getByName(SourceSet.MAIN_SOURCE_SET_NAME);
-
-		logger.debug("Adding '" + getTargetFolder() + "' folder to the resources folders list");
-		main.getResources().srcDir(getTargetFolder());
+		addGeneratedResourceFolder(getTargetFolder());
 	}
 
 }

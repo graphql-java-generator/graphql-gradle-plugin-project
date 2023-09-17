@@ -113,8 +113,6 @@ public class GeneratePojoTask extends GraphQLGenerateCodeTask implements Generat
 
 			ctx.close();
 
-			registerGeneratedFolders();
-
 			logger.debug("Finished generation of java classes from graphqls files (5)");
 
 		} catch (IOException e) {
@@ -130,11 +128,11 @@ public class GeneratePojoTask extends GraphQLGenerateCodeTask implements Generat
 	@Override
 	@Input
 	public boolean isGenerateJacksonAnnotations() {
-		if (generateJacksonAnnotations == null && getExtension().isGenerateJacksonAnnotations_Raw() == null) {
+		if (this.generateJacksonAnnotations == null && getExtension().isGenerateJacksonAnnotations_Raw() == null) {
 			// Both stored values are null. We select the default value according to the plugin mode
 			return getMode().equals(PluginMode.client);
 		} else {
-			return getValue(generateJacksonAnnotations, getExtension().isGenerateJacksonAnnotations_Raw());
+			return getValue(this.generateJacksonAnnotations, getExtension().isGenerateJacksonAnnotations_Raw());
 		}
 	}
 

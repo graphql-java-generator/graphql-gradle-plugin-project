@@ -114,8 +114,6 @@ public class GraphQLGenerateCodeTask extends GenerateServerCodeTask implements G
 
 			ctx.close();
 
-			registerGeneratedFolders();
-
 			logger.debug("Finished generation of java classes from graphqls files (5)");
 
 		} catch (IOException e) {
@@ -126,7 +124,7 @@ public class GraphQLGenerateCodeTask extends GenerateServerCodeTask implements G
 	@Input
 	@Override
 	public PluginMode getMode() {
-		return getValue(mode, getExtension().getMode());
+		return getValue(this.mode, getExtension().getMode());
 	}
 
 	public final void setMode(PluginMode mode) {
@@ -138,7 +136,7 @@ public class GraphQLGenerateCodeTask extends GenerateServerCodeTask implements G
 	@Input
 	@Override
 	final public boolean isGenerateDeprecatedRequestResponse() {
-		return getValue(generateDeprecatedRequestResponse, getExtension().isGenerateDeprecatedRequestResponse());
+		return getValue(this.generateDeprecatedRequestResponse, getExtension().isGenerateDeprecatedRequestResponse());
 	}
 
 	public final void setGenerateDeprecatedRequestResponse(boolean generateDeprecatedRequestResponse) {

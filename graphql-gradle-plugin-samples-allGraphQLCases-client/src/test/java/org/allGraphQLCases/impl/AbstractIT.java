@@ -49,7 +49,7 @@ import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 // More details here: https://stackoverflow.com/questions/62558552/error-when-using-enablewebfluxsecurity-in-springboot
 @SpringBootTest(classes = SpringTestConfig.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @Execution(ExecutionMode.CONCURRENT)
-abstract class AbstractIT {
+public abstract class AbstractIT {
 
 	@Autowired
 	MyQueryTypeExecutorAllGraphQLCases queryType;
@@ -61,8 +61,8 @@ abstract class AbstractIT {
 
 	@BeforeEach
 	void setup() {
-		partialQueries = getQueries();
-		assertNotNull(partialQueries);
+		this.partialQueries = getQueries();
+		assertNotNull(this.partialQueries);
 	}
 
 	/** Get the class that will execute the queries. This is a particular class, for each test */
@@ -71,7 +71,7 @@ abstract class AbstractIT {
 	@Execution(ExecutionMode.CONCURRENT)
 	@Test
 	void test_withoutParameters() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		List<CIP_Character_CIS> list = partialQueries.withoutParameters();
+		List<CIP_Character_CIS> list = this.partialQueries.withoutParameters();
 
 		assertNotNull(list);
 		assertEquals(10, list.size());
@@ -85,7 +85,7 @@ abstract class AbstractIT {
 	void test_withOneOptionalParam() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
 		// Without parameter
-		CIP_Character_CIS c = partialQueries.withOneOptionalParam(null);
+		CIP_Character_CIS c = this.partialQueries.withOneOptionalParam(null);
 		checkCharacter(c, "test_withOneOptionalParam(null)", false, "Random String (", 0, 0);
 
 		// With a parameter
@@ -95,7 +95,7 @@ abstract class AbstractIT {
 		input.setType("Human");
 
 		// Go, go, go
-		c = partialQueries.withOneOptionalParam(input);
+		c = this.partialQueries.withOneOptionalParam(input);
 		// Verification
 		assertNotNull(c.getId());
 		assertEquals("A name", c.getName());
@@ -113,7 +113,7 @@ abstract class AbstractIT {
 			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
 		GraphQLRequestExecutionException e = assertThrows(GraphQLRequestExecutionException.class,
-				() -> partialQueries.withOneMandatoryParam(null));
+				() -> this.partialQueries.withOneMandatoryParam(null));
 		assertTrue(e.getMessage().contains("character"));
 	}
 
@@ -127,7 +127,7 @@ abstract class AbstractIT {
 		input.setType("Droid");
 
 		// Go, go, go
-		CIP_Character_CIS c = partialQueries.withOneMandatoryParam(input);
+		CIP_Character_CIS c = this.partialQueries.withOneMandatoryParam(input);
 
 		// Verification
 		assertTrue(c instanceof CTP_Droid_CTS);
@@ -146,11 +146,11 @@ abstract class AbstractIT {
 	void test_withEnum() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
 
 		// With null parameter: NEWHOPE is the default value
-		CIP_Character_CIS c = partialQueries.withEnum(null);
+		CIP_Character_CIS c = this.partialQueries.withEnum(null);
 		assertEquals(CEP_Episode_CES.NEWHOPE.name(), c.getName());// See server code for more info
 
 		// With a non null parameter
-		c = partialQueries.withEnum(CEP_Episode_CES.JEDI);
+		c = this.partialQueries.withEnum(CEP_Episode_CES.JEDI);
 		assertEquals(CEP_Episode_CES.JEDI.name(), c.getName()); // See server code for more info
 	}
 
@@ -175,7 +175,7 @@ abstract class AbstractIT {
 		String firstName = "A first name";
 
 		// Go, go, go
-		List<CIP_Character_CIS> ret = partialQueries.withList(firstName, list);
+		List<CIP_Character_CIS> ret = this.partialQueries.withList(firstName, list);
 
 		// Verification
 		assertEquals(2, ret.size());
@@ -231,7 +231,7 @@ abstract class AbstractIT {
 		String textToAppendToTheFornameWithoutId = "textToAppendToTheFornameWithoutId";
 
 		// Go, go, go
-		CTP_AllFieldCases_CTS allFieldCases = partialQueries.allFieldCases(allFieldCasesInput, uppercase,
+		CTP_AllFieldCases_CTS allFieldCases = this.partialQueries.allFieldCases(allFieldCasesInput, uppercase,
 				textToAppendToTheForname, nbItemsWithId, date6, dateTime, dates, uppercaseNameList,
 				textToAppendToTheFornameWithId, input, nbItemsWithoutId, inputList, textToAppendToTheFornameWithoutId);
 
@@ -278,7 +278,7 @@ abstract class AbstractIT {
 	void test_error() {
 
 		GraphQLRequestExecutionException e = assertThrows(GraphQLRequestExecutionException.class,
-				() -> partialQueries.error("This is an expected error"));
+				() -> this.partialQueries.error("This is an expected error"));
 		assertTrue(e.getMessage().contains("This is an expected error"),
 				"'" + e.getMessage() + "' should contain 'This is an expected error'");
 	}
@@ -286,11 +286,11 @@ abstract class AbstractIT {
 	@Execution(ExecutionMode.CONCURRENT)
 	@Test
 	void test_aBreak() throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
-		assertEquals(CEP_extends_CES.FLOAT, partialQueries.aBreak(CEP_extends_CES.FLOAT, null).getCase());
-		assertEquals(CEP_extends_CES.DOUBLE, partialQueries.aBreak(CEP_extends_CES.DOUBLE, null).getCase());
+		assertEquals(CEP_extends_CES.FLOAT, this.partialQueries.aBreak(CEP_extends_CES.FLOAT, null).getCase());
+		assertEquals(CEP_extends_CES.DOUBLE, this.partialQueries.aBreak(CEP_extends_CES.DOUBLE, null).getCase());
 	}
 
-	private void checkCharacter(CIP_Character_CIS c, String testDecription, boolean idShouldBeNull,
+	public static void checkCharacter(CIP_Character_CIS c, String testDecription, boolean idShouldBeNull,
 			String nameStartsWith, int nbFriends, int nbAppearsIn) {
 
 		if (idShouldBeNull)

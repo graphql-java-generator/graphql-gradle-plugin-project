@@ -4,6 +4,8 @@
 package com.graphql_java_generator.gradleplugin;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -11,17 +13,19 @@ import javax.inject.Inject;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.Task;
+import org.gradle.api.file.DuplicatesStrategy;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputDirectory;
 import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.Optional;
+import org.gradle.api.tasks.SourceSet;
+import org.gradle.api.tasks.SourceSetContainer;
+import org.gradle.language.jvm.tasks.ProcessResources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.graphql_java_generator.plugin.conf.CommonConfiguration;
 import com.graphql_java_generator.plugin.conf.GenerateGraphQLSchemaConfiguration;
-
-import groovy.lang.Closure;
 
 /**
  * <P>
@@ -226,6 +230,7 @@ public class CommonTask extends DefaultTask implements CommonConfiguration {
 
 	@Inject
 	public CommonTask(Class<? extends CommonExtension> extensionClazz) {
+		logger.debug("Creation of the {} task, an {} extension", this.getName(), extensionClazz);
 		this.extensionClass = extensionClazz;
 	}
 
@@ -516,7 +521,8 @@ public class CommonTask extends DefaultTask implements CommonConfiguration {
 	 * This method registers to Gradle the source and resources folders in which files are generated, if any
 	 */
 	public void registerGeneratedFolders() {
-		// No action in this class, as it manages no sources nor resources folder
+		// No action in this class, as it manages no sources nor resources folder. It is overridden by classes which
+		// need to register generated folders
 	}
 
 	/**
@@ -553,29 +559,36 @@ public class CommonTask extends DefaultTask implements CommonConfiguration {
 		this.initialized = initialized;
 	}
 
-	// /**
-	// * Let's insure that we declare in all cases the folder where sources or resources are generated
-	// */
-	// Commented, as these lines seems to break the build (or at least change the build behaviour): redoing a 'gradlew
-	// build' with these lines uncommented prevents the test to be executed:
-	// - If these lines are commented, then executing twice 'gradlew build' makes the tests be executed twice (once at
-	// each build execution)
-	// - If they are uncommented, then executing twice 'gradlew build' makes the tests be executed once (only for the
-	// first build execution)
-	//
-	// This is to bad, as it seems to be the good way to declare
-	//
-	@Override
-	@SuppressWarnings("rawtypes")
-	public Task configure(Closure closure) {
-		Task t = super.configure(closure);
-		logger.debug("[In configure] Before calling registerGeneratedFolders, for task '" + getPath() + "'");
-		registerGeneratedFolders();
+	/** Add the given resource folder to the resource folders list, if it wasn't already added. */
+	protected void addGeneratedResourceFolder(File newResourcFolder) {
+		SourceSet main = ((SourceSetContainer) getProject().getProperties().get("sourceSets"))
+				.getByName(SourceSet.MAIN_SOURCE_SET_NAME);
+		String newResourceFolder = newResourcFolder.getAbsolutePath();
+		java.util.Optional<File> existingResourceFolder = main.getResources().getFiles().stream()
+				.filter(f -> f.getAbsolutePath().equals(newResourceFolder)).findFirst();
+		if (!existingResourceFolder.isPresent()) {
+			logger.info("Adding '" + newResourcFolder + "' folder to the resources folders list for task '" + getName()
+					+ "'");
+			main.getResources().srcDir(newResourcFolder);
+		} else {
+			logger.debug("Ignoring '" + newResourcFolder + "' resource folder for task '" + getName()
+					+ "', as it is already listed");
+		}
 
-		// This task is configured. So we add it to the task that depends on it
-		// addThisTaskAsADependencyToAnotherTask("compileJava");
-		// addThisTaskAsADependencyToAnotherTask("processResources");
+		if (logger.isInfoEnabled()) {
+			List<String> paths = new ArrayList<>();
+			for (File f : main.getResources().getSrcDirs()) {
+				paths.add(f.getAbsolutePath());
+			}
+			logger.info("Resources folders are: [" + String.join(",", paths) + "]");
+		}
 
-		return t;
+		// Due to a Gradle 7 bug, that is qualified as "Won't be fixed", we need to force a duplicatesStrategy for the
+		// processResources task.
+		// More info here: https://github.com/gradle/gradle/issues/17236
+		//
+		// This is ugly. But the Gradle team doesn't care about this issue... :(
+		getProject().getTasksByName("processResources", false)
+				.forEach(t -> ((ProcessResources) t).setDuplicatesStrategy(DuplicatesStrategy.EXCLUDE));
 	}
 }

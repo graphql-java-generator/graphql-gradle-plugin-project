@@ -89,15 +89,16 @@ public class GraphQLPlugin implements Plugin<Project> {
 								"[in project.afterEvaluate (getTasks)]   %1s %2s (initialized=[%3s]%4s, enabled=%5s, extensions=%6s)",
 								p.getName(), t.getPath(), t.property("initialized").getClass().getSimpleName(),
 								t.property("initialized"), t.getEnabled(), t.getExtensions()));
-						if ((boolean) t.property("initialized")) {
+						if ((boolean) t.property("initialized") && t instanceof CommonTask) {
 							logger.info(
 									"Adding the {} task as a dependency for the compileJava and processResources tasks",
 									t.getName());
 							addTaskAsADependencyToAnotherTask(p, t, allDependingTasks);
+							((CommonTask) t).registerGeneratedFolders();
 						} else {
 							logger.debug(
-									"Task {} ignored, as its initialized state is {} (it will not be added as a dependency for the compileJava and processResources tasks)",
-									t.getName(), t.property("initialized"));
+									"Task {} ignored, as its initialized state is {} and it is an instance of {} (it will not be added as a dependency for the compileJava and processResources tasks)",
+									t.getName(), t.property("initialized"), t.getClass().getName());
 						}
 					}
 				}

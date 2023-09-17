@@ -91,6 +91,10 @@ tasks.register('generateClientCodeAllGraphQLCases', com.graphql_java_generator.g
 			javaType: "byte[]",
 			graphQLScalarTypeStaticField: "com.graphql_java_generator.customscalars.GraphQLScalarTypeBase64String.GraphQLBase64String"
 		], [
+			graphQLTypeName: "CustomId",
+			javaType: "com.generated.graphql.samples.customscalar.CustomId",
+			graphQLScalarTypeStaticField: "com.generated.graphql.samples.customscalar.GraphQLScalarTypeCustomId.CustomIdScalarType"
+		], [
 			graphQLTypeName: "Date",
 			javaType: "java.util.Date",
 			graphQLScalarTypeStaticField: "com.graphql_java_generator.customscalars.GraphQLScalarTypeDate.Date"
@@ -130,6 +134,10 @@ tasks.register('generateClientCodeAllGraphQLCases2', com.graphql_java_generator.
 			graphQLTypeName: "Base64String",
 			javaType: "byte[]",
 			graphQLScalarTypeStaticField: "com.graphql_java_generator.customscalars.GraphQLScalarTypeBase64String.GraphQLBase64String"
+		], [
+			graphQLTypeName: "CustomId",
+			javaType: "com.generated.graphql.samples.customscalar.CustomId",
+			graphQLScalarTypeStaticField: "com.generated.graphql.samples.customscalar.GraphQLScalarTypeCustomId.CustomIdScalarType"
 		], [
 			graphQLTypeName: "Date",
 			javaType: "java.util.Date",

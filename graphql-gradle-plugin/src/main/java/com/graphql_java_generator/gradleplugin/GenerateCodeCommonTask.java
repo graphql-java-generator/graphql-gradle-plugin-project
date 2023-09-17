@@ -4,7 +4,6 @@
 package com.graphql_java_generator.gradleplugin;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -190,7 +189,7 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 	@Input
 	@Override
 	final public boolean isCopyRuntimeSources() {
-		return getValue(copyRuntimeSources, getExtension().isCopyRuntimeSources());
+		return getValue(this.copyRuntimeSources, getExtension().isCopyRuntimeSources());
 	}
 
 	@Internal
@@ -208,7 +207,7 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 	@Input
 	@Override
 	final public List<CustomScalarDefinition> getCustomScalars() {
-		return getValue(customScalars, getExtension().getCustomScalars());
+		return getValue(this.customScalars, getExtension().getCustomScalars());
 	}
 
 	final public void setCustomScalars(CustomScalarDefinition[] customScalars) {
@@ -228,7 +227,7 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 	@Input
 	@Override
 	final public String getPackageName() {
-		return getValue(packageName, getExtension().getPackageName());
+		return getValue(this.packageName, getExtension().getPackageName());
 	}
 
 	final public void setPackageName(String packageName) {
@@ -240,7 +239,7 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 	@Input
 	@Override
 	final public QueryMutationExecutionProtocol getQueryMutationExecutionProtocol() {
-		return getValue(queryMutationExecutionProtocol, getExtension().getQueryMutationExecutionProtocol());
+		return getValue(this.queryMutationExecutionProtocol, getExtension().getQueryMutationExecutionProtocol());
 	}
 
 	final public void setQueryMutationExecutionProtocol(QueryMutationExecutionProtocol queryMutationExecutionProtocol) {
@@ -253,7 +252,7 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 	@InputFile
 	@Optional
 	final public File getSchemaPersonalizationFile() {
-		return getFileValue(schemaPersonalizationFile, getExtension().getSchemaPersonalizationFile());
+		return getFileValue(this.schemaPersonalizationFile, getExtension().getSchemaPersonalizationFile());
 	}
 
 	public final void setSchemaPersonalizationFile(String schemaPersonalizationFile) {
@@ -265,7 +264,7 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 	@Input
 	@Override
 	public boolean isSeparateUtilityClasses() {
-		return getValue(separateUtilityClasses, getExtension().isSeparateUtilityClasses());
+		return getValue(this.separateUtilityClasses, getExtension().isSeparateUtilityClasses());
 	}
 
 	final public void setSeparateUtilityClasses(boolean separateUtilityClasses) {
@@ -277,7 +276,7 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 	@Input
 	@Override
 	final public String getSourceEncoding() {
-		return getValue(sourceEncoding, getExtension().getSourceEncoding());
+		return getValue(this.sourceEncoding, getExtension().getSourceEncoding());
 	}
 
 	final public void setSourceEncoding(String sourceEncoding) {
@@ -296,7 +295,7 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 	@Input
 	@Override
 	final public String getSpringBeanSuffix() {
-		return getValue(springBeanSuffix, getExtension().getSpringBeanSuffix());
+		return getValue(this.springBeanSuffix, getExtension().getSpringBeanSuffix());
 	}
 
 	public final void setSpringBeanSuffix(String springBeanSuffix) {
@@ -314,7 +313,7 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 	@OutputDirectory
 	@Override
 	final public File getTargetResourceFolder() {
-		File file = getFileValue(targetResourceFolder, getExtension().getTargetResourceFolder());
+		File file = getFileValue(this.targetResourceFolder, getExtension().getTargetResourceFolder());
 		file.mkdirs();
 		return file;
 	}
@@ -328,7 +327,7 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 	@OutputDirectory
 	@Override
 	final public File getTargetSourceFolder() {
-		File file = getFileValue(targetSourceFolder, getExtension().getTargetSourceFolder());
+		File file = getFileValue(this.targetSourceFolder, getExtension().getTargetSourceFolder());
 		file.mkdirs();
 		return file;
 	}
@@ -342,7 +341,7 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 	@Input
 	@Override
 	public boolean isUseJakartaEE9() {
-		return getValue(useJakartaEE9, getExtension().isUseJakartaEE9());
+		return getValue(this.useJakartaEE9, getExtension().isUseJakartaEE9());
 	}
 
 	final public void setUseJakartaEE9(boolean useJakartaEE9) {
@@ -369,18 +368,7 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 				.getByName(SourceSet.MAIN_SOURCE_SET_NAME);
 		main.getJava().srcDir(getTargetSourceFolder());
 
-		logger.info("Adding '" + getTargetResourceFolder() + "' folder to the resources folders list for task '"
-				+ getName() + "'");
-
-		main.getResources().srcDir(getTargetResourceFolder());
-
-		if (logger.isInfoEnabled()) {
-			List<String> paths = new ArrayList<>();
-			for (File f : main.getResources().getSrcDirs()) {
-				paths.add(f.getAbsolutePath());
-			}
-			logger.info("Resources folders are: [" + String.join(",", paths) + "]");
-		}
+		addGeneratedResourceFolder(getTargetResourceFolder());
 	}
 
 }
