@@ -1,4 +1,19 @@
 
+# 2.3
+
+Client and server modes:
+* Correction of issues #184 and #198: error with custom scalar, when the custom scalar's class is not in the plugin's classpath
+
+Client mode:
+* Add of the reactive executors and GraphQL repositories:
+    * Queries and mutations return Mono
+    * Subscriptions return Flux
+
+
+Gradle plugin:
+* Correction of the issues #13 and #18: The plugin is running all tasks instead of running only the configured tasks
+
+
 # 2.2
 
 Gradle plugin:
