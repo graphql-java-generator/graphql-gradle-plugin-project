@@ -9,6 +9,15 @@ Whether the application uses the _graphql_, the _generateClientCode_ or the _gen
 * skipGenerationIfSchemaHasNotChanged: true _(both client and server mode)_
 
 
+# 1.18.12
+
+Client and server modes:
+* Correction of issues #184 and #198: error with custom scalars, when the custom scalar's class is not in the plugin's classpath
+
+Client mode:
+* Issue 199: the generated code would not compile if the GraphQL schema is too big
+
+
 # 1.18.11
 
 Both modes:
