@@ -4,6 +4,7 @@
 package org.allGraphQLCases;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -19,7 +20,6 @@ import java.util.UUID;
 import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
 
-import org.allGraphQLCases.client.AnotherMutationTypeExecutorAllGraphQLCases;
 import org.allGraphQLCases.client.CEP_Episode_CES;
 import org.allGraphQLCases.client.CINP_AllFieldCasesInput_CINS;
 import org.allGraphQLCases.client.CINP_FieldParameterInput_CINS;
@@ -29,9 +29,10 @@ import org.allGraphQLCases.client.CTP_AllFieldCases_CTS;
 import org.allGraphQLCases.client.CTP_AnotherMutationType_CTS;
 import org.allGraphQLCases.client.CTP_Human_CTS;
 import org.allGraphQLCases.client.CTP_MyQueryType_CTS;
-import org.allGraphQLCases.client.GraphQLRequestAllGraphQLCases;
-import org.allGraphQLCases.client.MyQueryTypeExecutorAllGraphQLCases;
-import org.allGraphQLCases.client.TheSubscriptionTypeExecutorAllGraphQLCases;
+import org.allGraphQLCases.client.util.AnotherMutationTypeExecutorAllGraphQLCases;
+import org.allGraphQLCases.client.util.GraphQLRequestAllGraphQLCases;
+import org.allGraphQLCases.client.util.MyQueryTypeExecutorAllGraphQLCases;
+import org.allGraphQLCases.client.util.TheSubscriptionTypeExecutorAllGraphQLCases;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
@@ -145,6 +146,25 @@ public class AliasesIT {
 				"The first name should be in uppercase");
 		assertNotEquals(alias65.get(1).getName().toUpperCase(), alias65.get(1).getName(),
 				"The second name should NOT be in uppercase");
+	}
+
+	@Test
+	void testIssue200AliasOnBooleanCustomScalar()
+			throws GraphQLRequestExecutionException, GraphQLRequestPreparationException {
+
+		// Go, go, go
+		CTP_MyQueryType_CTS ret = this.queryType
+				.exec("query{issue200(param:false) anAliasForTrue:issue200(param:true) anAliasForNull:issue200}");
+
+		// Verification
+		assertFalse(ret.getIssue200());
+		//
+		Object anAliasForTrue = ret.getAliasValue("anAliasForTrue");
+		assertTrue(anAliasForTrue instanceof Boolean, anAliasForTrue.getClass().getName());
+		assertTrue((Boolean) anAliasForTrue);
+		//
+		Object anAliasForNull = ret.getAliasValue("anAliasForNull");
+		assertNull(anAliasForNull);
 	}
 
 	@Test

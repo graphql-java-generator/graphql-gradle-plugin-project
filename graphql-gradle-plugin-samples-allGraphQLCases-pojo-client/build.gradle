@@ -80,6 +80,10 @@ tasks.register('generateClientPojo', com.graphql_java_generator.gradleplugin.Gen
 			javaType: "java.lang.String",
 			graphQLScalarTypeGetter: "org.allGraphQLCases.GraphQLScalarTypeElse.getElseScalar()"
 		], [
+			graphQLTypeName: "MyBoolean",
+			javaType: "java.lang.Boolean",
+			graphQLScalarTypeGetter: "com.generated.graphql.samples.customscalar.GraphQLScalarTypeMyBoolean.MyBooleanScalarType"
+		], [
 			graphQLTypeName: "Long",
 			javaType: "java.lang.Long",
 			graphQLScalarTypeStaticField: "graphql.Scalars.GraphQLLong"

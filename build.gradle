@@ -92,9 +92,7 @@ subprojects {
 			// 
 			// Let's the source files from the graphql-maven-plugin-samples-XXX folder into the current project
 		    from(System.properties['graphqlGradlePlugin.graphqlMavenPluginProject.path'] +'/graphql-maven-plugin-samples/' + project.name.replace('gradle', 'maven')) {
-		    	include "/src/graphqls/**"
-		    	include "/src/main/**"
-		    	include "/src/test/**"
+		    	include "/src/**"
 		    }
 		    into "${project.projectDir}"
 		    

@@ -79,6 +79,10 @@ generatePojoConf {
 			javaType: "java.lang.String",
 			graphQLScalarTypeGetter: "org.allGraphQLCases.GraphQLScalarTypeElse.getElseScalar()"
 		], [
+			graphQLTypeName: "MyBoolean",
+			javaType: "java.lang.Boolean",
+			graphQLScalarTypeGetter: "com.generated.graphql.samples.customscalar.GraphQLScalarTypeMyBoolean.MyBooleanScalarType"
+		], [
 			graphQLTypeName: "Long",
 			javaType: "java.lang.Long",
 			graphQLScalarTypeStaticField: "graphql.scalars.ExtendedScalars.GraphQLLong"

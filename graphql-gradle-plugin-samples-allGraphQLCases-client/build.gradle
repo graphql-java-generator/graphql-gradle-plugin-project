@@ -71,7 +71,6 @@ tasks.register('generateClientCodeAllGraphQLCases', com.graphql_java_generator.g
 	packageName = 'org.allGraphQLCases.client'
 	schemaFileFolder = "$buildDir/generated/resources/generateGraphQLSchema" // Let's read the merged GraphQL schema
 	schemaPersonalizationFile = '/src/graphqls/schema_personalization/schema_personalization.json'
-	separateUtilityClasses = false
 	springBeanSuffix = 'AllGraphQLCases'
 	
 	// Prefixes and suffixes for the generated POJOs
@@ -107,6 +106,10 @@ tasks.register('generateClientCodeAllGraphQLCases', com.graphql_java_generator.g
 			javaType: "java.lang.String",
 			graphQLScalarTypeGetter: "org.allGraphQLCases.demo.GraphQLScalarTypeElse.getElseScalar()"
 		], [
+			graphQLTypeName: "MyBoolean",
+			javaType: "java.lang.Boolean",
+			graphQLScalarTypeGetter: "com.generated.graphql.samples.customscalar.GraphQLScalarTypeMyBoolean.MyBooleanScalarType"
+		], [
 			graphQLTypeName: "Long",
 			javaType: "java.lang.Long",
 			graphQLScalarTypeStaticField: "graphql.scalars.ExtendedScalars.GraphQLLong"
@@ -127,7 +130,7 @@ tasks.register('generateClientCodeAllGraphQLCases2', com.graphql_java_generator.
 	copyRuntimeSources = false
 	packageName = 'org.allGraphQLCases.client2'
 	schemaFileFolder = "$buildDir/generated/resources/generateGraphQLSchema" // Let's read the merged GraphQL schema
-	separateUtilityClasses = true
+	separateUtilityClasses = false
 	springBeanSuffix = 'AllGraphQLCases2'
 	targetSourceFolder = "$buildDir/generated/sources/graphqlGradlePlugin2"
 	customScalars = [ [
@@ -150,6 +153,10 @@ tasks.register('generateClientCodeAllGraphQLCases2', com.graphql_java_generator.
 			graphQLTypeName: "else",
 			javaType: "java.lang.String",
 			graphQLScalarTypeGetter: "org.allGraphQLCases.demo.GraphQLScalarTypeElse.getElseScalar()"
+		], [
+			graphQLTypeName: "MyBoolean",
+			javaType: "java.lang.Boolean",
+			graphQLScalarTypeGetter: "com.generated.graphql.samples.customscalar.GraphQLScalarTypeMyBoolean.MyBooleanScalarType"
 		], [
 			graphQLTypeName: "Long",
 			javaType: "java.lang.Long",
