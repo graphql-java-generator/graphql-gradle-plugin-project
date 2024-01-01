@@ -97,6 +97,10 @@ generateServerCodeConf {
 			javaType: "java.lang.String",
 			graphQLScalarTypeGetter: "org.allGraphQLCases.server.impl.GraphQLScalarTypeElse.getElseScalar()"
 		], [
+			graphQLTypeName: "JSON",
+			javaType: "com.fasterxml.jackson.databind.node.ObjectNode",
+			graphQLScalarTypeStaticField: "graphql.scalars.ExtendedScalars.Json"
+		], [
 			graphQLTypeName: "MyBoolean",
 			javaType: "java.lang.Boolean",
 			graphQLScalarTypeGetter: "com.generated.graphql.samples.customscalar.GraphQLScalarTypeMyBoolean.MyBooleanScalarType"
@@ -108,5 +112,9 @@ generateServerCodeConf {
 			graphQLTypeName: "NonNegativeInt",
 			javaType: "java.lang.Integer",
 			graphQLScalarTypeStaticField: "graphql.scalars.ExtendedScalars.NonNegativeInt"
+		], [
+			graphQLTypeName: "Object",
+			javaType: "java.lang.Object",
+			graphQLScalarTypeStaticField: "graphql.scalars.ExtendedScalars.Object"
 	] ]
 }

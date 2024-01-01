@@ -135,3 +135,14 @@ task copyPluginCodeToPlugin3(type: Copy) {
     mustRunAfter cleanPlugin3Code
 }
 
+
+task cleanAll {
+	dependsOn clean
+	dependsOn(gradle.includedBuild('graphql-gradle-plugin').task(':clean'))
+	dependsOn(gradle.includedBuild('graphql-gradle-plugin3').task(':clean'))	
+}
+
+task publishPlugins {
+	dependsOn(gradle.includedBuild('graphql-gradle-plugin').task(':publishPlugins'))
+	dependsOn(gradle.includedBuild('graphql-gradle-plugin3').task(':publishPlugins'))	
+}

@@ -106,6 +106,10 @@ tasks.register('generateClientCodeAllGraphQLCases', com.graphql_java_generator.g
 			javaType: "java.lang.String",
 			graphQLScalarTypeGetter: "org.allGraphQLCases.demo.GraphQLScalarTypeElse.getElseScalar()"
 		], [
+			graphQLTypeName: "JSON",
+			javaType: "com.fasterxml.jackson.databind.node.ObjectNode",
+			graphQLScalarTypeStaticField: "graphql.scalars.ExtendedScalars.Json"
+		], [
 			graphQLTypeName: "MyBoolean",
 			javaType: "java.lang.Boolean",
 			graphQLScalarTypeGetter: "com.generated.graphql.samples.customscalar.GraphQLScalarTypeMyBoolean.MyBooleanScalarType"
@@ -117,6 +121,10 @@ tasks.register('generateClientCodeAllGraphQLCases', com.graphql_java_generator.g
 			graphQLTypeName: "NonNegativeInt",
 			javaType: "java.lang.Integer",
 			graphQLScalarTypeStaticField: "graphql.scalars.ExtendedScalars.NonNegativeInt"
+		], [
+			graphQLTypeName: "Object",
+			javaType: "java.lang.Object",
+			graphQLScalarTypeStaticField: "graphql.scalars.ExtendedScalars.Object"
 	] ]
 }
 
@@ -154,6 +162,10 @@ tasks.register('generateClientCodeAllGraphQLCases2', com.graphql_java_generator.
 			javaType: "java.lang.String",
 			graphQLScalarTypeGetter: "org.allGraphQLCases.demo.GraphQLScalarTypeElse.getElseScalar()"
 		], [
+			graphQLTypeName: "JSON",
+			javaType: "com.fasterxml.jackson.databind.node.ObjectNode",
+			graphQLScalarTypeStaticField: "graphql.scalars.ExtendedScalars.Json"
+		], [
 			graphQLTypeName: "MyBoolean",
 			javaType: "java.lang.Boolean",
 			graphQLScalarTypeGetter: "com.generated.graphql.samples.customscalar.GraphQLScalarTypeMyBoolean.MyBooleanScalarType"
@@ -165,6 +177,10 @@ tasks.register('generateClientCodeAllGraphQLCases2', com.graphql_java_generator.
 			graphQLTypeName: "NonNegativeInt",
 			javaType: "java.lang.Integer",
 			graphQLScalarTypeStaticField: "graphql.scalars.ExtendedScalars.NonNegativeInt"
+		], [
+			graphQLTypeName: "Object",
+			javaType: "java.lang.Object",
+			graphQLScalarTypeStaticField: "graphql.scalars.ExtendedScalars.Object"
 	] ]
 }
 

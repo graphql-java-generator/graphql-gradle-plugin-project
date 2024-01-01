@@ -38,6 +38,8 @@ repositories {
 }
 
 dependencies {
+	// And the Jackson annotations
+	implementation "com.fasterxml.jackson.core:jackson-databind"
     // This project uses some custom scalars from the graphql-java-extended-scalars module
     implementation "com.graphql-java:graphql-java-extended-scalars:${graphqlJavaExtendedScalarsVersion}"
 
@@ -76,6 +78,10 @@ tasks.register('generateServerPojo', com.graphql_java_generator.gradleplugin.Gen
 			javaType: "java.lang.String",
 			graphQLScalarTypeGetter: "org.allGraphQLCases.GraphQLScalarTypeElse.getElseScalar()"
 		], [
+			graphQLTypeName: "JSON",
+			javaType: "com.fasterxml.jackson.databind.node.ObjectNode",
+			graphQLScalarTypeStaticField: "graphql.scalars.ExtendedScalars.Json"
+		], [
 			graphQLTypeName: "MyBoolean",
 			javaType: "java.lang.Boolean",
 			graphQLScalarTypeGetter: "com.generated.graphql.samples.customscalar.GraphQLScalarTypeMyBoolean.MyBooleanScalarType"
@@ -87,6 +93,10 @@ tasks.register('generateServerPojo', com.graphql_java_generator.gradleplugin.Gen
 			graphQLTypeName: "NonNegativeInt",
 			javaType: "java.lang.Integer",
 			graphQLScalarTypeStaticField: "graphql.scalars.ExtendedScalars.NonNegativeInt"
+		], [
+			graphQLTypeName: "Object",
+			javaType: "java.lang.Object",
+			graphQLScalarTypeStaticField: "graphql.scalars.ExtendedScalars.Object"
 	] ]
 }
 
