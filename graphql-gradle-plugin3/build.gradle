@@ -17,18 +17,12 @@ buildscript {
         mavenCentral()
     }
 }
+
 plugins {
   id "com.gradle.plugin-publish" version '1.2.0'
   id "java-gradle-plugin"
   id 'maven-publish'
   id "eclipse" // For use of this project within eclipse. For refresh, use: gradlew cleanEclipse eclipse
-}
-
-java {
-	// By default, the associated feature is com.graphql-java-generator:graphql-gradle-plugin-spring-boot3-support:${project.version}
-	registerFeature('springBoot3Support') {
-		usingSourceSet(sourceSets.main)
-	}
 }
 
 // The publishing bloc is used to publish on localhost, and allow to test the plugin that will be published,
@@ -62,22 +56,24 @@ dependencies {
 	}
 	implementation 'org.slf4j:slf4j-api:1.7.9'
 	
-	implementation "org.springframework:spring-context:${spring3_springFrameworkVersion}"
+	implementation "org.springframework:spring-context:${springFrameworkVersion}"
 
 	// Dependencies for tests
-	testImplementation "org.springframework.boot:spring-boot-starter-test:${spring3_springBootVersion}"
-	testImplementation "org.junit.jupiter:junit-jupiter-api:${junitJupiterVersion}"
-	testImplementation "org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}"  
+	testImplementation "org.springframework.boot:spring-boot-starter-test:${springBootVersion}"
+	testImplementation "org.junit.jupiter:junit-jupiter:${junitJupiterVersion}"
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher:${junitPlatformLauncher}"
 }
 
 compileJava {
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
+    sourceCompatibility = 17
+    targetCompatibility = 17
 }
 
 tasks.withType(JavaCompile) {
     options.compilerArgs += ['-Xlint:deprecation']
 }
+
+javadoc.options.addStringOption('Xdoclint:none', '-quiet')
 
 processResources {
 	// Allows to get the project version in the application.properties resource file

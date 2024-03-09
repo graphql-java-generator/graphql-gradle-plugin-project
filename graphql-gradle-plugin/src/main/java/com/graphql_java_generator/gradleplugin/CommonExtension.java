@@ -27,6 +27,7 @@ import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
  */
 public class CommonExtension implements CommonConfiguration {
 
+	/** The current Gradle project */
 	final protected Project project;
 
 	private boolean initialized = false;
@@ -41,7 +42,7 @@ public class CommonExtension implements CommonConfiguration {
 	private boolean addRelayConnections = CommonConfiguration.DEFAULT_ADD_RELAY_CONNECTIONS.equals("true");
 	private String schemaFileFolder = GraphQLConfiguration.DEFAULT_SCHEMA_FILE_FOLDER;
 	private String schemaFilePattern = GraphQLConfiguration.DEFAULT_SCHEMA_FILE_PATTERN;
-	public boolean skipGenerationIfSchemaHasNotChanged = CommonConfiguration.DEFAULT_SKIP_GENERATION_IF_SCHEMA_HAS_NOT_CHANGED
+	private boolean skipGenerationIfSchemaHasNotChanged = CommonConfiguration.DEFAULT_SKIP_GENERATION_IF_SCHEMA_HAS_NOT_CHANGED
 			.equals("true");
 	private Map<String, String> templates = new HashMap<>();
 	private String typePrefix = CommonConfiguration.DEFAULT_PREFIX;
@@ -58,8 +59,9 @@ public class CommonExtension implements CommonConfiguration {
 	 * at the beginning of the java classname, and must be compatible with java naming rules (no space, dot, comma,
 	 * etc.)
 	 */
+	@Override
 	public String getEnumPrefix() {
-		return enumPrefix;
+		return this.enumPrefix;
 	}
 
 	public void setEnumPrefix(String enumPrefix) {
@@ -70,8 +72,9 @@ public class CommonExtension implements CommonConfiguration {
 	 * An optional suffix to add to the classnames of the generated java classes for GraphQL enums. The suffix is added
 	 * at the end of the java classname, and must be compatible with java naming rules (no space, dot, comma, etc.)
 	 */
+	@Override
 	public String getEnumSuffix() {
-		return enumSuffix;
+		return this.enumSuffix;
 	}
 
 	public void setEnumSuffix(String enumSuffix) {
@@ -79,7 +82,7 @@ public class CommonExtension implements CommonConfiguration {
 	}
 
 	public boolean isInitialized() {
-		return initialized;
+		return this.initialized;
 	}
 
 	public void setInitialized(boolean initialized) {
@@ -91,8 +94,9 @@ public class CommonExtension implements CommonConfiguration {
 	 * is added at the beginning of the java classname, and must be compatible with java naming rules (no space, dot,
 	 * comma, etc.)
 	 */
+	@Override
 	public String getInputPrefix() {
-		return inputPrefix;
+		return this.inputPrefix;
 	}
 
 	public void setInputPrefix(String inputPrefix) {
@@ -104,8 +108,9 @@ public class CommonExtension implements CommonConfiguration {
 	 * is added at the end of the java classname, and must be compatible with java naming rules (no space, dot, comma,
 	 * etc.)
 	 */
+	@Override
 	public String getInputSuffix() {
-		return inputSuffix;
+		return this.inputSuffix;
 	}
 
 	public void setInputSuffix(String inputSuffix) {
@@ -114,7 +119,7 @@ public class CommonExtension implements CommonConfiguration {
 
 	@Override
 	public Integer getMaxTokens() {
-		return maxTokens;
+		return this.maxTokens;
 	}
 
 	public void setMaxTokens(Integer maxTokens) {
@@ -123,12 +128,12 @@ public class CommonExtension implements CommonConfiguration {
 
 	@Override
 	public File getProjectDir() {
-		return project.getProjectDir();
+		return this.project.getProjectDir();
 	}
 
 	@Override
 	public File getSchemaFileFolder() {
-		return project.file(schemaFileFolder);
+		return this.project.file(this.schemaFileFolder);
 	}
 
 	public final void setSchemaFileFolder(String schemaFileFolder) {
@@ -137,7 +142,7 @@ public class CommonExtension implements CommonConfiguration {
 
 	@Override
 	public String getSchemaFilePattern() {
-		return schemaFilePattern;
+		return this.schemaFilePattern;
 	}
 
 	public final void setSchemaFilePattern(String schemaFilePattern) {
@@ -146,7 +151,7 @@ public class CommonExtension implements CommonConfiguration {
 
 	@Override
 	public Map<String, String> getTemplates() {
-		return templates;
+		return this.templates;
 	}
 
 	public final void setTemplates(Map<String, String> templates) {
@@ -158,8 +163,9 @@ public class CommonExtension implements CommonConfiguration {
 	 * at the beginning of the java classname, and must be compatible with java naming rules (no space, dot, comma,
 	 * etc.)
 	 */
+	@Override
 	public String getTypePrefix() {
-		return typePrefix;
+		return this.typePrefix;
 	}
 
 	public void setTypePrefix(String typePrefix) {
@@ -170,8 +176,9 @@ public class CommonExtension implements CommonConfiguration {
 	 * An optional suffix to add to the classnames of the generated java classes for GraphQL types. The suffix is added
 	 * at the end of the java classname, and must be compatible with java naming rules (no space, dot, comma, etc.)
 	 */
+	@Override
 	public String getTypeSuffix() {
-		return typeSuffix;
+		return this.typeSuffix;
 	}
 
 	public void setTypeSuffix(String typeSuffix) {
@@ -183,8 +190,9 @@ public class CommonExtension implements CommonConfiguration {
 	 * at the beginning of the java classname, and must be compatible with java naming rules (no space, dot, comma,
 	 * etc.)
 	 */
+	@Override
 	public String getUnionPrefix() {
-		return unionPrefix;
+		return this.unionPrefix;
 	}
 
 	public void setUnionPrefix(String unionPrefix) {
@@ -195,8 +203,9 @@ public class CommonExtension implements CommonConfiguration {
 	 * An optional suffix to add to the classnames of the generated java classes for GraphQL unions. The suffix is added
 	 * at the end of the java classname, and must be compatible with java naming rules (no space, dot, comma, etc.)
 	 */
+	@Override
 	public String getUnionSuffix() {
-		return unionSuffix;
+		return this.unionSuffix;
 	}
 
 	public void setUnionSuffix(String unionSuffix) {
@@ -208,8 +217,9 @@ public class CommonExtension implements CommonConfiguration {
 	 * added at the beginning of the java classname, and must be compatible with java naming rules (no space, dot,
 	 * comma, etc.)
 	 */
+	@Override
 	public String getInterfacePrefix() {
-		return interfacePrefix;
+		return this.interfacePrefix;
 	}
 
 	public void setInterfacePrefix(String interfacePrefix) {
@@ -221,8 +231,9 @@ public class CommonExtension implements CommonConfiguration {
 	 * added at the end of the java classname, and must be compatible with java naming rules (no space, dot, comma,
 	 * etc.)
 	 */
+	@Override
 	public String getInterfaceSuffix() {
-		return interfaceSuffix;
+		return this.interfaceSuffix;
 	}
 
 	public void setInterfaceSuffix(String interfaceSuffix) {
@@ -231,7 +242,7 @@ public class CommonExtension implements CommonConfiguration {
 
 	@Override
 	public boolean isAddRelayConnections() {
-		return addRelayConnections;
+		return this.addRelayConnections;
 	}
 
 	public final void setAddRelayConnections(boolean addRelayConnections) {
@@ -241,7 +252,7 @@ public class CommonExtension implements CommonConfiguration {
 	@Override
 	@Deprecated
 	public boolean isSkipGenerationIfSchemaHasNotChanged() {
-		return skipGenerationIfSchemaHasNotChanged;
+		return this.skipGenerationIfSchemaHasNotChanged;
 	}
 
 	public final void setSkipGenerationIfSchemaHasNotChanged(boolean skipGenerationIfSchemaHasNotChanged) {

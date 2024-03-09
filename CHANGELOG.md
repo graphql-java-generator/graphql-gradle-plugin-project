@@ -1,4 +1,10 @@
 
+# Not released yet
+
+Gradle:
+* Upgrade of gradle wrapper to 8.6
+
+
 # 2.4
 
 Dependencies upgrade:
