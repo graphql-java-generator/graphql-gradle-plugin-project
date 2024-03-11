@@ -1,20 +1,3 @@
-buildscript {
-    repositories {
-		// The plugin depends on the graphql-maven-plugin, whose snapshot versions are on the local maven repository.
-		// So, for development reason, we need to access to the local maven repository. It's useless for standard use of the plugin
-        mavenLocal()
-        mavenCentral()
-    }
-    dependencies {
-    	// The version number is not used in this multi-module project: the included build of graphql-gradle-plugin
-    	// will replace this declaration. But this dummy declaration is needed!
-    	//
-    	// Of course, for a real use of the plugin in your project, you'll have to replace by the last plugin's version,
-    	// or better: put this version number in the gradle.properties file, to use it for both the plugin and the dependencies version
-        classpath 'com.graphql-java-generator:graphql-gradle-plugin:dummy'
-    }
-}
-
 plugins {
 	id 'java-library'
 	id 'com.graphql-java-generator.graphql-gradle-plugin'
@@ -46,9 +29,6 @@ dependencies {
 	// Dependencies for tests
 	testImplementation "org.springframework.boot:spring-boot-starter-test" 
 }
-
-// The line below adds the generated sources as a java source folder
-sourceSets.main.java.srcDirs += "$buildDir/generated/sources/generatePojo-server"
 
 // Let's configure the GraphQL Gradle Plugin, for the code generation, for both the client and the server pojo
 // (the plugin will automatically add it as a dependency to compileJava and processResources) 

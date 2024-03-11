@@ -4,23 +4,16 @@
 package com.graphql_java_generator.gradleplugin;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.inject.Inject;
 
 import org.gradle.api.DefaultTask;
-import org.gradle.api.Task;
-import org.gradle.api.file.DuplicatesStrategy;
+import org.gradle.api.file.ProjectLayout;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputDirectory;
 import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.Optional;
-import org.gradle.api.tasks.SourceSet;
-import org.gradle.api.tasks.SourceSetContainer;
-import org.gradle.language.jvm.tasks.ProcessResources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,6 +40,8 @@ import com.graphql_java_generator.plugin.conf.GenerateGraphQLSchemaConfiguration
 public class CommonTask extends DefaultTask implements CommonConfiguration {
 
 	private static final Logger logger = LoggerFactory.getLogger(CommonTask.class);
+
+	ProjectLayout projectLayout;
 
 	private boolean initialized = false;
 
@@ -222,16 +217,18 @@ public class CommonTask extends DefaultTask implements CommonConfiguration {
 	 */
 	private String unionSuffix;
 
-	/** This is the class of the extension, that contains default value for the task attributes */
-	protected Class<? extends CommonExtension> extensionClass;
-
 	/** This is the extension, that contains default value for the task attributes */
 	protected CommonExtension extension = null;
 
 	@Inject
-	public CommonTask(Class<? extends CommonExtension> extensionClazz) {
-		logger.debug("Creation of the {} task, an {} extension", this.getName(), extensionClazz);
-		this.extensionClass = extensionClazz;
+	public CommonTask(CommonExtension extension, ProjectLayout projectLayout) {
+		logger.debug("Creation of the {} task", this.getName());
+
+		// The extension must be set, as it contains the default values.
+		if (extension == null)
+			throw new RuntimeException("[Internal error] The task " + getName() + " was created without an extension");
+		this.extension = extension;
+		this.projectLayout = projectLayout;
 	}
 
 	protected <T> T getValue(T taskValue, T extensionValue) {
@@ -239,7 +236,7 @@ public class CommonTask extends DefaultTask implements CommonConfiguration {
 	}
 
 	protected File getFileValue(String taskValue, File extensionValue) {
-		return (taskValue == null) ? extensionValue : getProject().file(taskValue);
+		return (taskValue == null) ? extensionValue : new File(getProjectDir(), taskValue);
 	}
 
 	@Input
@@ -375,7 +372,7 @@ public class CommonTask extends DefaultTask implements CommonConfiguration {
 	@Internal
 	@Override
 	final public File getProjectDir() {
-		return getProject().getProjectDir();
+		return getExtension().getProjectDir();
 	}
 
 	/**
@@ -511,41 +508,13 @@ public class CommonTask extends DefaultTask implements CommonConfiguration {
 
 	@Internal
 	protected CommonExtension getExtension() {
-		if (this.extension == null) {
-			this.extension = getProject().getExtensions().getByType(this.extensionClass);
-		}
+		// As per this plugin configuration, the extension contains the default values for the plugin parameters. So, if
+		// none was provided, a default one must be created.
 		return this.extension;
 	}
 
-	/**
-	 * This method registers to Gradle the source and resources folders in which files are generated, if any
-	 */
-	public void registerGeneratedFolders() {
-		// No action in this class, as it manages no sources nor resources folder. It is overridden by classes which
-		// need to register generated folders
-	}
-
-	/**
-	 * This method find the task(s) from the given name, and add the current task as a task that must be executed before
-	 * (dependsOn) the <code>taskName</code> task
-	 * 
-	 * @param taskName
-	 *            The task's name
-	 */
-	protected void addThisTaskAsADependencyToAnotherTask(String taskName) {
-		for (Task t : getTasks(taskName)) { // There should be one.
-			logger.debug("Adding dependency: {}.dependsOn({})", t.getPath(), getPath());
-			t.dependsOn(getPath());
-		}
-	}
-
-	/** Retrieve the {@link Task} of the given name. There should be one. */
-	private Set<Task> getTasks(String taskName) {
-		Set<Task> tasks = getProject().getTasksByName(taskName, false);
-		if (tasks.size() == 0) {
-			throw new RuntimeException("Found no 'processResources' task, when executing project.afterEvaluate()");
-		}
-		return tasks;
+	public void setExtension(CommonExtension extension) {
+		this.extension = extension;
 	}
 
 	/**
@@ -559,36 +528,4 @@ public class CommonTask extends DefaultTask implements CommonConfiguration {
 		this.initialized = initialized;
 	}
 
-	/** Add the given resource folder to the resource folders list, if it wasn't already added. */
-	protected void addGeneratedResourceFolder(File newResourcFolder) {
-		SourceSet main = ((SourceSetContainer) getProject().getProperties().get("sourceSets"))
-				.getByName(SourceSet.MAIN_SOURCE_SET_NAME);
-		String newResourceFolder = newResourcFolder.getAbsolutePath();
-		java.util.Optional<File> existingResourceFolder = main.getResources().getFiles().stream()
-				.filter(f -> f.getAbsolutePath().equals(newResourceFolder)).findFirst();
-		if (!existingResourceFolder.isPresent()) {
-			logger.info("Adding '" + newResourcFolder + "' folder to the resources folders list for task '" + getName()
-					+ "'");
-			main.getResources().srcDir(newResourcFolder);
-		} else {
-			logger.debug("Ignoring '" + newResourcFolder + "' resource folder for task '" + getName()
-					+ "', as it is already listed");
-		}
-
-		if (logger.isInfoEnabled()) {
-			List<String> paths = new ArrayList<>();
-			for (File f : main.getResources().getSrcDirs()) {
-				paths.add(f.getAbsolutePath());
-			}
-			logger.info("Resources folders are: [" + String.join(",", paths) + "]");
-		}
-
-		// Due to a Gradle 7 bug, that is qualified as "Won't be fixed", we need to force a duplicatesStrategy for the
-		// processResources task.
-		// More info here: https://github.com/gradle/gradle/issues/17236
-		//
-		// This is ugly. But the Gradle team doesn't care about this issue... :(
-		getProject().getTasksByName("processResources", false)
-				.forEach(t -> ((ProcessResources) t).setDuplicatesStrategy(DuplicatesStrategy.EXCLUDE));
-	}
 }

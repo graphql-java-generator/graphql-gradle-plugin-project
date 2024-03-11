@@ -1,10 +1,10 @@
 package com.graphql_java_generator.gradleplugin;
 
+import java.io.File;
 import java.io.Serializable;
 
-import org.gradle.api.Project;
-
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
+import com.graphql_java_generator.plugin.conf.Packaging;
 import com.graphql_java_generator.plugin.conf.PluginMode;
 
 /**
@@ -43,13 +43,13 @@ public class GraphQLExtension extends GenerateServerCodeExtension implements Gra
 	 */
 	private PluginMode mode = PluginMode.valueOf(GraphQLConfiguration.DEFAULT_MODE);
 
-	public GraphQLExtension(Project project) {
-		super(project);
+	public GraphQLExtension(File projectDir, Packaging packaging) {
+		super(projectDir, packaging);
 	}
 
 	@Override
 	public boolean isGenerateDeprecatedRequestResponse() {
-		return generateDeprecatedRequestResponse;
+		return this.generateDeprecatedRequestResponse;
 	}
 
 	public void setGenerateDeprecatedRequestResponse(boolean generateDeprecatedRequestResponse) {
@@ -60,7 +60,7 @@ public class GraphQLExtension extends GenerateServerCodeExtension implements Gra
 
 	@Override
 	public PluginMode getMode() {
-		return mode;
+		return this.mode;
 	}
 
 	public void setMode(PluginMode mode) {

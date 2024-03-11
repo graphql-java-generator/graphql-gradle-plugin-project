@@ -31,27 +31,18 @@ public class CommonTaskTest {
 
 	@BeforeEach
 	void setup() {
-		projectDir = new File(".");
-		project = ProjectBuilder.builder().withName(PROJECT_NAME).withProjectDir(projectDir).build();
-		task = spy(project.getTasks().register("task", CommonTask.class, CommonExtension.class).get());
-		extension = new CommonExtension(project);
-		doReturn(extension).when(task).getExtension();
+		this.projectDir = new File(".");
+		this.project = ProjectBuilder.builder().withName(PROJECT_NAME).withProjectDir(this.projectDir).build();
+		this.extension = new CommonExtension(this.project.getProjectDir());
+		this.task = spy(this.project.getTasks().register("task", CommonTask.class, this.extension).get());
+		doReturn(this.extension).when(this.task).getExtension();
 	}
 
 	@Test
 	void test_getValue() {
-		assertEquals((Object) null, task.getValue(null, null));
-		assertEquals("Test1", task.getValue(null, "Test1"));
-		assertEquals("Test2", task.getValue("Test2", "Test1"));
-	}
-
-	@Test
-	void test_getFileValue() throws IOException {
-		assertEquals((String) null, task.getFileValue(null, null));
-		assertEquals(projectDir, task.getFileValue(null, projectDir));
-
-		assertEquals(new File(projectDir, "Test2").getCanonicalPath(),
-				task.getFileValue("Test2", projectDir).getCanonicalPath());
+		assertEquals((Object) null, this.task.getValue(null, null));
+		assertEquals("Test1", this.task.getValue(null, "Test1"));
+		assertEquals("Test2", this.task.getValue("Test2", "Test1"));
 	}
 
 	/**
@@ -63,16 +54,17 @@ public class CommonTaskTest {
 	@SuppressWarnings("deprecation")
 	@Test
 	void test_noExtension() throws IOException {
-		assertEquals(CommonConfiguration.DEFAULT_ADD_RELAY_CONNECTIONS.equals("true"), task.isAddRelayConnections());
+		assertEquals(CommonConfiguration.DEFAULT_ADD_RELAY_CONNECTIONS.equals("true"),
+				this.task.isAddRelayConnections());
 		assertEquals(GenerateGraphQLSchemaConfiguration.DEFAULT_TARGET_SCHEMA_FILE_NAME,
-				task.getDefaultTargetSchemaFileName());
-		assertEquals(projectDir.getCanonicalPath(), task.getProjectDir().getCanonicalPath());
+				this.task.getDefaultTargetSchemaFileName());
+		assertEquals(this.projectDir.getCanonicalPath(), this.task.getProjectDir().getCanonicalPath());
 		assertEquals(CommonConfiguration.DEFAULT_SKIP_GENERATION_IF_SCHEMA_HAS_NOT_CHANGED.equals("true"),
-				task.isSkipGenerationIfSchemaHasNotChanged());
-		assertEquals(new File(projectDir, GraphQLConfiguration.DEFAULT_SCHEMA_FILE_FOLDER).getCanonicalPath(),
-				task.getSchemaFileFolder().getCanonicalPath());
-		assertEquals(GraphQLConfiguration.DEFAULT_SCHEMA_FILE_PATTERN, task.getSchemaFilePattern());
-		assertEquals(0, task.getTemplates().size());
+				this.task.isSkipGenerationIfSchemaHasNotChanged());
+		assertEquals(new File(this.projectDir, GraphQLConfiguration.DEFAULT_SCHEMA_FILE_FOLDER).getCanonicalPath(),
+				this.task.getSchemaFileFolder().getCanonicalPath());
+		assertEquals(GraphQLConfiguration.DEFAULT_SCHEMA_FILE_PATTERN, this.task.getSchemaFilePattern());
+		assertEquals(0, this.task.getTemplates().size());
 	}
 
 	/**
@@ -85,25 +77,27 @@ public class CommonTaskTest {
 	@Test
 	void test_withExtensionValues() throws IOException {
 		// Preparation
-		extension.setAddRelayConnections(!CommonConfiguration.DEFAULT_ADD_RELAY_CONNECTIONS.equals("true"));
-		extension.setSkipGenerationIfSchemaHasNotChanged(
+		this.extension.setAddRelayConnections(!CommonConfiguration.DEFAULT_ADD_RELAY_CONNECTIONS.equals("true"));
+		this.extension.setSkipGenerationIfSchemaHasNotChanged(
 				!CommonConfiguration.DEFAULT_SKIP_GENERATION_IF_SCHEMA_HAS_NOT_CHANGED.equals("true"));
-		extension.setSchemaFileFolder("aFolder");
-		extension.setSchemaFilePattern("a pattern");
-		extension.setTemplates(null);
+		this.extension.setSchemaFileFolder("aFolder");
+		this.extension.setSchemaFilePattern("a pattern");
+		this.extension.setTemplates(null);
 
 		// Go, go, go
 
 		// Verification
-		assertEquals(!CommonConfiguration.DEFAULT_ADD_RELAY_CONNECTIONS.equals("true"), task.isAddRelayConnections());
+		assertEquals(!CommonConfiguration.DEFAULT_ADD_RELAY_CONNECTIONS.equals("true"),
+				this.task.isAddRelayConnections());
 		assertEquals(GenerateGraphQLSchemaConfiguration.DEFAULT_TARGET_SCHEMA_FILE_NAME,
-				task.getDefaultTargetSchemaFileName());
-		assertEquals(projectDir.getCanonicalPath(), task.getProjectDir().getCanonicalPath());
+				this.task.getDefaultTargetSchemaFileName());
+		assertEquals(this.projectDir.getCanonicalPath(), this.task.getProjectDir().getCanonicalPath());
 		assertEquals(!CommonConfiguration.DEFAULT_SKIP_GENERATION_IF_SCHEMA_HAS_NOT_CHANGED.equals("true"),
-				task.isSkipGenerationIfSchemaHasNotChanged());
-		assertEquals(new File(projectDir, "aFolder").getCanonicalPath(), task.getSchemaFileFolder().getCanonicalPath());
-		assertEquals("a pattern", task.getSchemaFilePattern());
-		assertEquals(null, task.getTemplates());
+				this.task.isSkipGenerationIfSchemaHasNotChanged());
+		assertEquals(new File(this.projectDir, "aFolder").getCanonicalPath(),
+				this.task.getSchemaFileFolder().getCanonicalPath());
+		assertEquals("a pattern", this.task.getSchemaFilePattern());
+		assertEquals(null, this.task.getTemplates());
 	}
 
 	/**
@@ -115,26 +109,28 @@ public class CommonTaskTest {
 	@Test
 	void test_withTaskValues() throws IOException {
 		// Preparation: Setting values in the task (they should override the default value of the extension)
-		task.setAddRelayConnections(!CommonConfiguration.DEFAULT_ADD_RELAY_CONNECTIONS.equals("true"));
-		task.setSkipGenerationIfSchemaHasNotChanged(
+		this.task.setAddRelayConnections(!CommonConfiguration.DEFAULT_ADD_RELAY_CONNECTIONS.equals("true"));
+		this.task.setSkipGenerationIfSchemaHasNotChanged(
 				!CommonConfiguration.DEFAULT_SKIP_GENERATION_IF_SCHEMA_HAS_NOT_CHANGED.equals("true"));
-		task.setSchemaFileFolder("aFolder");
-		task.setSchemaFilePattern("a pattern");
+		this.task.setSchemaFileFolder("aFolder");
+		this.task.setSchemaFilePattern("a pattern");
 		Map<String, String> templates = new HashMap<>();
-		task.setTemplates(templates);
+		this.task.setTemplates(templates);
 
 		// Go, go, go
 
 		// Verification
-		assertEquals(!CommonConfiguration.DEFAULT_ADD_RELAY_CONNECTIONS.equals("true"), task.isAddRelayConnections());
+		assertEquals(!CommonConfiguration.DEFAULT_ADD_RELAY_CONNECTIONS.equals("true"),
+				this.task.isAddRelayConnections());
 		assertEquals(GenerateGraphQLSchemaConfiguration.DEFAULT_TARGET_SCHEMA_FILE_NAME,
-				task.getDefaultTargetSchemaFileName());
-		assertEquals(projectDir.getCanonicalPath(), task.getProjectDir().getCanonicalPath());
+				this.task.getDefaultTargetSchemaFileName());
+		assertEquals(this.projectDir.getCanonicalPath(), this.task.getProjectDir().getCanonicalPath());
 		assertEquals(!CommonConfiguration.DEFAULT_SKIP_GENERATION_IF_SCHEMA_HAS_NOT_CHANGED.equals("true"),
-				task.isSkipGenerationIfSchemaHasNotChanged());
-		assertEquals(new File(projectDir, "aFolder").getCanonicalPath(), task.getSchemaFileFolder().getCanonicalPath());
-		assertEquals("a pattern", task.getSchemaFilePattern());
-		assertEquals(templates, task.getTemplates());
+				this.task.isSkipGenerationIfSchemaHasNotChanged());
+		assertEquals(new File(this.projectDir, "aFolder").getCanonicalPath(),
+				this.task.getSchemaFileFolder().getCanonicalPath());
+		assertEquals("a pattern", this.task.getSchemaFilePattern());
+		assertEquals(templates, this.task.getTemplates());
 	}
 
 }

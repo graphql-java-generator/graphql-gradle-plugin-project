@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
 import com.graphql_java_generator.plugin.conf.GenerateServerCodeConfiguration;
+import com.graphql_java_generator.plugin.conf.Packaging;
 
 public class GenerateServerCodeTaskTest {
 
@@ -27,11 +28,12 @@ public class GenerateServerCodeTaskTest {
 
 	@BeforeEach
 	void setup() {
-		projectDir = new File(".");
-		project = ProjectBuilder.builder().withName(PROJECT_NAME).withProjectDir(projectDir).build();
-		task = spy(project.getTasks().register("task", GenerateServerCodeTask.class).get());
-		extension = new GenerateServerCodeExtension(project);
-		doReturn(extension).when(task).getExtension();
+		this.projectDir = new File(".");
+		this.project = ProjectBuilder.builder().withName(PROJECT_NAME).withProjectDir(this.projectDir).build();
+		this.extension = new GenerateServerCodeExtension(this.project.getProjectDir(), Packaging.war);
+		this.task = spy(this.project.getTasks().register("task", GenerateServerCodeTask.class).get());
+		this.task.setExtension(this.extension);
+		doReturn(this.extension).when(this.task).getExtension();
 	}
 
 	/**
@@ -43,12 +45,12 @@ public class GenerateServerCodeTaskTest {
 	@Test
 	void test_noExtension() throws IOException {
 		assertEquals(GenerateServerCodeConfiguration.DEFAULT_GENERATE_BATCH_LOADER_ENVIRONMENT.equals("true"),
-				task.isGenerateBatchLoaderEnvironment());
+				this.task.isGenerateBatchLoaderEnvironment());
 		assertEquals(GenerateServerCodeConfiguration.DEFAULT_GENERATE_JPA_ANNOTATION.equals("true"),
-				task.isGenerateJPAAnnotation());
-		assertEquals(GenerateServerCodeConfiguration.DEFAULT_JAVA_TYPE_FOR_ID_TYPE, task.getJavaTypeForIDType());
-		assertEquals(GenerateServerCodeConfiguration.DEFAULT_SCAN_BASE_PACKAGES, task.getScanBasePackages());
-		assertEquals(null, task.getSchemaPersonalizationFile());
+				this.task.isGenerateJPAAnnotation());
+		assertEquals(GenerateServerCodeConfiguration.DEFAULT_JAVA_TYPE_FOR_ID_TYPE, this.task.getJavaTypeForIDType());
+		assertEquals(GenerateServerCodeConfiguration.DEFAULT_SCAN_BASE_PACKAGES, this.task.getScanBasePackages());
+		assertEquals(null, this.task.getSchemaPersonalizationFile());
 	}
 
 	/**
@@ -60,25 +62,25 @@ public class GenerateServerCodeTaskTest {
 	@Test
 	void test_withExtensionValues() throws IOException {
 		// Preparation
-		extension.setGenerateBatchLoaderEnvironment(
+		this.extension.setGenerateBatchLoaderEnvironment(
 				!GenerateServerCodeConfiguration.DEFAULT_GENERATE_BATCH_LOADER_ENVIRONMENT.equals("true"));
-		extension.setGenerateJPAAnnotation(
+		this.extension.setGenerateJPAAnnotation(
 				!GenerateServerCodeConfiguration.DEFAULT_GENERATE_JPA_ANNOTATION.equals("true"));
-		extension.setJavaTypeForIDType("MyType");
-		extension.setScanBasePackages("my.package");
-		extension.setSchemaPersonalizationFile("/my/perso/file.json");
+		this.extension.setJavaTypeForIDType("MyType");
+		this.extension.setScanBasePackages("my.package");
+		this.extension.setSchemaPersonalizationFile("/my/perso/file.json");
 
 		// Go, go, go
 
 		// Verification
 		assertEquals(!GenerateServerCodeConfiguration.DEFAULT_GENERATE_BATCH_LOADER_ENVIRONMENT.equals("true"),
-				task.isGenerateBatchLoaderEnvironment());
+				this.task.isGenerateBatchLoaderEnvironment());
 		assertEquals(!GenerateServerCodeConfiguration.DEFAULT_GENERATE_JPA_ANNOTATION.equals("true"),
-				task.isGenerateJPAAnnotation());
-		assertEquals("MyType", task.getJavaTypeForIDType());
-		assertEquals("my.package", task.getScanBasePackages());
-		assertEquals(new File(projectDir, "/my/perso/file.json").getCanonicalPath(),
-				task.getSchemaPersonalizationFile().getCanonicalPath());
+				this.task.isGenerateJPAAnnotation());
+		assertEquals("MyType", this.task.getJavaTypeForIDType());
+		assertEquals("my.package", this.task.getScanBasePackages());
+		assertEquals(new File(this.projectDir, "/my/perso/file.json").getCanonicalPath(),
+				this.task.getSchemaPersonalizationFile().getCanonicalPath());
 	}
 
 	/**
@@ -89,24 +91,25 @@ public class GenerateServerCodeTaskTest {
 	@Test
 	void test_withTaskValues() throws IOException {
 		// Preparation
-		task.setGenerateBatchLoaderEnvironment(
+		this.task.setGenerateBatchLoaderEnvironment(
 				!GenerateServerCodeConfiguration.DEFAULT_GENERATE_BATCH_LOADER_ENVIRONMENT.equals("true"));
-		task.setGenerateJPAAnnotation(!GenerateServerCodeConfiguration.DEFAULT_GENERATE_JPA_ANNOTATION.equals("true"));
-		task.setJavaTypeForIDType("MyType");
-		task.setScanBasePackages("my.package");
-		task.setSchemaPersonalizationFile("/my/perso/file.json");
+		this.task.setGenerateJPAAnnotation(
+				!GenerateServerCodeConfiguration.DEFAULT_GENERATE_JPA_ANNOTATION.equals("true"));
+		this.task.setJavaTypeForIDType("MyType");
+		this.task.setScanBasePackages("my.package");
+		this.task.setSchemaPersonalizationFile("/my/perso/file.json");
 
 		// Go, go, go
 
 		// Verification
 		assertEquals(!GenerateServerCodeConfiguration.DEFAULT_GENERATE_BATCH_LOADER_ENVIRONMENT.equals("true"),
-				task.isGenerateBatchLoaderEnvironment());
+				this.task.isGenerateBatchLoaderEnvironment());
 		assertEquals(!GenerateServerCodeConfiguration.DEFAULT_GENERATE_JPA_ANNOTATION.equals("true"),
-				task.isGenerateJPAAnnotation());
-		assertEquals("MyType", task.getJavaTypeForIDType());
-		assertEquals("my.package", task.getScanBasePackages());
-		assertEquals(new File(projectDir, "/my/perso/file.json").getCanonicalPath(),
-				task.getSchemaPersonalizationFile().getCanonicalPath());
+				this.task.isGenerateJPAAnnotation());
+		assertEquals("MyType", this.task.getJavaTypeForIDType());
+		assertEquals("my.package", this.task.getScanBasePackages());
+		assertEquals(new File(this.projectDir, "/my/perso/file.json").getCanonicalPath(),
+				this.task.getSchemaPersonalizationFile().getCanonicalPath());
 	}
 
 }

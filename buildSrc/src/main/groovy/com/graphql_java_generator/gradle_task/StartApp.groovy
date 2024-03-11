@@ -1,6 +1,8 @@
 package com.graphql_java_generator.gradle_task
 
 import org.gradle.api.DefaultTask
+import org.gradle.api.provider.Property
+import org.gradle.api.services.ServiceReference
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.InputFile
@@ -10,7 +12,8 @@ import org.gradle.api.tasks.TaskAction
  * The class below is largely inspired from Peter Ledbrook's answer in this stackoverflow thread:
  * https://stackoverflow.com/questions/31407323/running-integration-tests-for-a-spring-boot-rest-service-using-gradle
  */
-class StartApp extends DefaultTask {
+public abstract class StartApp extends DefaultTask {
+
 	static enum Status {
 		UP, DOWN, TIMED_OUT
 	}
@@ -25,6 +28,10 @@ class StartApp extends DefaultTask {
 	@Internal
 	Process process
 
+	/** The Gradle build service that contains the reference for all processes created by StartApp tasks */
+	@ServiceReference("startApp")
+	abstract Property<ProcessesService> getProcessesServices()
+
 
 	@TaskAction
 	def startApp() {
@@ -35,6 +42,7 @@ class StartApp extends DefaultTask {
 		def pb = new ProcessBuilder(args)
 		pb.redirectErrorStream(true)
 		process = pb.start()
+		getProcessesServices().get().putProcess(path, process)
 
 		// The started process must be killed if the JVM exits.
 		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {

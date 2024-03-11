@@ -52,16 +52,15 @@ dependencies {
 	// This plugin is a wrapper of the logic already implemented in our maven plugin
 	implementation ("com.graphql-java-generator:graphql-maven-plugin-logic:${project.version}") {
 		exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+		exclude group: 'org.slf4j', module: 'slf4j-api'
 		exclude group: 'net.minidev', module: 'json-smart'
 	}
-	implementation 'org.slf4j:slf4j-api:1.7.9'
-	
-	implementation "org.springframework:spring-context:${springFrameworkVersion}"
 
 	// Dependencies for tests
-	testImplementation "org.springframework.boot:spring-boot-starter-test:${springBootVersion}"
-	testImplementation "org.junit.jupiter:junit-jupiter:${junitJupiterVersion}"
-    testRuntimeOnly "org.junit.platform:junit-platform-launcher:${junitPlatformLauncher}"
+	testImplementation("org.springframework.boot:spring-boot-starter-test:${springBootVersion}"){
+		exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+		exclude group: 'org.slf4j', module: 'slf4j-api'
+	}
 }
 
 compileJava {

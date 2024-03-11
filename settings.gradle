@@ -7,10 +7,12 @@
  * in the user manual at https://docs.gradle.org/5.4/userguide/multi_project_builds.html
  */
 
-rootProject.name = 'graphql-gradle-plugin-project'
+pluginManagement {
+	includeBuild 'graphql-gradle-plugin'
+	includeBuild 'graphql-gradle-plugin3'
+}
 
-includeBuild 'graphql-gradle-plugin'
-includeBuild 'graphql-gradle-plugin3'
+rootProject.name = 'graphql-gradle-plugin-project'
 
 // graphql-gradle-plugin-samples-CustomTemplates-resttemplate must be built first
 // And, as we consume the resulting jar in the buildsrc section, it seems mandatory to build it as a separate build 

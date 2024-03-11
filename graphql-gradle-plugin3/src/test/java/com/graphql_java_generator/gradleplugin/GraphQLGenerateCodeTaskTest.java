@@ -27,11 +27,12 @@ public class GraphQLGenerateCodeTaskTest {
 
 	@BeforeEach
 	void setup() {
-		projectDir = new File(".");
-		project = ProjectBuilder.builder().withName(PROJECT_NAME).withProjectDir(projectDir).build();
-		task = spy(project.getTasks().register("task", GraphQLGenerateCodeTask.class).get());
-		extension = new GraphQLExtension(project);
-		doReturn(extension).when(task).getExtension();
+		this.projectDir = new File(".");
+		this.project = ProjectBuilder.builder().withName(PROJECT_NAME).withProjectDir(this.projectDir).build();
+		this.extension = new GraphQLExtension(this.project.getProjectDir(), null);
+		this.task = spy(this.project.getTasks().register("task", GraphQLGenerateCodeTask.class).get());
+		this.task.setExtension(this.extension);
+		doReturn(this.extension).when(this.task).getExtension();
 	}
 
 	/**
@@ -43,7 +44,7 @@ public class GraphQLGenerateCodeTaskTest {
 	@Test
 	void test_noExtension() throws IOException {
 		assertEquals(GenerateClientCodeConfiguration.DEFAULT_GENERATE_DEPRECATED_REQUEST_RESPONSE.equals("true"),
-				task.isGenerateDeprecatedRequestResponse());
+				this.task.isGenerateDeprecatedRequestResponse());
 	}
 
 	/**
@@ -55,14 +56,14 @@ public class GraphQLGenerateCodeTaskTest {
 	@Test
 	void test_withExtensionValues() throws IOException {
 		// Preparation
-		extension.setAddRelayConnections(
+		this.extension.setAddRelayConnections(
 				!GenerateClientCodeConfiguration.DEFAULT_GENERATE_DEPRECATED_REQUEST_RESPONSE.equals("true"));
 
 		// Go, go, go
 
 		// Verification
 		assertEquals(!GenerateClientCodeConfiguration.DEFAULT_GENERATE_DEPRECATED_REQUEST_RESPONSE.equals("true"),
-				task.isAddRelayConnections());
+				this.task.isAddRelayConnections());
 	}
 
 	/**
@@ -73,14 +74,14 @@ public class GraphQLGenerateCodeTaskTest {
 	@Test
 	void test_withTaskValues() throws IOException {
 		// Preparation: Setting values in the task (they should override the default value of the extension)
-		task.setAddRelayConnections(
+		this.task.setAddRelayConnections(
 				!GenerateClientCodeConfiguration.DEFAULT_GENERATE_DEPRECATED_REQUEST_RESPONSE.equals("true"));
 
 		// Go, go, go
 
 		// Verification
 		assertEquals(!GenerateClientCodeConfiguration.DEFAULT_GENERATE_DEPRECATED_REQUEST_RESPONSE.equals("true"),
-				task.isAddRelayConnections());
+				this.task.isAddRelayConnections());
 	}
 
 }

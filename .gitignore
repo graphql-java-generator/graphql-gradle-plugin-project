@@ -5,6 +5,9 @@
 build/
 userHome/
 
+# Ignore jvm dump files
+/*.hprof
+
 # Some files (including unit test log) coming from the maven part are still generated in target/ folders
 target
 

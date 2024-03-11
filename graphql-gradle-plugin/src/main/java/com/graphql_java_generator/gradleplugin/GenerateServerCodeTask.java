@@ -7,8 +7,11 @@ import java.util.concurrent.CompletableFuture;
 import javax.inject.Inject;
 
 import org.dataloader.BatchLoaderEnvironment;
+import org.gradle.api.Project;
+import org.gradle.api.file.ProjectLayout;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.Internal;
+import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.TaskAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -158,7 +161,13 @@ public class GenerateServerCodeTask extends GenerateCodeCommonTask implements Ge
 	 * This parameter is available since version 1.18.4
 	 * </P>
 	 */
-	Boolean generateDataLoaderForLists;
+	private Boolean generateDataLoaderForLists;
+
+	/**
+	 * The gradle plugin can't easily detect the packaging mode. This parameter allows to choose between jar (the
+	 * default packaging) and war.
+	 */
+	private Packaging packaging;
 
 	/**
 	 * <P>
@@ -183,7 +192,7 @@ public class GenerateServerCodeTask extends GenerateCodeCommonTask implements Ge
 	 * </P>
 	 * 
 	 */
-	public String javaTypeForIDType;
+	private String javaTypeForIDType;
 
 	/**
 	 * <P>
@@ -202,13 +211,19 @@ public class GenerateServerCodeTask extends GenerateCodeCommonTask implements Ge
 	 */
 	private String scanBasePackages;
 
+	/**
+	 * @param projectLayout
+	 *            This Gradle service is automatically injected by gradle. It allows to retrieve the project directory,
+	 *            as accessing the Gradle {@link Project} is forbidden from a task.
+	 */
 	@Inject
-	public GenerateServerCodeTask() {
-		super(GenerateServerCodeExtension.class);
+	public GenerateServerCodeTask(ProjectLayout projectLayout) {
+		super(new GenerateServerCodeExtension(projectLayout.getProjectDirectory().getAsFile(), Packaging.jar),
+				projectLayout);
 	}
 
-	public GenerateServerCodeTask(Class<? extends GenerateServerCodeExtension> extensionClazz) {
-		super(extensionClazz);
+	public GenerateServerCodeTask(GenerateServerCodeExtension extension, ProjectLayout projectLayout) {
+		super(extension, projectLayout);
 	}
 
 	@TaskAction
@@ -254,12 +269,15 @@ public class GenerateServerCodeTask extends GenerateCodeCommonTask implements Ge
 		return PluginMode.server;
 	}
 
-	@Internal
+	@Input
+	@Optional
 	@Override
-	final public Packaging getPackaging() {
-		// We calculate as late as possible this packaging. So no precaculation on creation, we wait for a call on this
-		// getter. At this time, it should be triggered by the gradle plugin execution (and not its configuration)
-		return (getProject().getTasksByName("war", false).size() >= 1) ? Packaging.war : Packaging.jar;
+	public Packaging getPackaging() {
+		return getValue(this.packaging, ((GenerateServerCodeExtension) this.extension).getPackaging());
+	}
+
+	public void setPackaging(Packaging packaging) {
+		this.packaging = packaging;
 	}
 
 	@Internal

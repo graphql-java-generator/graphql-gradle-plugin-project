@@ -1,0 +1,26 @@
+plugins {
+	id 'java-library'
+	id 'com.graphql-java-generator.graphql-gradle-plugin'
+	id 'org.springframework.boot' version "${springBootVersion}"
+	id 'io.spring.dependency-management' version "${springDependencyManagementPluginVersion}"
+}
+
+repositories {
+	mavenCentral()
+	// The plugin depends on the graphql-maven-plugin, whose snapshot versions are on the local maven repository.
+	// So, for development reason, we need to access to the local maven repository. It's useless for standard use of the plugin
+	mavenLocal()
+}
+
+dependencies {
+	// And the Jackson annotations
+	implementation "com.fasterxml.jackson.core:jackson-databind"
+	// This project uses some custom scalars from the graphql-java-extended-scalars module
+	implementation "com.graphql-java:graphql-java-extended-scalars:${graphqlJavaExtendedScalarsVersion}"
+}
+
+generatePojo {
+	packageName = "org.functionalTest"
+	generateJacksonAnnotations = false
+	mode = 'client'
+}

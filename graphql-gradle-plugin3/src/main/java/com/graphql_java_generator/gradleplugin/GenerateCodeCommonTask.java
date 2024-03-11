@@ -9,15 +9,12 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import org.gradle.api.file.ProjectLayout;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.Optional;
 import org.gradle.api.tasks.OutputDirectory;
-import org.gradle.api.tasks.SourceSet;
-import org.gradle.api.tasks.SourceSetContainer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.graphql_java_generator.plugin.conf.CustomScalarDefinition;
 import com.graphql_java_generator.plugin.conf.GenerateCodeCommonConfiguration;
@@ -46,8 +43,6 @@ import graphql.schema.GraphQLScalarType;
  * @author etienne-sf
  */
 public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCommonConfiguration {
-
-	private static final Logger logger = LoggerFactory.getLogger(GenerateCodeCommonTask.class);
 
 	/**
 	 * <P>
@@ -182,8 +177,8 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 	protected Boolean useJakartaEE9;
 
 	@Inject
-	public GenerateCodeCommonTask(Class<? extends GenerateCodeCommonExtension> extensionClazz) {
-		super(extensionClazz);
+	public GenerateCodeCommonTask(GenerateCodeCommonExtension extension, ProjectLayout projectLayout) {
+		super(extension, projectLayout);
 	}
 
 	@Input
@@ -307,7 +302,7 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 	@OutputDirectory
 	@Override
 	final public File getTargetClassFolder() {
-		return getProject().file("build/classes/java/main");
+		return new File(getProjectDir(), "build/classes/java/main");
 	}
 
 	@OutputDirectory
@@ -359,16 +354,6 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 	@Override
 	public boolean isGenerateJacksonAnnotations() {
 		return true;
-	}
-
-	@Override
-	public void registerGeneratedFolders() {
-		// Let's add the folders where the sources and resources have been generated to the project
-		SourceSet main = ((SourceSetContainer) getProject().getProperties().get("sourceSets"))
-				.getByName(SourceSet.MAIN_SOURCE_SET_NAME);
-		main.getJava().srcDir(getTargetSourceFolder());
-
-		addGeneratedResourceFolder(getTargetResourceFolder());
 	}
 
 }

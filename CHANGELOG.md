@@ -1,8 +1,16 @@
+# Breaking change
+
+* 2.5
+     * All task properties in `build.gradle` files, that contain file path must now be relative to the local project root. This is due to the compatibility with the configuration cache, which changed the path resolution methods.
+
 
 # Not released yet
 
 Gradle:
 * Upgrade of gradle wrapper to 8.6
+* Issue #14: The plugin is now compatible with Gradle configuration cache
+    * __Possible breaking change:__ The path given to the task properties must now all be relatives to the root of their project (without a leading slash), eg : "build/generated/mytarget" (not "/build/generated/mytarget" or "$builDir/generated/mytarget"))
+    * (Pojo goals) No more need to add the generated source folder to the sourceSets.main.java.srcDirs. The plugins now properly takes care of that.
 
 
 # 2.4

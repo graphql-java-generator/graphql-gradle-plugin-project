@@ -28,12 +28,11 @@ public class GenerateCodeCommonTaskTest {
 
 	@BeforeEach
 	void setup() {
-		projectDir = new File(".");
-		project = ProjectBuilder.builder().withName(PROJECT_NAME).withProjectDir(projectDir).build();
-		task = spy(project.getTasks().register("task", GenerateCodeCommonTask.class, GenerateCodeCommonExtension.class)
-				.get());
-		extension = new GenerateCodeCommonExtension(project);
-		doReturn(extension).when(task).getExtension();
+		this.projectDir = new File(".");
+		this.project = ProjectBuilder.builder().withName(PROJECT_NAME).withProjectDir(this.projectDir).build();
+		this.extension = new GenerateCodeCommonExtension(this.project.getProjectDir());
+		this.task = spy(this.project.getTasks().register("task", GenerateCodeCommonTask.class, this.extension).get());
+		doReturn(this.extension).when(this.task).getExtension();
 	}
 
 	/**
@@ -45,17 +44,17 @@ public class GenerateCodeCommonTaskTest {
 	@Test
 	void test_noExtension() throws IOException {
 		assertEquals(GenerateCodeCommonConfiguration.DEFAULT_COPY_RUNTIME_SOURCES.equals("true"),
-				task.isCopyRuntimeSources());
-		assertEquals(0, task.getCustomScalars().size());
-		assertEquals(GenerateCodeCommonConfiguration.DEFAULT_PACKAGE_NAME, task.getPackageName());
+				this.task.isCopyRuntimeSources());
+		assertEquals(0, this.task.getCustomScalars().size());
+		assertEquals(GenerateCodeCommonConfiguration.DEFAULT_PACKAGE_NAME, this.task.getPackageName());
 		assertEquals(GenerateCodeCommonConfiguration.DEFAULT_SEPARATE_UTIL_CLASSES.equals("true"),
-				task.isSeparateUtilityClasses());
-		assertEquals(GenerateCodeCommonConfiguration.DEFAULT_SOURCE_ENCODING, task.getSourceEncoding());
-		assertEquals(GenerateCodeCommonConfiguration.DEFAULT_SPRING_BEAN_SUFFIX, task.getSpringBeanSuffix());
-		assertEquals(new File(projectDir, "./build/generated/resources/graphqlGradlePlugin").getCanonicalPath(),
-				task.getTargetResourceFolder().getCanonicalPath());
-		assertEquals(new File(projectDir, "./build/generated/sources/graphqlGradlePlugin").getCanonicalPath(),
-				task.getTargetSourceFolder().getCanonicalPath());
+				this.task.isSeparateUtilityClasses());
+		assertEquals(GenerateCodeCommonConfiguration.DEFAULT_SOURCE_ENCODING, this.task.getSourceEncoding());
+		assertEquals(GenerateCodeCommonConfiguration.DEFAULT_SPRING_BEAN_SUFFIX, this.task.getSpringBeanSuffix());
+		assertEquals(new File(this.projectDir, "./build/generated/resources/graphqlGradlePlugin").getCanonicalPath(),
+				this.task.getTargetResourceFolder().getCanonicalPath());
+		assertEquals(new File(this.projectDir, "./build/generated/sources/graphqlGradlePlugin").getCanonicalPath(),
+				this.task.getTargetSourceFolder().getCanonicalPath());
 	}
 
 	/**
@@ -67,32 +66,33 @@ public class GenerateCodeCommonTaskTest {
 	@Test
 	void test_withExtensionValues() throws IOException {
 		// Preparation
-		extension.setCopyRuntimeSources(!GenerateCodeCommonConfiguration.DEFAULT_COPY_RUNTIME_SOURCES.equals("true"));
+		this.extension
+				.setCopyRuntimeSources(!GenerateCodeCommonConfiguration.DEFAULT_COPY_RUNTIME_SOURCES.equals("true"));
 		CustomScalarDefinition[] scalars = new CustomScalarDefinition[0];
-		extension.setCustomScalars(scalars);
-		extension.setPackageName("a.package");
-		extension.setSeparateUtilityClasses(
+		this.extension.setCustomScalars(scalars);
+		this.extension.setPackageName("a.package");
+		this.extension.setSeparateUtilityClasses(
 				!GenerateCodeCommonConfiguration.DEFAULT_SEPARATE_UTIL_CLASSES.equals("true"));
-		extension.setSourceEncoding("UTF 666");
-		extension.setSpringBeanSuffix("suffix");
-		extension.setTargetResourceFolder("resourcesFolder");
-		extension.setTargetSourceFolder("sourcesFolder");
+		this.extension.setSourceEncoding("UTF 666");
+		this.extension.setSpringBeanSuffix("suffix");
+		this.extension.setTargetResourceFolder("resourcesFolder");
+		this.extension.setTargetSourceFolder("sourcesFolder");
 
 		// Go, go, go
 
 		// Verification
 		assertEquals(!GenerateCodeCommonConfiguration.DEFAULT_COPY_RUNTIME_SOURCES.equals("true"),
-				task.isCopyRuntimeSources());
+				this.task.isCopyRuntimeSources());
 		// assertEquals(scalars, task.getCustomScalars());
-		assertEquals("a.package", task.getPackageName());
+		assertEquals("a.package", this.task.getPackageName());
 		assertEquals(!GenerateCodeCommonConfiguration.DEFAULT_SEPARATE_UTIL_CLASSES.equals("true"),
-				task.isSeparateUtilityClasses());
-		assertEquals("UTF 666", task.getSourceEncoding());
-		assertEquals("suffix", task.getSpringBeanSuffix());
-		assertEquals(new File(projectDir, "resourcesFolder").getCanonicalPath(),
-				task.getTargetResourceFolder().getCanonicalPath());
-		assertEquals(new File(projectDir, "sourcesFolder").getCanonicalPath(),
-				task.getTargetSourceFolder().getCanonicalPath());
+				this.task.isSeparateUtilityClasses());
+		assertEquals("UTF 666", this.task.getSourceEncoding());
+		assertEquals("suffix", this.task.getSpringBeanSuffix());
+		assertEquals(new File(this.projectDir, "resourcesFolder").getCanonicalPath(),
+				this.task.getTargetResourceFolder().getCanonicalPath());
+		assertEquals(new File(this.projectDir, "sourcesFolder").getCanonicalPath(),
+				this.task.getTargetSourceFolder().getCanonicalPath());
 	}
 
 	/**
@@ -103,31 +103,32 @@ public class GenerateCodeCommonTaskTest {
 	@Test
 	void test_withTaskValues() throws IOException {
 		// Preparation
-		task.setCopyRuntimeSources(!GenerateCodeCommonConfiguration.DEFAULT_COPY_RUNTIME_SOURCES.equals("true"));
+		this.task.setCopyRuntimeSources(!GenerateCodeCommonConfiguration.DEFAULT_COPY_RUNTIME_SOURCES.equals("true"));
 		CustomScalarDefinition[] scalars = new CustomScalarDefinition[0];
-		task.setCustomScalars(scalars);
-		task.setPackageName("a.package");
-		task.setSeparateUtilityClasses(!GenerateCodeCommonConfiguration.DEFAULT_SEPARATE_UTIL_CLASSES.equals("true"));
-		task.setSourceEncoding("UTF 666");
-		task.setSpringBeanSuffix("suffix");
-		task.setTargetResourceFolder("resourcesFolder");
-		task.setTargetSourceFolder("sourcesFolder");
+		this.task.setCustomScalars(scalars);
+		this.task.setPackageName("a.package");
+		this.task.setSeparateUtilityClasses(
+				!GenerateCodeCommonConfiguration.DEFAULT_SEPARATE_UTIL_CLASSES.equals("true"));
+		this.task.setSourceEncoding("UTF 666");
+		this.task.setSpringBeanSuffix("suffix");
+		this.task.setTargetResourceFolder("resourcesFolder");
+		this.task.setTargetSourceFolder("sourcesFolder");
 
 		// Go, go, go
 
 		// Verification
 		assertEquals(!GenerateCodeCommonConfiguration.DEFAULT_COPY_RUNTIME_SOURCES.equals("true"),
-				task.isCopyRuntimeSources());
+				this.task.isCopyRuntimeSources());
 		// assertEquals(scalars, task.getCustomScalars());
-		assertEquals("a.package", task.getPackageName());
+		assertEquals("a.package", this.task.getPackageName());
 		assertEquals(!GenerateCodeCommonConfiguration.DEFAULT_SEPARATE_UTIL_CLASSES.equals("true"),
-				task.isSeparateUtilityClasses());
-		assertEquals("UTF 666", task.getSourceEncoding());
-		assertEquals("suffix", task.getSpringBeanSuffix());
-		assertEquals(new File(projectDir, "resourcesFolder").getCanonicalPath(),
-				task.getTargetResourceFolder().getCanonicalPath());
-		assertEquals(new File(projectDir, "sourcesFolder").getCanonicalPath(),
-				task.getTargetSourceFolder().getCanonicalPath());
+				this.task.isSeparateUtilityClasses());
+		assertEquals("UTF 666", this.task.getSourceEncoding());
+		assertEquals("suffix", this.task.getSpringBeanSuffix());
+		assertEquals(new File(this.projectDir, "resourcesFolder").getCanonicalPath(),
+				this.task.getTargetResourceFolder().getCanonicalPath());
+		assertEquals(new File(this.projectDir, "sourcesFolder").getCanonicalPath(),
+				this.task.getTargetSourceFolder().getCanonicalPath());
 	}
 
 }

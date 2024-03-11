@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.gradle.api.Project;
-
 import com.graphql_java_generator.plugin.conf.CustomScalarDefinition;
 import com.graphql_java_generator.plugin.conf.GenerateCodeCommonConfiguration;
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
@@ -170,13 +168,13 @@ public class GenerateCodeCommonExtension extends CommonExtension implements Gene
 	 */
 	protected boolean useJakartaEE9 = GenerateCodeCommonConfiguration.DEFAULT_USE_JAKARTA_EE9.equals("true");
 
-	public GenerateCodeCommonExtension(Project project) {
-		super(project);
+	public GenerateCodeCommonExtension(File projectDir) {
+		super(projectDir);
 	}
 
 	@Override
 	final public boolean isCopyRuntimeSources() {
-		return copyRuntimeSources;
+		return this.copyRuntimeSources;
 	}
 
 	final public void setCopyRuntimeSources(boolean copyRuntimeSources) {
@@ -187,7 +185,7 @@ public class GenerateCodeCommonExtension extends CommonExtension implements Gene
 
 	@Override
 	final public List<CustomScalarDefinition> getCustomScalars() {
-		return customScalars;
+		return this.customScalars;
 	}
 
 	final public void setCustomScalars(CustomScalarDefinition[] customScalars) {
@@ -203,7 +201,7 @@ public class GenerateCodeCommonExtension extends CommonExtension implements Gene
 
 	@Override
 	final public String getPackageName() {
-		return packageName;
+		return this.packageName;
 	}
 
 	final public void setPackageName(String packageName) {
@@ -214,7 +212,7 @@ public class GenerateCodeCommonExtension extends CommonExtension implements Gene
 
 	@Override
 	final public QueryMutationExecutionProtocol getQueryMutationExecutionProtocol() {
-		return queryMutationExecutionProtocol;
+		return this.queryMutationExecutionProtocol;
 	}
 
 	final public void setQueryMutationExecutionProtocol(QueryMutationExecutionProtocol queryMutationExecutionProtocol) {
@@ -225,7 +223,7 @@ public class GenerateCodeCommonExtension extends CommonExtension implements Gene
 
 	@Override
 	final public boolean isSeparateUtilityClasses() {
-		return separateUtilityClasses;
+		return this.separateUtilityClasses;
 	}
 
 	final public void setSeparateUtilityClasses(boolean separateUtilityClasses) {
@@ -236,12 +234,12 @@ public class GenerateCodeCommonExtension extends CommonExtension implements Gene
 
 	@Override
 	final public String getSourceEncoding() {
-		return sourceEncoding;
+		return this.sourceEncoding;
 	}
 
 	@Override
 	final public String getSpringBeanSuffix() {
-		return springBeanSuffix;
+		return this.springBeanSuffix;
 	}
 
 	public final void setSpringBeanSuffix(String springBeanSuffix) {
@@ -258,12 +256,12 @@ public class GenerateCodeCommonExtension extends CommonExtension implements Gene
 
 	@Override
 	final public File getTargetClassFolder() {
-		return project.file("build/classes/java/main");
+		return new File(this.projectDir, "build/classes/java/main");
 	}
 
 	@Override
 	final public File getTargetResourceFolder() {
-		return project.file(targetResourceFolder);
+		return new File(this.projectDir, this.targetResourceFolder);
 	}
 
 	final public void setTargetResourceFolder(String targetResourceFolder) {
@@ -274,7 +272,7 @@ public class GenerateCodeCommonExtension extends CommonExtension implements Gene
 
 	@Override
 	final public File getTargetSourceFolder() {
-		return project.file(targetSourceFolder);
+		return new File(this.projectDir, this.targetSourceFolder);
 	}
 
 	final public void setTargetSourceFolder(String targetSourceFolder) {
@@ -285,7 +283,7 @@ public class GenerateCodeCommonExtension extends CommonExtension implements Gene
 
 	@Override
 	final public boolean isUseJakartaEE9() {
-		return useJakartaEE9;
+		return this.useJakartaEE9;
 	}
 
 	final public void setUseJakartaEE9(boolean useJakartaEE9) {
@@ -296,8 +294,8 @@ public class GenerateCodeCommonExtension extends CommonExtension implements Gene
 
 	@Override
 	public File getSchemaPersonalizationFile() {
-		return (GraphQLConfiguration.DEFAULT_SCHEMA_PERSONALIZATION_FILE.equals(schemaPersonalizationFile)) ? null
-				: project.file(schemaPersonalizationFile);
+		return (GraphQLConfiguration.DEFAULT_SCHEMA_PERSONALIZATION_FILE.equals(this.schemaPersonalizationFile)) ? null
+				: new File(this.projectDir, this.schemaPersonalizationFile);
 	}
 
 	public void setSchemaPersonalizationFile(String schemaPersonalizationFile) {

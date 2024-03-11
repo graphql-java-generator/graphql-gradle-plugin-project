@@ -3,11 +3,11 @@
  */
 package com.graphql_java_generator.gradleplugin;
 
+import java.io.File;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 import org.dataloader.BatchLoaderEnvironment;
-import org.gradle.api.Project;
 
 import com.graphql_java_generator.plugin.conf.GenerateServerCodeConfiguration;
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
@@ -19,6 +19,9 @@ import com.graphql_java_generator.plugin.conf.PluginMode;
  */
 public class GenerateServerCodeExtension extends GenerateCodeCommonExtension
 		implements GenerateServerCodeConfiguration {
+
+	/** The packaging is either war or jar. It's used to define the proper code to generate. */
+	private Packaging packaging = Packaging.jar;
 
 	/**
 	 * <P>
@@ -148,13 +151,14 @@ public class GenerateServerCodeExtension extends GenerateCodeCommonExtension
 	 */
 	private String scanBasePackages = GraphQLConfiguration.DEFAULT_SCAN_BASE_PACKAGES;
 
-	public GenerateServerCodeExtension(Project project) {
-		super(project);
+	public GenerateServerCodeExtension(File projectDir, Packaging packaging) {
+		super(projectDir);
+		this.packaging = packaging;
 	}
 
 	@Override
 	public boolean isGenerateBatchLoaderEnvironment() {
-		return generateBatchLoaderEnvironment;
+		return this.generateBatchLoaderEnvironment;
 	}
 
 	public void setGenerateBatchLoaderEnvironment(boolean generateBatchLoaderEnvironment) {
@@ -165,7 +169,7 @@ public class GenerateServerCodeExtension extends GenerateCodeCommonExtension
 
 	@Override
 	public boolean isGenerateJPAAnnotation() {
-		return generateJPAAnnotation;
+		return this.generateJPAAnnotation;
 	}
 
 	public void setGenerateJPAAnnotation(boolean generateJPAAnnotation) {
@@ -176,7 +180,7 @@ public class GenerateServerCodeExtension extends GenerateCodeCommonExtension
 
 	@Override
 	public boolean isGenerateDataLoaderForLists() {
-		return generateDataLoaderForLists;
+		return this.generateDataLoaderForLists;
 	}
 
 	public final void setGenerateDataLoaderForLists(boolean generateDataLoaderForLists) {
@@ -187,7 +191,7 @@ public class GenerateServerCodeExtension extends GenerateCodeCommonExtension
 
 	@Override
 	public String getJavaTypeForIDType() {
-		return javaTypeForIDType;
+		return this.javaTypeForIDType;
 	}
 
 	public void setJavaTypeForIDType(String javaTypeForIDType) {
@@ -204,9 +208,7 @@ public class GenerateServerCodeExtension extends GenerateCodeCommonExtension
 
 	@Override
 	public Packaging getPackaging() {
-		// We calculate as late as possible this packaging. So no precaculation on creation, we wait for a call on this
-		// getter. At this time, it should be triggered by the gradle plugin execution (and not its configuration)
-		return (project.getTasksByName("war", false).size() >= 1) ? Packaging.war : Packaging.jar;
+		return this.packaging;
 	}
 
 	@Override
@@ -227,7 +229,7 @@ public class GenerateServerCodeExtension extends GenerateCodeCommonExtension
 
 	@Override
 	public String getScanBasePackages() {
-		return scanBasePackages;
+		return this.scanBasePackages;
 	}
 
 	public void setScanBasePackages(String scanBasePackages) {

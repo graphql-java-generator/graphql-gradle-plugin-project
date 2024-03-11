@@ -5,7 +5,11 @@ package com.graphql_java_generator.gradleplugin;
 
 import java.io.IOException;
 
+import javax.inject.Inject;
+
+import org.gradle.api.Project;
 import org.gradle.api.UncheckedIOException;
+import org.gradle.api.file.ProjectLayout;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.TaskAction;
 import org.slf4j.Logger;
@@ -85,8 +89,18 @@ public class GeneratePojoTask extends GraphQLGenerateCodeTask implements Generat
 	 */
 	Boolean generateJacksonAnnotations = null;
 
-	public GeneratePojoTask() {
-		super(GeneratePojoExtension.class);
+	/**
+	 * @param projectLayout
+	 *            This Gradle service is automatically injected by gradle. It allows to retrieve the project directory,
+	 *            as accessing the Gradle {@link Project} is forbidden from a task.
+	 */
+	@Inject
+	public GeneratePojoTask(ProjectLayout projectLayout) {
+		super(new GeneratePojoExtension(projectLayout.getProjectDirectory().getAsFile()), projectLayout);
+	}
+
+	public GeneratePojoTask(GeneratePojoExtension extension, ProjectLayout projectLayout) {
+		super(extension, projectLayout);
 	}
 
 	@Override

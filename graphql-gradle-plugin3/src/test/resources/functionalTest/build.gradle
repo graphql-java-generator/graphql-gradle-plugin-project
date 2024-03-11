@@ -1,0 +1,8 @@
+plugins {
+	id 'com.graphql-java-generator.graphql-gradle-plugin'
+}
+
+generateClientPojo {
+	packageName = "org.functionalTest"
+	generateJacksonAnnotations = false
+}

@@ -146,3 +146,86 @@ task publishPlugins {
 	dependsOn(gradle.includedBuild('graphql-gradle-plugin').task(':publishPlugins'))
 	dependsOn(gradle.includedBuild('graphql-gradle-plugin3').task(':publishPlugins'))	
 }
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////  TASKS THAT STARTS AND STOPS THE GRAPHQL SERVERS TO ALLOW INTEGRATION TESTS                                ////////
+//////  This part includes the dependencies for the other tasks                                                   ////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Let's import the custom plugin we defined in buildSrc of the root project
+import com.graphql_java_generator.gradle_task.StartApp
+import com.graphql_java_generator.gradle_task.StopApp
+
+gradle.sharedServices.registerIfAbsent("startApp", com.graphql_java_generator.gradle_task.ProcessesService.class, service -> {/*No action*/})
+
+task startAllGraphQLCasesServer(type: StartApp) {
+	// Let's start the server that matches the current client project
+	jarFile = file("graphql-gradle-plugin-samples-allGraphQLCases-server/build/libs/graphql-gradle-plugin-samples-allGraphQLCases-server-${project.version}.jar")
+	url = 'http://localhost:8180/helloworld.html'
+
+	// The next lines insures that the relevant server project is built before starting the integration test from this client module.
+	dependsOn ":graphql-gradle-plugin-samples-allGraphQLCases-server:bootJar"
+
+	// The stopWebApp must be attached here. And must run after tests
+	finalizedBy 'stopAllGraphQLCasesServer'
+}
+
+task stopAllGraphQLCasesServer(type: StopApp) {
+	// The line blow is executed during configuration phase. So the process is unknown.
+	// We just define the Task object. The StopApp task will read the process id at execution time
+	startAppTaskPath = tasks["startAllGraphQLCasesServer"].path
+
+	// The stopWebApp is attached to startWebApp, and must run after tests
+	dependsOn 'startAllGraphQLCasesServer'
+	mustRunAfter ":graphql-gradle-plugin-samples-allGraphQLCases-client:test"
+	mustRunAfter ":graphql-gradle-plugin-samples-Forum-client:test"
+}
+
+task startForumServer(type: StartApp) {
+	// Let's start the server that matches the current client project
+	jarFile = file("graphql-gradle-plugin-samples-Forum-server/build/libs/graphql-gradle-plugin-samples-Forum-server-${project.version}.jar")
+	url = 'http://localhost:8182/graphiql'
+
+	// The next lines insures that the relevant server project is built before starting the integration test from this client module.
+	dependsOn ":graphql-gradle-plugin-samples-Forum-server:bootJar"
+
+	// The stopForumServer must be attached here. And must run after tests
+	finalizedBy 'stopForumServer'
+}
+
+task stopForumServer(type: StopApp) {
+	// The line blow is executed during configuration phase. So the process is unknown.
+	// We just define the Task object. The StopApp task will read the process id at execution time
+	startAppTaskPath = tasks["startForumServer"].path
+
+	// The stopForumServer is attached to startForumServer, and must run after tests
+	dependsOn 'startForumServer'
+	mustRunAfter ":graphql-gradle-plugin-samples-allGraphQLCases-client:test"
+	mustRunAfter ":graphql-gradle-plugin-samples-Forum-client:test"
+
+}
+
+task startAuthorizationServer(type: StartApp) {
+	// Let's start the server that matches the current client project
+	jarFile = file("graphql-gradle-plugin-samples-OAuth-authorization-server/build/libs/graphql-gradle-plugin-samples-OAuth-authorization-server-${project.version}.jar")
+	url = 'http://localhost:8181/helloworld.html'
+
+	// The next lines insures that the relevant server project is built before starting the integration test from this client module.
+	dependsOn ":graphql-gradle-plugin-samples-OAuth-authorization-server:bootJar"
+
+	// The stopWebApp must be attached here. And must run after tests
+	finalizedBy 'stopAuthorizationServer'
+}
+
+task stopAuthorizationServer(type: StopApp) {
+	// The line blow is executed during configuration phase. So the process is unknown.
+	// We just define the Task object. The StopApp task will read the process id at execution time
+	startAppTaskPath = tasks["startAuthorizationServer"].path
+
+	// The stopWebApp is attached to startWebApp, and must run after tests
+	dependsOn 'startAuthorizationServer'
+	mustRunAfter ":graphql-gradle-plugin-samples-allGraphQLCases-client:test"
+	mustRunAfter ":graphql-gradle-plugin-samples-Forum-client:test"
+}
+

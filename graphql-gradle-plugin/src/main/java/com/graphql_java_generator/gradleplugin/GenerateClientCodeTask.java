@@ -2,6 +2,10 @@ package com.graphql_java_generator.gradleplugin;
 
 import java.io.IOException;
 
+import javax.inject.Inject;
+
+import org.gradle.api.Project;
+import org.gradle.api.file.ProjectLayout;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.TaskAction;
@@ -61,8 +65,14 @@ public class GenerateClientCodeTask extends GenerateCodeCommonTask implements Ge
 	 */
 	private Boolean generateDeprecatedRequestResponse;
 
-	public GenerateClientCodeTask() {
-		super(GenerateClientCodeExtension.class);
+	/**
+	 * @param projectLayout
+	 *            This Gradle service is automatically injected by gradle. It allows to retrieve the project directory,
+	 *            as accessing the Gradle {@link Project} is forbidden from a task.
+	 */
+	@Inject
+	public GenerateClientCodeTask(ProjectLayout projectLayout) {
+		super(new GenerateClientCodeExtension(projectLayout.getProjectDirectory().getAsFile()), projectLayout);
 	}
 
 	@TaskAction

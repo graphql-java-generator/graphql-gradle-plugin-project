@@ -6,6 +6,9 @@ package com.graphql_java_generator.gradleplugin;
 import java.io.File;
 import java.io.IOException;
 
+import javax.inject.Inject;
+
+import org.gradle.api.file.ProjectLayout;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputDirectory;
 import org.gradle.api.tasks.Internal;
@@ -60,8 +63,13 @@ public class GenerateGraphQLSchemaTask extends CommonTask implements GenerateGra
 	 */
 	private String targetSchemaFileName;
 
-	public GenerateGraphQLSchemaTask() {
-		super(GenerateGraphQLSchemaExtension.class);
+	@Inject
+	public GenerateGraphQLSchemaTask(ProjectLayout projectLayout) {
+		super(new GenerateGraphQLSchemaExtension(projectLayout.getProjectDirectory().getAsFile()), projectLayout);
+	}
+
+	public GenerateGraphQLSchemaTask(GenerateGraphQLSchemaExtension extension, ProjectLayout projectLayout) {
+		super(extension, projectLayout);
 	}
 
 	@TaskAction
@@ -110,7 +118,7 @@ public class GenerateGraphQLSchemaTask extends CommonTask implements GenerateGra
 
 	public void setTargetFolder(String targetFolder) {
 		// Let's create the folder now, so that it exists when if any other task needs it, during configuration time
-		getProject().file(targetFolder).mkdirs();
+		new File(getProjectDir(), targetFolder).mkdirs();
 
 		this.targetFolder = targetFolder;
 
@@ -139,12 +147,6 @@ public class GenerateGraphQLSchemaTask extends CommonTask implements GenerateGra
 	@Override
 	public boolean isGenerateJacksonAnnotations() {
 		return true;
-	}
-
-	@Override
-	public void registerGeneratedFolders() {
-		// Let's add the folders where the GraphQL schemas have been generated to the project
-		addGeneratedResourceFolder(getTargetFolder());
 	}
 
 }

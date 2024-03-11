@@ -3,9 +3,12 @@
  */
 package com.graphql_java_generator.gradleplugin;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
@@ -14,10 +17,15 @@ import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
+import org.gradle.api.file.DuplicatesStrategy;
 import org.gradle.api.plugins.JavaPlugin;
-import org.gradle.api.tasks.TaskProvider;
+import org.gradle.api.tasks.SourceSet;
+import org.gradle.api.tasks.SourceSetContainer;
+import org.gradle.language.jvm.tasks.ProcessResources;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.graphql_java_generator.plugin.conf.Packaging;
 
 /**
  * @author EtienneSF
@@ -63,7 +71,7 @@ public class GraphQLPlugin implements Plugin<Project> {
 	public void apply(Project project) {
 		applyGenerateClientCode(project);
 		applyGeneratePojo(project);
-		TaskProvider<GenerateServerCodeTask> taskProvider = applyGenerateServerCode(project);
+		applyGenerateServerCode(project);
 		applyGraphQLGenerateCode(project);
 		applyGenerateGraphQLSchema(project);
 
@@ -90,11 +98,7 @@ public class GraphQLPlugin implements Plugin<Project> {
 								p.getName(), t.getPath(), t.property("initialized").getClass().getSimpleName(),
 								t.property("initialized"), t.getEnabled(), t.getExtensions()));
 						if ((boolean) t.property("initialized") && t instanceof CommonTask) {
-							logger.info(
-									"Adding the {} task as a dependency for the compileJava and processResources tasks",
-									t.getName());
-							addTaskAsADependencyToAnotherTask(p, t, allDependingTasks);
-							((CommonTask) t).registerGeneratedFolders();
+							configurePluginTasks(p, t, allDependingTasks);
 						} else {
 							logger.debug(
 									"Task {} ignored, as its initialized state is {} and it is an instance of {} (it will not be added as a dependency for the compileJava and processResources tasks)",
@@ -115,9 +119,29 @@ public class GraphQLPlugin implements Plugin<Project> {
 			 * @return the set of tasks, that has <I>taskName<I> as a name. This set contains at least one item (and
 			 *         should not contain more than one)
 			 */
-			private void addTaskAsADependencyToAnotherTask(Project p, Task task, Set<Task> dependingTasks) {
+			private void configurePluginTasks(Project p, Task task, Set<Task> dependingTasks) {
+
+				// Step1 : the plugin task is marked as a dependency for standard tasks
 				for (Task dependingTask : dependingTasks) {
-					dependingTask.dependsOn(task.getPath());
+					logger.info("Adding the {} task as a dependency for the {} task", task.getPath(),
+							dependingTask.getPath());
+					dependingTask.dependsOn(task);
+				}
+
+				// Step 2: Add the generated source and resource folders, if applicable
+				if (task instanceof GenerateCodeCommonTask) {
+					GenerateCodeCommonTask t = (GenerateCodeCommonTask) task;
+					// Let's add the folders where the sources and resources have been generated to the project
+					SourceSet main = ((SourceSetContainer) project.getProperties().get("sourceSets"))
+							.getByName(SourceSet.MAIN_SOURCE_SET_NAME);
+					main.getJava().srcDir(t.getTargetSourceFolder());
+
+					addGeneratedResourceFolder(project, task, t.getTargetResourceFolder());
+				}
+
+				// Step 3 :
+				if (task instanceof GenerateGraphQLSchemaTask) {
+					addGeneratedResourceFolder(project, task, ((GenerateGraphQLSchemaTask) task).getTargetFolder());
 				}
 			}
 		});
@@ -161,9 +185,13 @@ public class GraphQLPlugin implements Plugin<Project> {
 	 * @param project
 	 */
 	private void applyGenerateClientCode(Project project) {
-		project.getExtensions().create(GENERATE_CLIENT_CODE_EXTENSION, GenerateClientCodeExtension.class, project);
+		GenerateClientCodeExtension extension = project.getExtensions().create(GENERATE_CLIENT_CODE_EXTENSION,
+				GenerateClientCodeExtension.class, project.getProjectDir());
+
 		logger.debug("Applying generateClientCode task");
-		project.getTasks().register(GENERATE_CLIENT_CODE_TASK_NAME, GenerateClientCodeTask.class);
+		GenerateClientCodeTask task = project.getTasks().create(GENERATE_CLIENT_CODE_TASK_NAME,
+				GenerateClientCodeTask.class);
+		task.setExtension(extension);
 
 		// Apply the java plugin, then add the generated source
 		project.getPlugins().apply(JavaPlugin.class);
@@ -175,9 +203,11 @@ public class GraphQLPlugin implements Plugin<Project> {
 	 * @param project
 	 */
 	private void applyGenerateGraphQLSchema(Project project) {
-		project.getExtensions().create(MERGE_EXTENSION, GenerateGraphQLSchemaExtension.class, project);
+		GenerateGraphQLSchemaExtension extension = project.getExtensions().create(MERGE_EXTENSION,
+				GenerateGraphQLSchemaExtension.class, project.getProjectDir());
 		logger.debug("Applying generateGraphQLSchema task");
-		project.getTasks().register(MERGE_TASK_NAME, GenerateGraphQLSchemaTask.class);
+		GenerateGraphQLSchemaTask task = project.getTasks().create(MERGE_TASK_NAME, GenerateGraphQLSchemaTask.class);
+		task.setExtension(extension);
 	}
 
 	/**
@@ -186,9 +216,11 @@ public class GraphQLPlugin implements Plugin<Project> {
 	 * @param project
 	 */
 	private void applyGeneratePojo(Project project) {
-		project.getExtensions().create(GENERATE_POJO_EXTENSION, GeneratePojoExtension.class, project);
+		GeneratePojoExtension extension = project.getExtensions().create(GENERATE_POJO_EXTENSION,
+				GeneratePojoExtension.class, project.getProjectDir());
 		logger.debug("Applying generatePojo task");
-		project.getTasks().register(GENERATE_POJO_TASK_NAME, GeneratePojoTask.class);
+		GeneratePojoTask task = project.getTasks().create(GENERATE_POJO_TASK_NAME, GeneratePojoTask.class);
+		task.setExtension(extension);
 
 		// Apply the java plugin, then add the generated source
 		project.getPlugins().apply(JavaPlugin.class);
@@ -200,16 +232,18 @@ public class GraphQLPlugin implements Plugin<Project> {
 	 * @param project
 	 * @return
 	 */
-	private TaskProvider<GenerateServerCodeTask> applyGenerateServerCode(Project project) {
-		project.getExtensions().create(GENERATE_SERVER_CODE_EXTENSION, GenerateServerCodeExtension.class, project);
+	private void applyGenerateServerCode(Project project) {
+		Packaging packaging = (project.getTasksByName("war", false).size() >= 1) ? Packaging.war : Packaging.jar;
+
+		GenerateServerCodeExtension extension = project.getExtensions().create(GENERATE_SERVER_CODE_EXTENSION,
+				GenerateServerCodeExtension.class, project.getProjectDir(), packaging);
 		logger.info("Applying generateServerCode task");
-		TaskProvider<GenerateServerCodeTask> ret = project.getTasks().register(GENERATE_SERVER_CODE_TASK_NAME,
+		GenerateServerCodeTask task = project.getTasks().create(GENERATE_SERVER_CODE_TASK_NAME,
 				GenerateServerCodeTask.class);
+		task.setExtension(extension);
 
 		// Apply the java plugin, then add the generated source
 		project.getPlugins().apply(JavaPlugin.class);
-
-		return ret;
 	}
 
 	/**
@@ -218,12 +252,50 @@ public class GraphQLPlugin implements Plugin<Project> {
 	 * @param project
 	 */
 	private void applyGraphQLGenerateCode(Project project) {
-		project.getExtensions().create(GRAPHQL_EXTENSION, GraphQLExtension.class, project);
+		Packaging packaging = (project.getTasksByName("war", false).size() >= 1) ? Packaging.war : Packaging.jar;
+
+		GraphQLExtension extension = project.getExtensions().create(GRAPHQL_EXTENSION, GraphQLExtension.class,
+				project.getProjectDir(), packaging);
 		logger.debug("Applying GraphQL task");
-		project.getTasks().register(GRAPHQL_GENERATE_CODE_TASK_NAME, GraphQLGenerateCodeTask.class);
+		GraphQLGenerateCodeTask task = project.getTasks().create(GRAPHQL_GENERATE_CODE_TASK_NAME,
+				GraphQLGenerateCodeTask.class);
+		task.setExtension(extension);
 
 		// Apply the java plugin, then add the generated source
 		project.getPlugins().apply(JavaPlugin.class);
+
 	}
 
+	/** Add the given resource folder to the resource folders list, if it wasn't already added. */
+	private void addGeneratedResourceFolder(Project project, Task task, File newResourcFolder) {
+		SourceSet main = ((SourceSetContainer) project.getProperties().get("sourceSets"))
+				.getByName(SourceSet.MAIN_SOURCE_SET_NAME);
+		String newResourceFolder = newResourcFolder.getAbsolutePath();
+		java.util.Optional<File> existingResourceFolder = main.getResources().getFiles().stream()
+				.filter(f -> f.getAbsolutePath().equals(newResourceFolder)).findFirst();
+		if (!existingResourceFolder.isPresent()) {
+			logger.info("Adding '" + newResourcFolder + "' folder to the resources folders list for task '"
+					+ task.getName() + "'");
+			main.getResources().srcDir(newResourcFolder);
+		} else {
+			logger.debug("Ignoring '" + newResourcFolder + "' resource folder for task '" + task.getName()
+					+ "', as it is already listed");
+		}
+
+		if (logger.isInfoEnabled()) {
+			List<String> paths = new ArrayList<>();
+			for (File f : main.getResources().getSrcDirs()) {
+				paths.add(f.getAbsolutePath());
+			}
+			logger.info("Resources folders are: [" + String.join(",", paths) + "]");
+		}
+
+		// Due to a Gradle 7 bug, that is qualified as "Won't be fixed", we need to force a duplicatesStrategy for the
+		// processResources task.
+		// More info here: https://github.com/gradle/gradle/issues/17236
+		//
+		// This is ugly. But the Gradle team doesn't care about this issue... :(
+		project.getTasksByName("processResources", false)
+				.forEach(t -> ((ProcessResources) t).setDuplicatesStrategy(DuplicatesStrategy.EXCLUDE));
+	}
 }

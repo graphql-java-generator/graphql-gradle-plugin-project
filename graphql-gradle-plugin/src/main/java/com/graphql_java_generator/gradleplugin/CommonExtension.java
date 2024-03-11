@@ -7,8 +7,6 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.gradle.api.Project;
-
 import com.graphql_java_generator.plugin.conf.CommonConfiguration;
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
 
@@ -27,10 +25,10 @@ import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
  */
 public class CommonExtension implements CommonConfiguration {
 
-	/** The current Gradle project */
-	final protected Project project;
-
 	private boolean initialized = false;
+
+	/** The root of the current project. This allowed to create an instance of {@link File} from a relative path */
+	protected final File projectDir;
 
 	private String enumPrefix = CommonConfiguration.DEFAULT_PREFIX;
 	private String enumSuffix = CommonConfiguration.DEFAULT_SUFFIX;
@@ -50,8 +48,8 @@ public class CommonExtension implements CommonConfiguration {
 	private String unionPrefix = CommonConfiguration.DEFAULT_PREFIX;
 	private String unionSuffix = CommonConfiguration.DEFAULT_SUFFIX;
 
-	public CommonExtension(Project project) {
-		this.project = project;
+	public CommonExtension(File projectDir) {
+		this.projectDir = projectDir;
 	}
 
 	/**
@@ -128,12 +126,12 @@ public class CommonExtension implements CommonConfiguration {
 
 	@Override
 	public File getProjectDir() {
-		return this.project.getProjectDir();
+		return this.projectDir;
 	}
 
 	@Override
 	public File getSchemaFileFolder() {
-		return this.project.file(this.schemaFileFolder);
+		return new File(this.projectDir, this.schemaFileFolder);
 	}
 
 	public final void setSchemaFileFolder(String schemaFileFolder) {

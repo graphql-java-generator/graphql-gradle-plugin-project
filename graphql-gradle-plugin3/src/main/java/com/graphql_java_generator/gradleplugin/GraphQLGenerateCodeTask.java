@@ -7,7 +7,9 @@ import java.io.IOException;
 
 import javax.inject.Inject;
 
+import org.gradle.api.Project;
 import org.gradle.api.UncheckedIOException;
+import org.gradle.api.file.ProjectLayout;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.TaskAction;
@@ -17,6 +19,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.support.AbstractApplicationContext;
 
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
+import com.graphql_java_generator.plugin.conf.Packaging;
 import com.graphql_java_generator.plugin.conf.PluginMode;
 import com.graphql_java_generator.plugin.generate_code.GenerateCodeDocumentParser;
 import com.graphql_java_generator.plugin.generate_code.GenerateCodeGenerator;
@@ -81,13 +84,18 @@ public class GraphQLGenerateCodeTask extends GenerateServerCodeTask implements G
 	 */
 	private PluginMode mode;
 
+	/**
+	 * @param projectLayout
+	 *            This Gradle service is automatically injected by gradle. It allows to retrieve the project directory,
+	 *            as accessing the Gradle {@link Project} is forbidden from a task.
+	 */
 	@Inject
-	public GraphQLGenerateCodeTask() {
-		super(GraphQLExtension.class);
+	public GraphQLGenerateCodeTask(ProjectLayout projectLayout) {
+		super(new GraphQLExtension(projectLayout.getProjectDirectory().getAsFile(), Packaging.jar), projectLayout);
 	}
 
-	public GraphQLGenerateCodeTask(Class<? extends GraphQLExtension> extensionClazz) {
-		super(extensionClazz);
+	public GraphQLGenerateCodeTask(GraphQLExtension extension, ProjectLayout projectLayout) {
+		super(extension, projectLayout);
 	}
 
 	@Override

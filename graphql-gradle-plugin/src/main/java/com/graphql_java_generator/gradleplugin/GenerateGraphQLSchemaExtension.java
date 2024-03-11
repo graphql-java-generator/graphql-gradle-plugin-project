@@ -3,8 +3,6 @@ package com.graphql_java_generator.gradleplugin;
 import java.io.File;
 import java.io.Serializable;
 
-import org.gradle.api.Project;
-
 import com.graphql_java_generator.plugin.conf.GenerateGraphQLSchemaConfiguration;
 
 /**
@@ -33,13 +31,13 @@ public class GenerateGraphQLSchemaExtension extends CommonExtension
 	 */
 	private String targetSchemaFileName = GenerateGraphQLSchemaConfiguration.DEFAULT_TARGET_SCHEMA_FILE_NAME;
 
-	public GenerateGraphQLSchemaExtension(Project project) {
-		super(project);
+	public GenerateGraphQLSchemaExtension(File projectDir) {
+		super(projectDir);
 	}
 
 	@Override
 	public String getResourceEncoding() {
-		return resourceEncoding;
+		return this.resourceEncoding;
 	}
 
 	public void setResourceEncoding(String resourceEncoding) {
@@ -50,12 +48,12 @@ public class GenerateGraphQLSchemaExtension extends CommonExtension
 
 	@Override
 	public File getTargetFolder() {
-		return project.file(targetFolder);
+		return new File(this.projectDir, this.targetFolder);
 	}
 
 	public void setTargetFolder(String targetFolder) {
 		// Let's create the folder now, so that it exists when if any other task needs it, during configuration time
-		project.file(targetFolder).mkdirs();
+		new File(this.projectDir, targetFolder).mkdirs();
 
 		this.targetFolder = targetFolder;
 
@@ -65,7 +63,7 @@ public class GenerateGraphQLSchemaExtension extends CommonExtension
 
 	@Override
 	public String getTargetSchemaFileName() {
-		return targetSchemaFileName;
+		return this.targetSchemaFileName;
 	}
 
 	public void setTargetSchemaFileName(String targetSchemaFileName) {
