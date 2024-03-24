@@ -39,6 +39,7 @@ sourceSets.main.resources.srcDirs += '/build/generated/resources/graphqlGradlePl
 generateServerCodeConf {
 	addRelayConnections = true
 	generateBatchLoaderEnvironment = true
+	generateDataFetcherForEveryFieldsWithArguments = true
 	packageName = 'org.allGraphQLCases.server'
 	separateUtilityClasses = false
 	schemaFileFolder = '../graphql-gradle-plugin-samples-allGraphQLCases-client/src/graphqls/allGraphQLCases'

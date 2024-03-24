@@ -128,6 +128,27 @@ public class GenerateServerCodeTask extends GenerateCodeCommonTask implements Ge
 	private Boolean generateBatchLoaderEnvironment;
 
 	/**
+	 * <P>
+	 * (only for server mode, since 2.5) Defines if a data fetcher is needed for every GraphQL field that has input
+	 * argument, and add them in the generated POJOs. This allows a better compatibility with spring-graphql, and an
+	 * easy access to the field's parameters.
+	 * </P>
+	 * <P>
+	 * With this argument to false, the data fetchers are generated only for field which type is a type (not a scalar or
+	 * an enum), and for the query, mutation and subscription types.
+	 * </P>
+	 * <P>
+	 * With this argument to true, the data fetchers are generated for all GraphQL fields which type is a type (not a
+	 * scalar or an enum) <b><i>or</i></b> that has one or arguments
+	 * </P>
+	 * <P>
+	 * This parameter is available since version 2.5. Its default value is false in 2.x versions for backward
+	 * compatibility with existing implementations based on the plugin. But the <b>recommended value is true</b>.
+	 * </P>
+	 */
+	private Boolean generateDataFetcherForEveryFieldsWithArguments;
+
+	/**
 	 * Indicates whether the plugin should generate the JPA annotations, for generated objects, when in server mode.
 	 */
 	private Boolean generateJPAAnnotation;
@@ -306,6 +327,20 @@ public class GenerateServerCodeTask extends GenerateCodeCommonTask implements Ge
 
 	public final void setGenerateBatchLoaderEnvironment(boolean generateBatchLoaderEnvironment) {
 		this.generateBatchLoaderEnvironment = generateBatchLoaderEnvironment;
+		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		setInitialized(true);
+	}
+
+	@Override
+	@Input
+	final public boolean isGenerateDataFetcherForEveryFieldsWithArguments() {
+		return getValue(this.generateDataFetcherForEveryFieldsWithArguments,
+				getExtension().isGenerateDataFetcherForEveryFieldsWithArguments());
+	}
+
+	public final void setGenerateDataFetcherForEveryFieldsWithArguments(
+			boolean generateDataFetcherForEveryFieldsWithArguments) {
+		this.generateDataFetcherForEveryFieldsWithArguments = generateDataFetcherForEveryFieldsWithArguments;
 		// This task as being configured. So we'll mark compileJava and processResources as depending on it
 		setInitialized(true);
 	}
