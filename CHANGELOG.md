@@ -11,6 +11,14 @@ Gradle:
 * Issue #14: The plugin is now compatible with Gradle configuration cache
     * __Possible breaking change:__ The path given to the task properties must now all be relatives to the root of their project (without a leading slash), eg : "build/generated/mytarget" (not "/build/generated/mytarget" or "$builDir/generated/mytarget"))
     * (Pojo goals) No more need to add the generated source folder to the sourceSets.main.java.srcDirs. It is automatically added to the java source folders.
+    
+    
+All modes:
+* Remove a bad java import, which could cause compilation error when just generating POJO
+
+Server mode:
+* Add of the `generateDataFetcherForEveryFieldsWithArguments` plugin param. This parameter allows to generate data fetchers for every field that has input argument, and add them in the generated POJOs. This allows a better compatibility with spring-graphql, and an easy access to the field's parameters.
+* Issue #209: error with subscription that returns enum, when the implementation returns a Publisher that is not a Flux
 
 # 2.4
 
