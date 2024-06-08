@@ -48,6 +48,7 @@ repositories {
 	mavenCentral()
 }
 
+
 dependencies {
 	// This plugin is a wrapper of the logic already implemented in our maven plugin
 	implementation ("com.graphql-java-generator:graphql-maven-plugin-logic:${project.version}") {
@@ -55,6 +56,7 @@ dependencies {
 		exclude group: 'org.slf4j', module: 'slf4j-api'
 		exclude group: 'net.minidev', module: 'json-smart'
 	}
+	implementation "org.springframework:spring-context:${springFrameworkVersion}"
 
 	// Dependencies for tests
 	testImplementation("org.springframework.boot:spring-boot-starter-test:${springBootVersion}"){
