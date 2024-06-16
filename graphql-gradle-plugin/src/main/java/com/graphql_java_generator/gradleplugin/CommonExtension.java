@@ -36,6 +36,7 @@ public class CommonExtension implements CommonConfiguration {
 	private String inputSuffix = CommonConfiguration.DEFAULT_SUFFIX;
 	private String interfacePrefix = CommonConfiguration.DEFAULT_PREFIX;
 	private String interfaceSuffix = CommonConfiguration.DEFAULT_SUFFIX;
+	private String jsonGraphqlSchemaFilename = CommonConfiguration.DEFAULT_JSON_GRAPHQL_SCHEMA_FILE;
 	private Integer maxTokens = Integer.parseInt(CommonConfiguration.DEFAULT_MAX_TOKENS);
 	private boolean addRelayConnections = CommonConfiguration.DEFAULT_ADD_RELAY_CONNECTIONS.equals("true");
 	private String schemaFileFolder = GraphQLConfiguration.DEFAULT_SCHEMA_FILE_FOLDER;
@@ -236,6 +237,32 @@ public class CommonExtension implements CommonConfiguration {
 
 	public void setInterfaceSuffix(String interfaceSuffix) {
 		this.interfaceSuffix = interfaceSuffix;
+	}
+
+	/**
+	 * <p>
+	 * If defined, the plugin loads the GraphQL schema from this json file. This allows to generate the code from the
+	 * result of a GraphQL introspection query executed against an existing GraphQL server, for instance if you don't
+	 * have its GraphQL schema file.
+	 * </p>
+	 * <p>
+	 * This json file should have been retrieved by the full introspection query. You can find the introspection query
+	 * from the <code>getIntrospectionQuery</code> of the
+	 * <a href="https://github.com/graphql/graphql-js/blob/main/src/utilities/getIntrospectionQuery.ts">graphql-js</a>
+	 * or from this <a href=
+	 * "https://github.com/graphql-java/graphql-java/blob/master/src/main/java/graphql/introspection/IntrospectionQuery.java">graphql-java</a>
+	 * class. You then have to run it against the GraphQL server, and store the response into a schema.json file.
+	 * </p>
+	 * 
+	 * @return
+	 */
+	@Override
+	public String getJsonGraphqlSchemaFilename() {
+		return this.jsonGraphqlSchemaFilename;
+	}
+
+	public void setJsonGraphqlSchemaFilename(String jsonGraphqlSchemaFilename) {
+		this.jsonGraphqlSchemaFilename = jsonGraphqlSchemaFilename;
 	}
 
 	@Override

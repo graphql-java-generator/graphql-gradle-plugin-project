@@ -1,10 +1,36 @@
-# Breaking change
+[TOC]
+
+
+# Breaking changes to come with the 3.x releases
+
+* The default value for `generateDataFetcherForEveryFieldsWithArguments` will be changed to true, which makes more Data Fetchers to implement
+
+
+# 2.x versions
+
+## Main enhancement in the 2.x releases
+
+* The generated code uses spring-graphql
+* Since 2.5, the `generateDataFetcherForEveryFieldsWithArguments` plugin param. This parameter allows to generate data fetchers for every field that has input argument, and add them in the generated POJOs.
+    * The default is false, to backward compatibility.
+
+## Breaking changes in 2.x versions
 
 * 2.5
-     * All task properties in `build.gradle` files, that contain file path must now be relative to the local project root. This is due to the compatibility with the configuration cache, which changed the path resolution methods.
+     * [Gradle] All task properties in `build.gradle` files, that contain file path must now be relative to the local project root. This is due to the compatibility with the configuration cache, which changed the path resolution methods.
+
+## 2.6
+
+Gradle:
+* issue #21: dependencies for spring framework6 are enforced for graphql-gradle-plugin3 
+
+All modes (client and server):
+* Issue #113: base the code generation on a json schema (from an introspection query), instead of regular graphqls GraphQL schema files. This is done with the help of this new plugin parameter: `jsonGraphqlSchemaFilename`
+* Issue #208: the plugin is now marked as thread safe (no more warning when using maven parallel builds)
 
 
-# 2.5
+
+## 2.5
 
 Gradle:
 * Upgrade of gradle wrapper to 8.6
@@ -20,7 +46,7 @@ Server mode:
 * Add of the `generateDataFetcherForEveryFieldsWithArguments` plugin param. This parameter allows to generate data fetchers for every field that has input argument, and add them in the generated POJOs. This allows a better compatibility with spring-graphql, and an easy access to the field's parameters.
 * Issue #209: error with subscription that returns enum, when the implementation returns a Publisher that is not a Flux
 
-# 2.4
+## 2.4
 
 Dependencies upgrade:
 * Spring boot to 2.7.18 and 3.2.1
@@ -33,13 +59,13 @@ Client mode:
 * When executing full requests, the `query` keyword was mandatory, whereas it is optional in the GraphQL specs.
 
 
-# 2.3.2
+## 2.3.2
 
 Client and server modes:
 * Correction of issue #202: the generated code would not compile, if a GraphQL interface or type has a `class` attribute (due to the final `getClass` method). The generated method is `get_Class()`
 
 
-# 2.3.1
+## 2.3.1
 
 Client mode:
 * Issue 199: the generated code would not compile if the GraphQL schema is too big
@@ -49,7 +75,7 @@ Client mode:
     * Alias on fields that are a Custom scalars could not be deserialized when using the deprecated ResponseType
 
 
-# 2.3
+## 2.3
 
 Client and server modes:
 * Correction of issues #184 and #198: error with custom scalar, when the custom scalar's class is not in the plugin's classpath
@@ -64,7 +90,7 @@ Gradle plugin:
 * Correction of the issues #13 and #18: The plugin is running all tasks instead of running only the configured tasks
 
 
-# 2.2
+## 2.2
 
 Gradle plugin:
 * Creation of a graphql-gradle-plugin3 plugin, compiled against Spring Boot 3 and Spring Framework 6
@@ -75,7 +101,7 @@ Both mode:
     * Add or modify fields
     * Add interface and annotation to classes (GraphQL types, input types, interfaces, unions and enums) or fields.
 
-# 2.1
+## 2.1
 
 Gradle:
 * A `graphql-gradle-plugin3` is now available, that is compiled for Spring Boot 3.x and Spring Framework 6.x
@@ -104,7 +130,7 @@ dependencies {
 
 Samples are available for the [client side](https://github.com/graphql-java-generator/GraphQL-Forum-Gradle-Tutorial-client) and for the [server side](https://github.com/graphql-java-generator/GraphQL-Forum-Gradle-Tutorial-server).
 
-# 2.1
+## 2.1
 
 Both mode:
 * Compile dependency upgraded to Spring Boot 2.7.12 (and 3.1.0)
@@ -117,7 +143,7 @@ Client mode:
 
 
 
-# 2.0 
+## 2.0 
 
 Change of some plugin parameters value (please read either [[Client migration from 1.x to 2.x|client_migrate_1-x_to_2-x]] or [[Server migration from 1.x to 2.x|server_migrate_1-x_to_2-x]] for more information) changed of default value:
 * copyRuntimeSources: false _(both client and server mode)_
@@ -128,7 +154,7 @@ It was initially planned to force their value to the new default valye. But this
 
 
 
-# 2.0RC1
+## 2.0RC1
 
 Release Candidate version for the 2.x versions.
 
@@ -148,7 +174,7 @@ Know issues:
 * All builds for servers should be executed with a clean (_mvn clean install_ or _gradlew clean build_), otherwise the GraphQL schema available at runtime becomes invalid. The server won't start.
 * For Spring 3, in client mode, copyRuntimeSources should be manually to false, to avoid compilation errors
 
-# 1.18.11
+## 1.18.11
 
 Both modes:
 * Issue #179: Problem with primitive types as java type for custom scalars
@@ -156,7 +182,7 @@ Both modes:
 * Much better reliability of Subscriptions
 
 
-# 1.18.10
+## 1.18.10
 
 Dependency upgrade: 
 * Upgrade from graphql-java 19.2 to 20.0
@@ -175,7 +201,7 @@ Client mode:
 * Issue #176: the `GraphQLRequestExecutionException` class has now a `getErrors()` method, that allows to retrieve the list of `GraphQLError` returned by the server, including the extension field.
 
 
-# 1.18.9
+## 1.18.9
 
 Dependency upgrade: 
 * Upgrade from Spring Boot 2.7.4 to 2.7.6
@@ -191,7 +217,7 @@ Server mode:
 * Issue #162: Declaring a GraphQL directive applicable to VARIABLE_DEFINITION would prevent the GraphQL server to start
 
 
-# 1.18.8
+## 1.18.8
 
 Dependency upgrade: 
 * Upgrade from Spring Boot 2.4.4 to 2.7.4
@@ -205,7 +231,7 @@ All modes:
     * Please [check these new plugin parameters](https://graphql-maven-plugin-project.graphql-java-generator.com/graphql-maven-plugin/plugin-info.html): typePrefix, typeSuffix, unionPrefix, unionSuffix, enumPrefix, enumSuffix, interfacePrefix, interfaceSuffix, inputPrefix, inputSuffix
 
 
-# 1.18.7
+## 1.18.7
 
 Dependency upgrade :
 * Upgrade from graphql-java 17.3 to graphql-java 18.0
@@ -218,7 +244,7 @@ All modes:
 * Issue #139: Compilation Failures, when keywords used in enum values, or query/execution/subscription fields
 
 
-# 1.18.6
+## 1.18.6
 
 All modes:
 * Removed various compilation warnings in the generated code
@@ -233,7 +259,7 @@ Gradle plugin:
 * No more Gradle 8 compatibility warning
 
 
-# 1.18.5
+## 1.18.5
 
 Both modes (client and server):
 * Issue #130: A GraphQL type of name `Field` or `Builder` would prevent the generated code to compile
@@ -247,7 +273,7 @@ Server mode:
 * Issue #131: Spring configuration properties like `spring.codec.max-in-memory-size` would be ignored.
 
 
-# 1.18.4
+## 1.18.4
 
 Both modes (client and server):
 * (Issue #128) partial rewrite of the generation code, to avoid conflicts between the POJO's java types, and other class names (like Client, Date...)
@@ -260,13 +286,13 @@ Server mode:
 * Upgrade of java-dataloader from version 2.2.3 to version 3.1.2
 
 
-# 1.18.3
+## 1.18.3
 
 All modes:
 * Solved an issue: an Exception would be thrown when using the POJO setters with a null value.
 
 
-# 1.18.2
+## 1.18.2
 
 Gradle plugin:
 * Solved a build issue, that would generate an error with some old configurations of the plugin
@@ -277,7 +303,7 @@ Server more:
     * There is no impact on DataFetchers for Subscriptions which return type is mandatory (like `String!`)
 
 
-# 1.18.1
+## 1.18.1
 
 All modes (client and server):
 * Dependencies has been restructured to properly separate client and server runtimes:
@@ -304,7 +330,7 @@ Upgrade of dependencies versions (to remove security issues):
 
 
 
-# 1.18
+## 1.18
 
 All modes (client and server):
 * __Subscriptions__ are now managed with full respect of the [graphql-transport-ws](https://github.com/enisdenjo/graphql-ws/blob/master/PROTOCOL.md) WebSocket sub-protocol, as defined in the [graphql-ws](https://github.com/enisdenjo/graphql-ws) reference library.
@@ -319,7 +345,7 @@ Client mode:
 * You can override the `RequestExecution` to use query, mutation and subscription according to the [graphql-transport-ws](https://github.com/enisdenjo/graphql-ws/blob/master/PROTOCOL.md). Please find a sample in the `GraphQLTransportWSSpringConfiguration` spring configuration class of [this test](https://github.com/graphql-java-generator/graphql-maven-plugin-project/blob/master/graphql-maven-plugin-samples/graphql-maven-plugin-samples-allGraphQLCases-client/src/test/java/org/allGraphQLCases/GraphQLTransportWSIT.java)
 
 
-# 1.17.3p1
+## 1.17.3p1
 
 All modes:
 * Corrected an issue with duplicate files that can break the Gradle build
@@ -327,7 +353,7 @@ All modes:
 __Caution:__ this is a Gradle only release. So, for this version, the Gradle plugin version is 1.17.3p1, whereas the `graphql-java-client-dependencies`, `graphql-java-server-dependencies` or `graphql-java-runtime` version is 1.17.3.
 
 
-# 1.17.3
+## 1.17.3
 
 Client mode:
 * Corrected issue 98 (in the maven plugin project): Spring Bean name collision with the QueryExecutor (which is an internal Bean from the plugin). This is a regression of the previous 1.17x versions.
@@ -335,13 +361,13 @@ Client mode:
 Internal:
 * The `QueryExecutor` interface (and its implementations) has been renamed into `RequestExecution`, to avoid name collision with the QueryExecutor Spring Bean, coming from the GraphQL schema.
 
-# 1.17.2 
+## 1.17.2 
 
 Client mode:
 * Correction of issues #95 and #96 (of the maven project): the `springBeanSuffix` is now properly applied to all spring beans. Now it is also applied to the query, mutation and subscription executors, as well as all other Spring beans.
 
 
-# 1.17
+## 1.17
 
 Gradle Plugin:
 * Corrected some issues when executing a `gradlew clean build`, whereas `gradlew clean` then `gradlew build` works ok
@@ -353,7 +379,7 @@ Client mode:
     * In other words: GraphQL Repositories is a powerful tool that allows to execute GraphQL request, without writing code for that: just declare these requests in the GraphQL Repository interface
     * More information on [this page](https://github.com/graphql-java-generator/graphql-maven-plugin-project/wiki/client_graphql_repository).
 
-# 1.16
+## 1.16
 
 Both mode:
 * The plugin now properly manages GraphQL scalar extensions
@@ -364,7 +390,7 @@ Client mode:
 * Issue #82: Using Hard coded Int parameters would raise an exception (for instance in this request: `"{aRequest(intParam: 3) {...}}"`)
 
 
-# 1.15
+## 1.15
 
 Client mode:
 * The queries, mutations and subscriptions now __accept GraphQL aliases__, like specified in [GraphQL spec](http://spec.graphql.org/June2018/#sec-Field-Alias)
@@ -377,7 +403,7 @@ Gradle only:
     * Sources are generated in: `build/generated/sources/graphqlGradlePlugin`
     
 
-# 1.14.2
+## 1.14.2
 
 New goal/task added:
 * generatePojo: This goal allows to only generate the Java classes and interfaces that match the provided GraphQL schema.
@@ -389,7 +415,7 @@ Internal:
 * The plugin now uses slf4j as the logging frontend framework, as do Gradle and Maven (since maven 3.1). This means that, when using Maven, the minimum release version is the 3.1 version.
 
 
-# 1.14.1
+## 1.14.1
 
 Both mode:
 * Upgrade of _com.google.guava_, to version 30.1.1-jre, to remove a vulnerability
@@ -410,7 +436,7 @@ Gradle:
 * Update in the build.gradle to make it compatible with gradle 7
 
 
-# 1.14
+## 1.14
 
 Both mode:
 * Upgrade of _com.google.guava_, to remove a vulnerability
@@ -429,7 +455,7 @@ Custom templates:
 
 
 
-# 1.13
+## 1.13
 
 Both mode:
 * Custom Templates can now be defined as a resource in the current project (no need to embed them in a jar prior to use them). See the [CustomTemplates-client pom file](https://github.com/graphql-java-generator/graphql-maven-plugin-project/blob/master/graphql-maven-plugin-samples/graphql-maven-plugin-samples-CustomTemplates-client/pom.xml) as a sample for that.
@@ -443,12 +469,12 @@ Server mode:
 * The Query/Mutation/Subscription are now available on the same URL (/graphql by default). This is the standard GraphQL behavior, but it was tricky to build, due to a Java limitation.
 
 
-# 1.12.5
+## 1.12.5
 
 Client mode:
 * Issue #53: custom scalars would not be properly managed when they are a parameter of a query, mutation or subscription.
 
-# 1.12.4
+## 1.12.4
 
 Server mode:
 * It's now possible to override the type wiring, thanks to the new `GraphQLWiring` class.
@@ -456,7 +482,7 @@ Server mode:
 * [Internal] The `GraphQLProvider` class has been removed. The Spring beans it created are now created by the `GraphQLServerMain` class. The type wiring has been moved in the new `GraphQLWiring` class. This allows an easier overriding of the generated type wiring.
 
 
-# 1.12.3
+## 1.12.3
 
 
 Both mode:
@@ -469,7 +495,7 @@ Client mode:
 * The GraphQL server response could not be deserialized, when it contains the (non standard) _extensions_ entry
 
 
-# 1.12.2
+## 1.12.2
 
 Both modes (client and server):
 * Added the _skipGenerationIfSchemaHasNotChanged_ parameter. It's in beta version. It prevents code and resource generation, of the schema file(s) are older than these generated sources or resources. It's default value is false in 1.x releases.
@@ -483,7 +509,7 @@ Server mode:
 
 
 
-# 1.12.1
+## 1.12.1
 
 Both modes (client and server):
 * Correction for the _addRelayConnections_: the _Node_ interface was not properly copied to all implementing subtypes and subinterfaces
@@ -495,7 +521,7 @@ Server mode:
 * When the _addRelayConnections_ plugin parameter is set to true, the _generateServerCode_ task/goal (and _graphql_ task/goal when in server mode) copies the generated schema file in the _/classes_ folder, so that the graphql-java engine has a proper access to it, at runtime.
 
 
-# 1.12
+## 1.12
 
 Both modes (client and server):
 * Added support for OAuth 2
@@ -512,14 +538,14 @@ Client mode:
 Server mode:
 * Corrected a regression in 1.11.2, due to _generateBatchLoaderEnvironment_ plugin parameter (see issue #64)
 
-# 1.11.2
+## 1.11.2
 
 server mode:
 * The generated code would not compile for fields with parameters (when the field's type is an entity with an id)
 * Add of the _generateBatchLoaderEnvironment_ parameter. When in server mode, it allows the batch loader to retrieve the context, for instance the field parameters associated to this id.
 
 
-# 1.11.1
+## 1.11.1
 
 Both modes (client and server):
 * Upgrade of spring boot from 2.3.3 to 2.4.0
@@ -528,7 +554,7 @@ Both modes (client and server):
 Gradle plugin:
 * The plugin is now compatible with a JDK/JRE 8 (it previously needed java 13)
 
-# 1.11
+## 1.11
 
 Both modes (client and server):
 * Changes in goal(maven)/task(gradle) names, to make them clear and homogeneous between the gradle and the maven plugin:
@@ -549,7 +575,7 @@ Client Mode (generateClientCode):
 
 
 
-# 1.10
+## 1.10
 
 Both modes (client and server):
 * Upgrade of graphql-java from v14.0 to v15.0
@@ -560,7 +586,7 @@ Server mode:
 * The generated code would not compile if a GraphQL interface is defined, but not used, in the given GraphQL schema
 
 
-# 1.9
+## 1.9
 
 Both modes (client and server):
 * The GraphQL schema can now be split into separate files, including one file containing GraphQL extend keyword on the other file's objects
@@ -569,12 +595,12 @@ Both modes (client and server):
 Client mode:
 * Fixes #46: Strings not properly escaped for JSON
 
-# 1.8.1
+## 1.8.1
 
 Both modes (client and server):
 * The generated code was not compatible with Java 8 (only with Java 9 and above)
 
-# 1.8
+## 1.8
 
 Both modes (client and server):
 * Corrected issue #43: GraphQL Float was mapped to Float, instead of Double
@@ -591,7 +617,7 @@ Server mode:
 * Added the _scanBasePackages_ plugin parameter. It allows to create our Spring Beans, including the DataFetchersDelegateXxx implementation in another place than a subpackage of the package define in the _packageName_ plugin parameter
 * Corrected a dependency issue (for server implemented from the code generated by the plugin)
 
-# 1.7.0
+## 1.7.0
 
 Both modes (client and server):
 * The plugin now manages __subscription__
@@ -601,7 +627,7 @@ Server mode:
 * In some cases, the DataFetcherDelegate now have another DataFetcher that must be implemented
 * Some server templates rename, to respect java standards. An underscore has been added to these templates name: BATCH_LOADER_DELEGATE, BATCH_LOADER_DELEGATE_IMPL, DATA_FETCHER and DATA_FETCHER_DELEGATE
 
-# 1.6.1
+## 1.6.1
 
 Both modes (client and server):
 * Default value for input parameters (fields and directives) that are null, array or an object are now properly managed.
@@ -612,7 +638,7 @@ Client mode:
 * Thanks to the _separateUtilityClasses_ plugin parameter, the plugin can generate the code for the shopify and github GraphQL schema (needs some additional tests: tester need here...)
    
 
-# 1.6.0
+## 1.6.0
 
 Both modes (client and server):
 * Added a _templates_ plugin parameter, that allows to override the default templates. This allows the developper to control exactly what code is generated by the developer.
@@ -632,7 +658,7 @@ Client mode:
     * Please check the behavior of your full queries: the mutation keyword is now mandatory for mutations, as specified in the GraphQL specification. The query keyword remains optional. 
     * Please the [client mode doc](https://graphql-maven-plugin-project.graphql-java-generator.com/client.html) for more information.
 
-# 1.5.0
+## 1.5.0
 
 Both modes (client and server):
 - GraphQL __Directives__ are now managed
@@ -649,7 +675,7 @@ Client mode:
   
 
 
-# 1.4.0
+## 1.4.0
 
 Both modes (client and server):
 - The plugin is compatible again with java 8
@@ -658,7 +684,7 @@ Both modes (client and server):
 Client mode:
 - Can now invoke GraphQL introspection queries  (it was already the case on server side, thanks to graphql-java)
 
-# 1.3.2
+## 1.3.2
 
 Both modes (client and server):
 - Input parameters are now managed for scalar fields (custom or not)
@@ -668,7 +694,7 @@ Both modes (client and server):
 Client mode:
 - Added a constructor in the generated query/mutation/subscription with a preconfigured Jersey client instance to support customization of the rest request
 
-# 1.3.1
+## 1.3.1
 
 Both modes (client and server):
 - The project now compiles up to JDK 13 (the generated code is still compatible with java 8 and higher)
@@ -676,7 +702,7 @@ Both modes (client and server):
  
 
 
-# 1.3
+## 1.3
 
 
 Both modes (client and server):
@@ -684,7 +710,7 @@ Both modes (client and server):
 - Fixed issue 8: Problem when using Boolean Type with property prefix "is"
 
 
-# 1.2
+## 1.2
 
 
 Both modes (client and server):
