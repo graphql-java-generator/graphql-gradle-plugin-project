@@ -40,6 +40,7 @@ generateServerCodeConf {
 	addRelayConnections = true
 	generateBatchLoaderEnvironment = true
 	generateDataFetcherForEveryFieldsWithArguments = true
+	ignoredSpringMappings = " Bar140 , IBar140 Character.name MyQueryType.checkOverriddenController "
 	packageName = 'org.allGraphQLCases.server'
 	separateUtilityClasses = false
 	schemaFileFolder = '../graphql-gradle-plugin-samples-allGraphQLCases-client/src/graphqls/allGraphQLCases'

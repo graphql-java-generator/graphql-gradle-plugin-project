@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 import org.dataloader.BatchLoaderEnvironment;
 import org.dataloader.DataLoader;
@@ -24,8 +25,10 @@ import org.springframework.stereotype.Component;
 
 import com.graphql_java_generator.util.GraphqlUtils;
 
+import graphql.GraphQLContext;
 import graphql.schema.DataFetchingEnvironment;
 import jakarta.annotation.Resource;
+import reactor.core.publisher.Flux;
 
 /**
  * This class implements the access to the database : there are so many ways to do this, that the developper has still
@@ -54,16 +57,30 @@ public class DataFetchersDelegateTopicImpl implements DataFetchersDelegateTopic 
 	GraphqlUtils graphqlUtils;
 
 	@Override
-	public CompletableFuture<Member> author(DataFetchingEnvironment dataFetchingEnvironment,
-			DataLoader<Long, Member> dataLoader, Topic source) {
-		return dataLoader.load(source.getAuthorId());
+	public Flux<Member> author(BatchLoaderEnvironment batchLoaderEnvironment, GraphQLContext graphQLContext,
+			List<Topic> keys) {
+		if (this.logger.isDebugEnabled()) {
+			List<String> ids = keys.stream().map(p -> p.getAuthorId().toString()).collect(Collectors.toList());
+			this.logger.debug("Before returning Flux to load this list of topics authors: {}", String.join(",", ids));
+		}
+		return Flux.fromIterable(keys).map(obj -> {
+			this.logger.debug("Before loading Member {} ", obj.getAuthorId());
+			Member ret = this.memberRepository.findById(obj.getAuthorId()).orElse(null);
+
+			// To check that this member is loaded from the @BatchMapping controller method, we prefix the member's name
+			if (!ret.getName().startsWith("[BM] ")) {
+				ret.setName("[BM] " + ret.getName());
+			}
+
+			this.logger.debug("After loading Member {}: ", obj.getAuthorId(), ret);
+			return ret;
+		});
 	}
 
-	@Override
 	public List<Post> posts(DataFetchingEnvironment dataFetchingEnvironment, Topic source, Long memberId,
 			String memberName, Date since) {
 
-		logger.debug("Loading posts of topic {}, with memberId={}, memberName={} and since={}", source.getId(),
+		this.logger.debug("Loading posts of topic {}, with memberId={}, memberName={} and since={}", source.getId(),
 				memberId, memberName, since);
 
 		if (since == null) {
@@ -76,28 +93,29 @@ public class DataFetchersDelegateTopicImpl implements DataFetchersDelegateTopic 
 
 			// since
 			if (memberId == null && memberName == null) {
-				logger.debug("Loading posts of topic {}, with since={}", source.getId(), since);
-				return graphqlUtils.iterableToList(postRepository.findByTopicIdAndSince(source.getId(), since));
+				this.logger.debug("Loading posts of topic {}, with since={}", source.getId(), since);
+				return this.graphqlUtils
+						.iterableToList(this.postRepository.findByTopicIdAndSince(source.getId(), since));
 			}
 			// memberId, since
 			else if (memberName == null) {
-				logger.debug("Loading posts of topic {}, with memberId={} and since={}", source.getId(), memberId,
+				this.logger.debug("Loading posts of topic {}, with memberId={} and since={}", source.getId(), memberId,
 						since);
-				return graphqlUtils.iterableToList(
-						postRepository.findByTopicIdAndMemberIdAndSince(source.getId(), memberId, since));
+				return this.graphqlUtils.iterableToList(
+						this.postRepository.findByTopicIdAndMemberIdAndSince(source.getId(), memberId, since));
 			}
 			// memberName,since
 			else if (memberId == null) {
-				logger.debug("Loading posts of topic {}, with memberName={} and since={}", source.getId(), memberName,
-						since);
-				return graphqlUtils.iterableToList(
-						postRepository.findByTopicIdAndMemberNameAndSince(source.getId(), memberName, since));
+				this.logger.debug("Loading posts of topic {}, with memberName={} and since={}", source.getId(),
+						memberName, since);
+				return this.graphqlUtils.iterableToList(
+						this.postRepository.findByTopicIdAndMemberNameAndSince(source.getId(), memberName, since));
 			}
 			// memberId, memberName, since
 			else {
-				logger.debug("Loading posts of topic {}, with memberId={}, memberName={} and since={}", source.getId(),
-						memberId, memberName, since);
-				return graphqlUtils.iterableToList(postRepository
+				this.logger.debug("Loading posts of topic {}, with memberId={}, memberName={} and since={}",
+						source.getId(), memberId, memberName, since);
+				return this.graphqlUtils.iterableToList(this.postRepository
 						.findByTopicIdAndMemberIdAndMemberNameAndSince(source.getId(), memberId, memberName, since));
 			}
 		}
@@ -115,7 +133,7 @@ public class DataFetchersDelegateTopicImpl implements DataFetchersDelegateTopic 
 			ids.add(post.getId());
 		}
 
-		if (logger.isDebugEnabled()) {
+		if (this.logger.isDebugEnabled()) {
 			StringBuilder sb = new StringBuilder();
 			sb.append("Retrieving posts for topic {id=");
 			sb.append(origin.getId());
@@ -128,7 +146,7 @@ public class DataFetchersDelegateTopicImpl implements DataFetchersDelegateTopic 
 				sb.append(" ");
 				sb.append(id);
 			}
-			logger.debug(sb.toString());
+			this.logger.debug(sb.toString());
 		}
 
 		return dataLoader.loadMany(ids);
@@ -136,13 +154,8 @@ public class DataFetchersDelegateTopicImpl implements DataFetchersDelegateTopic 
 
 	@Override
 	public List<Topic> unorderedReturnBatchLoader(List<Long> keys, BatchLoaderEnvironment env) {
-		logger.debug("Batch loading {} topics", keys.size());
-		return topicRepository.findByIds(keys);
-	}
-
-	@Override
-	public Member author(DataFetchingEnvironment dataFetchingEnvironment, Topic origin) {
-		return memberRepository.findById(origin.getAuthorId()).orElseGet(() -> null);
+		this.logger.debug("Batch loading {} topics", keys.size());
+		return this.topicRepository.findByIds(keys);
 	}
 
 }

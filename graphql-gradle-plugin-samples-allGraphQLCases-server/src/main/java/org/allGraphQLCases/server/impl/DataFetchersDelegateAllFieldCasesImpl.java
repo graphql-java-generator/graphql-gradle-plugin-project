@@ -25,6 +25,7 @@ import org.dataloader.DataLoader;
 import org.springframework.stereotype.Component;
 
 import graphql.schema.DataFetchingEnvironment;
+import reactor.core.publisher.Mono;
 
 /**
  * @author etienne-sf
@@ -108,12 +109,6 @@ public class DataFetchersDelegateAllFieldCasesImpl implements DataFetchersDelega
 	}
 
 	@Override
-	public STP_AllFieldCasesWithIdSubtype_STS oneWithIdSubType(DataFetchingEnvironment dataFetchingEnvironment,
-			STP_AllFieldCases_STS origin, Boolean uppercase) {
-		return this.generator.generateInstance(STP_AllFieldCasesWithIdSubtype_STS.class);
-	}
-
-	@Override
 	public CompletableFuture<List<STP_AllFieldCasesWithIdSubtype_STS>> listWithIdSubTypes(
 			DataFetchingEnvironment dataFetchingEnvironment,
 			DataLoader<UUID, STP_AllFieldCasesWithIdSubtype_STS> dataLoader, STP_AllFieldCases_STS origin, Long nbItems,
@@ -133,23 +128,6 @@ public class DataFetchersDelegateAllFieldCasesImpl implements DataFetchersDelega
 		}
 
 		return dataLoader.loadMany(uuids, keyContexts);
-	}
-
-	@Override
-	public List<STP_AllFieldCasesWithIdSubtype_STS> listWithIdSubTypes(DataFetchingEnvironment dataFetchingEnvironment,
-			STP_AllFieldCases_STS source, Long nbItems, Date date, List<Date> dates, Boolean uppercaseName,
-			String textToAppendToTheForname) {
-		List<STP_AllFieldCasesWithIdSubtype_STS> list = this.generator
-				.generateInstanceList(STP_AllFieldCasesWithIdSubtype_STS.class, 3);
-
-		for (STP_AllFieldCasesWithIdSubtype_STS item : list) {
-			if (uppercaseName != null && uppercaseName) {
-				item.setName(item.getName().toUpperCase());
-			}
-			item.setName(item.getName() + textToAppendToTheForname);
-		}
-
-		return list;
 	}
 
 	@Override
@@ -230,13 +208,6 @@ public class DataFetchersDelegateAllFieldCasesImpl implements DataFetchersDelega
 		return null;
 	}
 
-	@Override
-	public STP_AllFieldCases_STS issue66(DataFetchingEnvironment dataFetchingEnvironment, STP_AllFieldCases_STS origin,
-			List<SINP_AllFieldCasesInput_SINS> input) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	/** Custom field data fetchers are available since release 2.5 */
 	@Override
 	public String forname(DataFetchingEnvironment dataFetchingEnvironment, STP_AllFieldCases_STS origin,
@@ -263,7 +234,7 @@ public class DataFetchersDelegateAllFieldCasesImpl implements DataFetchersDelega
 		case YEAR:
 			return origin.getAge();
 		case DAY:
-			return origin.getAge() * 365;// Let's say here that all years have 265 days.
+			return origin.getAge() * 365;// Let's say here that all years have 365 days.
 		case HOUR:
 			return origin.getAge();
 		case MINUTE:
@@ -278,4 +249,10 @@ public class DataFetchersDelegateAllFieldCasesImpl implements DataFetchersDelega
 
 	}
 
+	@Override
+	public Object oneWithoutFieldParameter(DataFetchingEnvironment dataFetchingEnvironment,
+			DataLoader<UUID, STP_AllFieldCasesWithIdSubtype_STS> dataLoader, STP_AllFieldCases_STS origin) {
+		// Renvoi d'un Mono
+		return Mono.fromCallable(() -> this.generator.generateInstance(STP_AllFieldCasesWithIdSubtype_STS.class));
+	}
 }

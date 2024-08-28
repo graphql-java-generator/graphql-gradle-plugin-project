@@ -36,6 +36,8 @@ sourceSets.main.resources.srcDirs += '/build/generated/resources/graphqlGradlePl
 // Let's configure the GraphQL Gradle Plugin
 // (the plugin will automatically add it as a dependency to compileJava and processResources) 
 generateServerCodeConf {
+	batchMappingDataFetcherReturnType = "FLUX"
+	generateBatchMappingDataFetchers = true
 	generateDataLoaderForLists = true
 	generateJPAAnnotation = true
 	javaTypeForIDType = "java.lang.Long"

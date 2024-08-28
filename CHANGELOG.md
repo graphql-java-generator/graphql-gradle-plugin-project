@@ -18,6 +18,25 @@
 
 * 2.5
      * [Gradle] All task properties in `build.gradle` files, that contain file path must now be relative to the local project root. This is due to the compatibility with the configuration cache, which changed the path resolution methods.
+* 2.8
+    * [server mode] When the `generateDataLoaderForLists` plugin parameter is set to true, the plugin no more generates two methods per field (for field that return lists)
+        * Two methods in `DataFetchersDelegateXxx`: one with the `DataLoader` parameter, that is used by the controller, and one without the `DataLoader` parameter, that is not used. The useless method is no more generated. This may result in compilation error, if the `@Override` method was added: you would then have to remove the implementation for this useless method.
+
+
+## 2.8
+
+Server mode:
+* The new `generateBatchMappingDataFetchers` plugin parameters is in __beta version__ in this release. It allows to generate data fetchers with the <code>@BatchMapping</code> annotation (instead of the `@SchemaMapping` one). This allows to manage the N+1 select problem: so this allows much better performances, by highly diminishing the number of executed requests
+    * The new `batchMappingDataFetcherReturnType` allows to control the return type of these data fetchers
+    * Please note that the behaviour for this parameter may change a little for GraphQL schema that use field parameters. 
+    * For GraphQL schemas that don't use field parameters, its behaviour can be considered as stable
+* Issues #214 and #215: the new `ignoredSpringMappings` plugin parameter allows to ignore a list of type and field mappings (or all mappings, when this parameter is set to the star character, "*").
+    * An ignored type mapping prevent the generation of its `DataFetcherDelegate`, and its entity Spring Controller. The [Spring Controller](https://docs.spring.io/spring-graphql/reference/controllers.html) must be 'manually' implemented.
+    * An ignored field mapping prevent the generation of the method for this field in the `DataFetcherDelegate`, and its entity Spring Controller. A [Spring Controller](https://docs.spring.io/spring-graphql/reference/controllers.html) must be 'manually' implemented for this field.
+* Issue #217: compilation error when a field first letter is in uppercase.
+
+Internal API:
+* The `DataFetcher.completableFuture` has been renamed to `DataFetcher.withDataLoader`. This impacts these templates: `object_content.vm.java`, `server_EntityController.vm.java` and `server_GraphQLDataFetchersDelegate.vm.java`
 
 ## 2.7
 
@@ -30,6 +49,7 @@ All modes (client and server):
 Internal:
 * The `server_GraphQLWiring.vm.java` custom template has been renamed to `GraphQLWiring.vm.java`, as this template is now used for both the client and the server mode.
 
+
 ## 2.6
 
 Gradle:
@@ -40,7 +60,6 @@ All modes (client and server):
 * Issue #208: the plugin is now marked as thread safe (no more warning when using maven parallel builds)
 
 
-
 ## 2.5
 
 Gradle:
@@ -48,14 +67,14 @@ Gradle:
 * Issue #14: The plugin is now compatible with Gradle configuration cache
     * __Possible breaking change:__ The path given to the task properties must now all be relatives to the root of their project (without a leading slash), eg : "build/generated/mytarget" (not "/build/generated/mytarget" or "$builDir/generated/mytarget"))
     * (Pojo goals) No more need to add the generated source folder to the sourceSets.main.java.srcDirs. It is automatically added to the java source folders.
-    
-    
+
 All modes:
 * Remove a bad java import, which could cause compilation error when just generating POJO
 
 Server mode:
 * Add of the `generateDataFetcherForEveryFieldsWithArguments` plugin param. This parameter allows to generate data fetchers for every field that has input argument, and add them in the generated POJOs. This allows a better compatibility with spring-graphql, and an easy access to the field's parameters.
 * Issue #209: error with subscription that returns enum, when the implementation returns a Publisher that is not a Flux
+
 
 ## 2.4
 
@@ -76,6 +95,7 @@ Client and server modes:
 * Correction of issue #202: the generated code would not compile, if a GraphQL interface or type has a `class` attribute (due to the final `getClass` method). The generated method is `get_Class()`
 
 
+
 ## 2.3.1
 
 Client mode:
@@ -89,16 +109,16 @@ Client mode:
 ## 2.3
 
 Client and server modes:
-* Correction of issues #184 and #198: error with custom scalar, when the custom scalar's class is not in the plugin's classpath
+* Correction of issues #184 and #198: error with custom scalars, when the custom scalar's class is not in the plugin's classpath
+* The generated code generates much less warnings
 
 Client mode:
 * Add of the reactive executors and GraphQL repositories:
     * Queries and mutations return Mono
     * Subscriptions return Flux
 
-
 Gradle plugin:
-* Correction of the issues #13 and #18: The plugin is running all tasks instead of running only the configured tasks
+* Correction of the issues 13 and 18: The plugin is running all tasks instead of running only the configured tasks
 
 
 ## 2.2
@@ -112,34 +132,6 @@ Both mode:
     * Add or modify fields
     * Add interface and annotation to classes (GraphQL types, input types, interfaces, unions and enums) or fields.
 
-## 2.1
-
-Gradle:
-* A `graphql-gradle-plugin3` is now available, that is compiled for Spring Boot 3.x and Spring Framework 6.x
-    * Due to an issue during the plugin publishing, the plugin3 version is 2.1b, whereas the runtime version is 2.1, like this:
-
-```
-plugins {
-	...
-	id 'com.graphql-java-generator.graphql-gradle-plugin3' version "2.1b"
-	...
-}
-
-
-dependencies {
-	// Use the server runtime ... for the server side :) 
-	implementation "com.graphql-java-generator:graphql-java-server-runtime:2.1"
-
-	// OR
-	
-	// Use the client runtime ... for the client side :) 
-	implementation "com.graphql-java-generator:graphql-java-client-runtime:2.1"
-	
-	...
-}
-```
-
-Samples are available for the [client side](https://github.com/graphql-java-generator/GraphQL-Forum-Gradle-Tutorial-client) and for the [server side](https://github.com/graphql-java-generator/GraphQL-Forum-Gradle-Tutorial-server).
 
 ## 2.1
 
@@ -153,8 +145,7 @@ Client mode:
 * Issue #189: using OAuth2 in spring 6 (with copyRuntimeSource=true only) would through this error: "missing createError() method in OAuthTokenExtractor.GetOAuthTokenClientResponse"
 
 
-
-## 2.0 
+## 2.0
 
 Change of some plugin parameters value (please read either [[Client migration from 1.x to 2.x|client_migrate_1-x_to_2-x]] or [[Server migration from 1.x to 2.x|server_migrate_1-x_to_2-x]] for more information) changed of default value:
 * copyRuntimeSources: false _(both client and server mode)_
@@ -164,6 +155,8 @@ Change of some plugin parameters value (please read either [[Client migration fr
 It was initially planned to force their value to the new default valye. But this would have too much impact on the existing code. Changing the default value allows 'old' users to minimize the impact when switching to the 2.0 version, while new user will use cleaner code.
 
 
+Server mode:
+* Issue #190: The spring entity controllers can now be overridden
 
 ## 2.0RC1
 
@@ -184,6 +177,17 @@ You can check these pages for more information on how to migrate from 1.x versio
 Know issues:
 * All builds for servers should be executed with a clean (_mvn clean install_ or _gradlew clean build_), otherwise the GraphQL schema available at runtime becomes invalid. The server won't start.
 * For Spring 3, in client mode, copyRuntimeSources should be manually to false, to avoid compilation errors
+
+
+# 1.x versions
+
+## 1.18.12
+
+Client and server modes:
+* Correction of issues #184 and #198: error with custom scalars, when the custom scalar's class is not in the plugin's classpath
+
+Client mode:
+* Issue 199: the generated code would not compile if the GraphQL schema is too big
 
 ## 1.18.11
 
@@ -228,6 +232,7 @@ Server mode:
 * Issue #162: Declaring a GraphQL directive applicable to VARIABLE_DEFINITION would prevent the GraphQL server to start
 
 
+
 ## 1.18.8
 
 Dependency upgrade: 
@@ -253,6 +258,7 @@ All modes:
 * Prevent endless compilation from an IDE (eclipse...) when a type is removed from the GraphQL schema
 * Issue [Gradle n°11](https://github.com/graphql-java-generator/graphql-gradle-plugin-project/issues/11): maxTokens is not set by default to Integer.MAX_VALUE (=2147483647). This prevent errors on big GraphQL schemas
 * Issue #139: Compilation Failures, when keywords used in enum values, or query/execution/subscription fields
+
 
 
 ## 1.18.6
@@ -338,7 +344,9 @@ Upgrade of dependencies versions (to remove security issues):
 * h2 is used only for sample. Upgraded from 1.4.200 to 2.1.210
 * velocity is the template engine. Upgraded from 1.7 to 2.3
     * A (positive) side effect, is that the velocity logging is managed through slf4j, like all the plugin's code logging. So this solves the issue #103, caused by velocity.log beeing created in the Intellij `bin` folder.
-
+    
+    
+    
 
 
 ## 1.18
@@ -356,43 +364,37 @@ Client mode:
 * You can override the `RequestExecution` to use query, mutation and subscription according to the [graphql-transport-ws](https://github.com/enisdenjo/graphql-ws/blob/master/PROTOCOL.md). Please find a sample in the `GraphQLTransportWSSpringConfiguration` spring configuration class of [this test](https://github.com/graphql-java-generator/graphql-maven-plugin-project/blob/master/graphql-maven-plugin-samples/graphql-maven-plugin-samples-allGraphQLCases-client/src/test/java/org/allGraphQLCases/GraphQLTransportWSIT.java)
 
 
-## 1.17.3p1
-
-All modes:
-* Corrected an issue with duplicate files that can break the Gradle build
-
-__Caution:__ this is a Gradle only release. So, for this version, the Gradle plugin version is 1.17.3p1, whereas the `graphql-java-client-dependencies`, `graphql-java-server-dependencies` or `graphql-java-runtime` version is 1.17.3.
-
-
 ## 1.17.3
 
 Client mode:
-* Corrected issue 98 (in the maven plugin project): Spring Bean name collision with the QueryExecutor (which is an internal Bean from the plugin). This is a regression of the previous 1.17x versions.
+* Corrected issue #98: Spring Bean name collision with the QueryExecutor (which is an internal Bean from the plugin). This is a regression of the previous 1.17x versions.
 
 Internal:
 * The `QueryExecutor` interface (and its implementations) has been renamed into `RequestExecution`, to avoid name collision with the QueryExecutor Spring Bean, coming from the GraphQL schema.
 
+
 ## 1.17.2 
 
 Client mode:
-* Correction of issues #95 and #96 (of the maven project): the `springBeanSuffix` is now properly applied to all spring beans. Now it is also applied to the query, mutation and subscription executors, as well as all other Spring beans.
+* Correction of issues #95 and #96: the `springBeanSuffix` is now properly applied to all spring beans. Now it is also applied to the query, mutation and subscription executors, as well as all other Spring beans.
 
 
 ## 1.17
 
-Gradle Plugin:
-* Corrected some issues when executing a `gradlew clean build`, whereas `gradlew clean` then `gradlew build` works ok
+All modes (client and server):
+* The maven plugin is now better integrated in the IDE. No more need of the maven-helper-plugin, to add the folder for the generated sources and generated resources.
 
 Client mode:
-* The generated code can now attack two (or more) GraphQL servers.
+* The generated code can now attack __two (or more) GraphQL servers__.
     * More information on [this page](https://github.com/graphql-java-generator/graphql-maven-plugin-project/wiki/client_more_than_one_graphql_servers).
-* Added the ability to create __GraphQL Repositories__: like Spring Data Repositories, GraphQL Repositories allow to declare GraphQL requests (query, mutation, subscription) by __just declaring an interface__. The runtime code create dynamic proxies at runtime, that will execute these GraphQL requests.
+* Added the ability to create GraphQL Repositories: like Spring Data Repositories, GraphQL Repositories allow to declare GraphQL requests (query, mutation, subscription) by __just declaring an interface__. The runtime code create dynamic proxies at runtime, that will execute these GraphQL requests.
     * In other words: GraphQL Repositories is a powerful tool that allows to execute GraphQL request, without writing code for that: just declare these requests in the GraphQL Repository interface
     * More information on [this page](https://github.com/graphql-java-generator/graphql-maven-plugin-project/wiki/client_graphql_repository).
 
+
 ## 1.16
 
-Both mode:
+Both modes:
 * The plugin now properly manages GraphQL scalar extensions
 * Added a control, that the version of the runtime matches the version of the plugin. Doing such a control can prevent some weird errors.
 * Added a check, that the provided custom templates have valid names and match to existing files (or resources in the classpath)
@@ -408,11 +410,6 @@ Client mode:
     * Once the request is executed, The alias value can be retrieved with the `Object getAliasValue(String: aliasname)` method that has been added to every generated objects and interfaces. This method returns the alias value, parsed into the relevant Java Object.
 * The default `QueryExecutor` provided by the plugin is now a Spring bean. If you want to override it, you should not mark your own `QueryExecutor` with the `@Primary` annotation, to ignore the default one.
 
-Gradle only:
-* Since 1.15, the files are generated in these folders:
-    * Resources are generated in: `build/generated/resources/graphqlGradlePlugin`
-    * Sources are generated in: `build/generated/sources/graphqlGradlePlugin`
-    
 
 ## 1.14.2
 
@@ -424,7 +421,6 @@ Server mode:
 
 Internal:
 * The plugin now uses slf4j as the logging frontend framework, as do Gradle and Maven (since maven 3.1). This means that, when using Maven, the minimum release version is the 3.1 version.
-
 
 ## 1.14.1
 
@@ -443,10 +439,6 @@ Client mode:
 * Dependency order changed in the graphql-java-client-dependencies module, to make sure the right spring's dependencies are used (this could prevent a Spring app to start)
 * Removed the use of the `reactor.core.publisher.Sinks` class, to restore compatibility for those who uses an older version of Spring Boot
 
-Gradle:
-* Update in the build.gradle to make it compatible with gradle 7
-
-
 ## 1.14
 
 Both mode:
@@ -463,7 +455,6 @@ Custom templates:
     * The list level is now better managed (not just a boolean, but the real depth when there are lists of lists)
     * The input parameters now typed with an enum, not just a boolean for mandatory/optional.
 * The _client_query_target_type.vm.java_ was not used and has been removed.
-
 
 
 ## 1.13
@@ -516,7 +507,6 @@ Both modes (client and server):
 Server mode:
 * The graphql-java version has been upgraded to 16.2 (the latest version at this time)
 * The generated code would not allow the specific implementation to override the GraphQLInvocation Spring Bean
-
 
 
 

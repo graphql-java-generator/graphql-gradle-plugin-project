@@ -618,11 +618,6 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 	}
 
 	@Override
-	public String checkOverriddenController(DataFetchingEnvironment dataFetchingEnvironment) {
-		return "Welcome from the default controller";
-	}
-
-	@Override
 	public Boolean issue200(DataFetchingEnvironment dataFetchingEnvironment, Boolean param) {
 		return param;
 	}
@@ -796,5 +791,10 @@ public class DataFetchersDelegateMyQueryTypeImpl implements DataFetchersDelegate
 		} else {
 			return null;
 		}
+	}
+
+	@Override
+	public String Issue217(DataFetchingEnvironment dataFetchingEnvironment, String AnArg) {
+		return AnArg;
 	}
 }

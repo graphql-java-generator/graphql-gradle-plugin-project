@@ -9,6 +9,7 @@ import java.util.concurrent.CompletableFuture;
 
 import org.dataloader.BatchLoaderEnvironment;
 
+import com.graphql_java_generator.plugin.conf.BatchMappingDataFetcherReturnType;
 import com.graphql_java_generator.plugin.conf.GenerateServerCodeConfiguration;
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
 import com.graphql_java_generator.plugin.conf.Packaging;
@@ -22,6 +23,38 @@ public class GenerateServerCodeExtension extends GenerateCodeCommonExtension
 
 	/** The packaging is either war or jar. It's used to define the proper code to generate. */
 	private Packaging packaging = Packaging.jar;
+
+	/**
+	 * <P>
+	 * This parameter is used only when generateBatchMappingDataFetchers is set to <i>true</i>. It determines the return
+	 * type of the data fetchers, as defined in the <a href=
+	 * "https://docs.spring.io/spring-graphql/reference/controllers.html#controllers.batch-mapping.return.values">spring-graphql
+	 * documentation</a>.
+	 * </P>
+	 * <P>
+	 * The allowed values are (where K is the key type, that is: the parent object, and V is the value to be loaded in
+	 * batch):
+	 * </P>
+	 * <TABLE>
+	 * <ROW>
+	 * <TH>Value</TH>
+	 * <TH>Return type</TH></ROW> <ROW>
+	 * <TD>MONO_MAP</TD></TD>Mono&lt;Map&lt;K,V&gt;&gt;</TD></ROW> <ROW>
+	 * <TD>MAP</TD>
+	 * <TD>Map&lt;K,V&gt;</TD></ROW> <ROW>
+	 * <TD>FLUX></TD>
+	 * <TD>Flux&lt;V&gt;</TD></ROW> <ROW>
+	 * <TD>COLLECTION</TD>
+	 * <TD>Collection&lt;V&gt;</TD></ROW>
+	 * </TABLE>
+	 * <P>
+	 * The default value is <code>Flux&lt;V&gt;</code>
+	 * </P>
+	 * <P>
+	 * For an easier use of this parameter, the comment of the generated data fetchers details the exact expected type.
+	 * </P>
+	 */
+	BatchMappingDataFetcherReturnType batchMappingDataFetcherReturnType = GenerateServerCodeConfiguration.DEFAULT_BATCH_MAPPING_DATA_FETCHER_RETURN_TYPE;
 
 	/**
 	 * <P>
@@ -73,6 +106,49 @@ public class GenerateServerCodeExtension extends GenerateCodeCommonExtension
 	private boolean generateBatchLoaderEnvironment = GraphQLConfiguration.DEFAULT_GENERATE_BATCH_LOADER_ENVIRONMENT
 			.equals("true");
 
+	/**
+	 * <P>
+	 * If this parameter is set to <i>true</i>, the spring GraphQL controller methods will be annotated with the
+	 * <code>@BatchMapping</code> (instead of the <code>@SchemaMapping</code>). This allows to manage the of the N+1
+	 * select problem: so this allows much better performances, by highly diminishing the number of executed requests
+	 * (avoid to execute several times the same "sub-query")
+	 * <P>
+	 * </P>
+	 * When setting this parameter to <i>true</i>, the main changes are:
+	 * </P>
+	 * <UL>
+	 * <LI>The <code>@BatchMapping</code> annotation may be applied to all data fetchers without argument(s) that return
+	 * either a List, a Type, an Interface or an Union.</LI>
+	 * <LI>The return type must be defined in the controller: it may not be `Object`, as spring-graphql builds the
+	 * proper BatchLoader while loading the controllers, when the server starts. The return type for this method is
+	 * managed by the <code>batchMappingMethodReturnType</code> plugin parameter</LI>
+	 * <LI>DataLoader is managed transparently by spring (instead of having to declare it in the generated controller,
+	 * and having it as a parameter in the generated data fetchers)</LI>
+	 * <LI>The batch mapping is generalized on all data fetchers</LI>
+	 * <LI>The <code>DataFetchersDelegate</code> method's signature changes</LI>
+	 * <LI>The <code>generateBatchLoaderEnvironment</code>, <code>generateDataFetcherForEveryFieldsWithArguments</code>
+	 * and <code>generateDataLoaderForLists</code> plugin parameters are ignored</LI>
+	 * </UL>
+	 * <P>
+	 * A typical method signature for a data fetcher would be as below, where the return type is controller by the
+	 * <code>batchMappingMethodReturnType</code> plugin parameter :
+	 * </P>
+	 * 
+	 * <PRE>
+	 * public Flux<Topic> topics(//
+	 * 		BatchLoaderEnvironment batchLoaderEnvironment, //
+	 * 		GraphQLContext graphQLContext, //
+	 * 		List<Board> boards);
+	 * </PRE>
+	 * <P>
+	 * Please note that the <code>@BatchMapping</code> annotation is a shortcut to avoid boilerplate code, for the most
+	 * common cases. See <a href="https://github.com/spring-projects/spring-graphql/issues/232">this discussion</a> for
+	 * more information on this. For most complex cases, the use of a DataLoader is recommended by the spring-graphql
+	 * case. And in these cases, the plugin will generate a method with the <code>@SchemaMapping</code> annotation
+	 * </P>
+	 */
+	public boolean generateBatchMappingDataFetchers = GenerateServerCodeConfiguration.DEFAULT_GENERATE_BATCH_MAPPING_DATA_FETCHERS
+			.equals("true");
 	/**
 	 * Indicates whether the plugin should generate the JPA annotations, for generated objects, when in server mode.
 	 */
@@ -133,6 +209,52 @@ public class GenerateServerCodeExtension extends GenerateCodeCommonExtension
 	 */
 	private boolean generateDataLoaderForLists = GenerateServerCodeConfiguration.DEFAULT_GENERATE_DATA_LOADER_FOR_LISTS
 			.equals("true");
+
+	/**
+	 * <P>
+	 * This parameter marks a list of GraphQL mappings as ignored, so that they are not generated by the plugin. These
+	 * ignored mappings can then be defined by the specific implementation.
+	 * </P>
+	 * <P>
+	 * The other way to it is to create a spring GraphQL Controller, that overrides the controller generated by the
+	 * plugin. But this may lead to this error:
+	 * <code>Ambiguous mapping. Cannot map 'xxxController' method [...] to 'Type.field': there is already 'yyy' bean method [...] mapped.</code>
+	 * </P>
+	 * <P>
+	 * The parameter may contain:
+	 * </P>
+	 * <UL>
+	 * <LI>The '*' character: this would mark all controllers and DataFetchersDeleagate to be ignored. That is: none
+	 * would be generated, and it's up to the specific implementation to manage them. In this mode, you still benefit of
+	 * the POJO generation, the type wiring, the custom scalars mapping...</LI>
+	 * <LI>A list of:</LI>
+	 * <UL>
+	 * <LI>GraphQL type name: The full controller class for this type is ignored, and won't be generated</LI>
+	 * <LI>GraphQL type's field name: The method in the controller of this type, for this field, is ignored, and won't
+	 * be generated. The field must be written like this: <code>{type name}.{field name}</code></LI>
+	 * </UL>
+	 * </UL>
+	 * <P>
+	 * The accepted separators for the values are: comma, space, carriage return, end of line, space, tabulation. At
+	 * least one separator must exist between two values in the list. Here is a sample:
+	 * </P>
+	 * 
+	 * <PRE>
+	 *          <ignoredSpringMappings>Type1, Type2.field1
+	 *          	Type3
+	 *          	Type4.field2
+	 *          </ignoredSpringMappings>
+	 * </PRE>
+	 * <P>
+	 * For field mapping, there must be no separator other than '.' between the type name and the field name. For
+	 * instance, the following type declaration are invalid: 'type .field', 'type. field'
+	 * </P>
+	 * <P>
+	 * To implement the ignored mappings, you'll have to follow the [spring-graphql
+	 * documentation](https://docs.spring.io/spring-graphql/reference/controllers.html).
+	 * </P>
+	 */
+	public String ignoredSpringMappings = GenerateServerCodeConfiguration.DEFAULT_IGNORED_SPRING_MAPPINGS;
 	/**
 	 * <P>
 	 * The <I>javaTypeForIDType</I> is the java class that is used in the generated code for GraphQL fields that are of
@@ -192,6 +314,17 @@ public class GenerateServerCodeExtension extends GenerateCodeCommonExtension
 	}
 
 	@Override
+	public boolean isGenerateBatchMappingDataFetchers() {
+		return this.generateBatchMappingDataFetchers;
+	}
+
+	public void setGenerateBatchMappingDataFetchers(boolean generateBatchMappingDataFetchers) {
+		this.generateBatchMappingDataFetchers = generateBatchMappingDataFetchers;
+		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		setInitialized(true);
+	}
+
+	@Override
 	public boolean isGenerateDataFetcherForEveryFieldsWithArguments() {
 		return this.generateDataFetcherForEveryFieldsWithArguments;
 	}
@@ -221,6 +354,29 @@ public class GenerateServerCodeExtension extends GenerateCodeCommonExtension
 
 	public final void setGenerateDataLoaderForLists(boolean generateDataLoaderForLists) {
 		this.generateDataLoaderForLists = generateDataLoaderForLists;
+		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		setInitialized(true);
+	}
+
+	@Override
+	public BatchMappingDataFetcherReturnType getBatchMappingDataFetcherReturnType() {
+		return this.batchMappingDataFetcherReturnType;
+	}
+
+	public void setBatchMappingDataFetcherReturnType(
+			BatchMappingDataFetcherReturnType batchMappingDataFetcherReturnType) {
+		this.batchMappingDataFetcherReturnType = batchMappingDataFetcherReturnType;
+		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		setInitialized(true);
+	}
+
+	@Override
+	public String getIgnoredSpringMappings() {
+		return this.ignoredSpringMappings;
+	}
+
+	public final void setIgnoredSpringMappings(String ignoredSpringMappings) {
+		this.ignoredSpringMappings = ignoredSpringMappings;
 		// This task as being configured. So we'll mark compileJava and processResources as depending on it
 		setInitialized(true);
 	}
