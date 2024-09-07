@@ -91,7 +91,7 @@ public class GraphQLGenerateCodeTask extends GenerateServerCodeTask implements G
 	 */
 	@Inject
 	public GraphQLGenerateCodeTask(ProjectLayout projectLayout) {
-		super(new GraphQLExtension(projectLayout.getProjectDirectory().getAsFile(), Packaging.jar), projectLayout);
+		super(new GraphQLExtension(projectLayout, Packaging.jar), projectLayout);
 	}
 
 	public GraphQLGenerateCodeTask(GraphQLExtension extension, ProjectLayout projectLayout) {
@@ -132,7 +132,7 @@ public class GraphQLGenerateCodeTask extends GenerateServerCodeTask implements G
 	@Input
 	@Override
 	public PluginMode getMode() {
-		return getValue(this.mode, getExtension().getMode());
+		return getValue(mode, getExtension().getMode());
 	}
 
 	public final void setMode(PluginMode mode) {
@@ -144,7 +144,7 @@ public class GraphQLGenerateCodeTask extends GenerateServerCodeTask implements G
 	@Input
 	@Override
 	final public boolean isGenerateDeprecatedRequestResponse() {
-		return getValue(this.generateDeprecatedRequestResponse, getExtension().isGenerateDeprecatedRequestResponse());
+		return getValue(generateDeprecatedRequestResponse, getExtension().isGenerateDeprecatedRequestResponse());
 	}
 
 	public final void setGenerateDeprecatedRequestResponse(boolean generateDeprecatedRequestResponse) {

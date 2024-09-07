@@ -41,6 +41,9 @@ dependencies {
 	testImplementation "org.springframework.boot:spring-boot-starter-test"
 }
 
+// The default build dir is changed, to check the plugin compatibility with this change
+def buildDirectory = "build2"
+project.layout.buildDirectory = buildDirectory 
 
 
 // Let's configure the GraphQL Gradle Plugin, for the merge task
@@ -48,7 +51,7 @@ dependencies {
 generateGraphQLSchema {
 	addRelayConnections = true
 	schemaFileFolder = 'src/graphqls/allGraphQLCases/'
-	targetFolder = "build/generated/resources/generateGraphQLSchema"
+	targetFolder = "build2/generated/resources/generateGraphQLSchema"
 	targetSchemaFileName = 'merged_schemas.graphqls'
 }
 
@@ -61,7 +64,7 @@ tasks.register('generateClientCodeAllGraphQLCases', com.graphql_java_generator.g
 	// Task properties
 	generateDeprecatedRequestResponse = true
 	packageName = 'org.allGraphQLCases.client'
-	schemaFileFolder = "build/generated/resources/generateGraphQLSchema" // Let's read the merged GraphQL schema
+	schemaFileFolder = "$buildDirectory/generated/resources/generateGraphQLSchema" // Let's read the merged GraphQL schema
 	schemaPersonalizationFile = 'src/graphqls/schema_personalization/schema_personalization.json'
 	springBeanSuffix = 'AllGraphQLCases'
 	
@@ -129,10 +132,10 @@ tasks.register('generateClientCodeAllGraphQLCases2', com.graphql_java_generator.
 	// Task properties
 	copyRuntimeSources = false
 	packageName = 'org.allGraphQLCases.client2'
-	schemaFileFolder = "/build/generated/resources/generateGraphQLSchema" // Let's read the merged GraphQL schema
+	schemaFileFolder = "$buildDirectory/generated/resources/generateGraphQLSchema" // Let's read the merged GraphQL schema
 	separateUtilityClasses = false
 	springBeanSuffix = 'AllGraphQLCases2'
-	targetSourceFolder = "/build/generated/sources/graphqlGradlePlugin2"
+	targetSourceFolder = "$buildDirectory/generated/sources/graphqlGradlePlugin2"
 	customScalars = [ [
 			graphQLTypeName: "Base64String",
 			javaType: "byte[]",
@@ -188,7 +191,7 @@ tasks.register('generateClientCodeForum', com.graphql_java_generator.gradleplugi
 	separateUtilityClasses = false
 	skipGenerationIfSchemaHasNotChanged = true
 	springBeanSuffix = 'Forum'
-	targetSourceFolder = "/build/generated/sources/graphqlGradlePluginForum"
+	targetSourceFolder = "$buildDirectory/generated/sources/graphqlGradlePluginForum"
 	customScalars = [ [ 
 			graphQLTypeName: 'Date',
 			javaType: 'java.util.Date',

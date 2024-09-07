@@ -166,17 +166,17 @@ public class GraphQLPlugin implements Plugin<Project> {
 
 	/** Manual reading of the application.properties file, as this is not a spring boot project. */
 	private Properties getProperties() {
-		if (this.properties == null) {
-			this.properties = new Properties();
+		if (properties == null) {
+			properties = new Properties();
 			try {
 				try (InputStream is = getClass().getResourceAsStream("/application.properties")) {
-					this.properties.load(is);
+					properties.load(is);
 				}
 			} catch (IOException e) {
 				throw new RuntimeException(e.getMessage(), e);
 			} // try
 		} // if
-		return this.properties;
+		return properties;
 	}// getProperties()
 
 	/**
@@ -186,7 +186,7 @@ public class GraphQLPlugin implements Plugin<Project> {
 	 */
 	private void applyGenerateClientCode(Project project) {
 		GenerateClientCodeExtension extension = project.getExtensions().create(GENERATE_CLIENT_CODE_EXTENSION,
-				GenerateClientCodeExtension.class, project.getProjectDir());
+				GenerateClientCodeExtension.class, project.getLayout());
 
 		logger.debug("Applying generateClientCode task");
 		GenerateClientCodeTask task = project.getTasks().create(GENERATE_CLIENT_CODE_TASK_NAME,
@@ -204,7 +204,7 @@ public class GraphQLPlugin implements Plugin<Project> {
 	 */
 	private void applyGenerateGraphQLSchema(Project project) {
 		GenerateGraphQLSchemaExtension extension = project.getExtensions().create(MERGE_EXTENSION,
-				GenerateGraphQLSchemaExtension.class, project.getProjectDir());
+				GenerateGraphQLSchemaExtension.class, project.getLayout());
 		logger.debug("Applying generateGraphQLSchema task");
 		GenerateGraphQLSchemaTask task = project.getTasks().create(MERGE_TASK_NAME, GenerateGraphQLSchemaTask.class);
 		task.setExtension(extension);
@@ -217,7 +217,7 @@ public class GraphQLPlugin implements Plugin<Project> {
 	 */
 	private void applyGeneratePojo(Project project) {
 		GeneratePojoExtension extension = project.getExtensions().create(GENERATE_POJO_EXTENSION,
-				GeneratePojoExtension.class, project.getProjectDir());
+				GeneratePojoExtension.class, project.getLayout());
 		logger.debug("Applying generatePojo task");
 		GeneratePojoTask task = project.getTasks().create(GENERATE_POJO_TASK_NAME, GeneratePojoTask.class);
 		task.setExtension(extension);
@@ -236,7 +236,7 @@ public class GraphQLPlugin implements Plugin<Project> {
 		Packaging packaging = (project.getTasksByName("war", false).size() >= 1) ? Packaging.war : Packaging.jar;
 
 		GenerateServerCodeExtension extension = project.getExtensions().create(GENERATE_SERVER_CODE_EXTENSION,
-				GenerateServerCodeExtension.class, project.getProjectDir(), packaging);
+				GenerateServerCodeExtension.class, project.getLayout(), packaging);
 		logger.info("Applying generateServerCode task");
 		GenerateServerCodeTask task = project.getTasks().create(GENERATE_SERVER_CODE_TASK_NAME,
 				GenerateServerCodeTask.class);
@@ -255,7 +255,7 @@ public class GraphQLPlugin implements Plugin<Project> {
 		Packaging packaging = (project.getTasksByName("war", false).size() >= 1) ? Packaging.war : Packaging.jar;
 
 		GraphQLExtension extension = project.getExtensions().create(GRAPHQL_EXTENSION, GraphQLExtension.class,
-				project.getProjectDir(), packaging);
+				project.getLayout(), packaging);
 		logger.debug("Applying GraphQL task");
 		GraphQLGenerateCodeTask task = project.getTasks().create(GRAPHQL_GENERATE_CODE_TASK_NAME,
 				GraphQLGenerateCodeTask.class);

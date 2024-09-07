@@ -72,7 +72,7 @@ public class GenerateClientCodeTask extends GenerateCodeCommonTask implements Ge
 	 */
 	@Inject
 	public GenerateClientCodeTask(ProjectLayout projectLayout) {
-		super(new GenerateClientCodeExtension(projectLayout.getProjectDirectory().getAsFile()), projectLayout);
+		super(new GenerateClientCodeExtension(projectLayout), projectLayout);
 	}
 
 	@TaskAction
@@ -112,7 +112,7 @@ public class GenerateClientCodeTask extends GenerateCodeCommonTask implements Ge
 	@Input
 	@Override
 	public boolean isGenerateDeprecatedRequestResponse() {
-		return getValue(this.generateDeprecatedRequestResponse, getExtension().isGenerateDeprecatedRequestResponse());
+		return getValue(generateDeprecatedRequestResponse, getExtension().isGenerateDeprecatedRequestResponse());
 	}
 
 	public final void setGenerateDeprecatedRequestResponse(boolean generateDeprecatedRequestResponse) {

@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.gradle.api.file.ProjectLayout;
+
 import com.graphql_java_generator.plugin.conf.CustomScalarDefinition;
 import com.graphql_java_generator.plugin.conf.GenerateCodeCommonConfiguration;
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
@@ -157,10 +159,10 @@ public class GenerateCodeCommonExtension extends CommonExtension implements Gene
 	private String springBeanSuffix = GenerateCodeCommonConfiguration.DEFAULT_SPRING_BEAN_SUFFIX;
 
 	/** The folder where the generated resources will be generated */
-	protected String targetResourceFolder = "./build/generated/resources/graphqlGradlePlugin";
+	protected File targetResourceFolder = null;
 
 	/** The folder where the source code for the generated classes will be generated */
-	protected String targetSourceFolder = "./build/generated/sources/graphqlGradlePlugin";
+	protected File targetSourceFolder = null;
 
 	/**
 	 * (since 2.0RC) If false, it uses jakarta EE8 imports (that begins by javax.). If true, it uses jakarta EE8 imports
@@ -168,13 +170,13 @@ public class GenerateCodeCommonExtension extends CommonExtension implements Gene
 	 */
 	protected boolean useJakartaEE9 = GenerateCodeCommonConfiguration.DEFAULT_USE_JAKARTA_EE9.equals("true");
 
-	public GenerateCodeCommonExtension(File projectDir) {
-		super(projectDir);
+	public GenerateCodeCommonExtension(ProjectLayout projectLayout) {
+		super(projectLayout);
 	}
 
 	@Override
 	final public boolean isCopyRuntimeSources() {
-		return this.copyRuntimeSources;
+		return copyRuntimeSources;
 	}
 
 	final public void setCopyRuntimeSources(boolean copyRuntimeSources) {
@@ -185,7 +187,7 @@ public class GenerateCodeCommonExtension extends CommonExtension implements Gene
 
 	@Override
 	final public List<CustomScalarDefinition> getCustomScalars() {
-		return this.customScalars;
+		return customScalars;
 	}
 
 	final public void setCustomScalars(CustomScalarDefinition[] customScalars) {
@@ -201,7 +203,7 @@ public class GenerateCodeCommonExtension extends CommonExtension implements Gene
 
 	@Override
 	final public String getPackageName() {
-		return this.packageName;
+		return packageName;
 	}
 
 	final public void setPackageName(String packageName) {
@@ -212,7 +214,7 @@ public class GenerateCodeCommonExtension extends CommonExtension implements Gene
 
 	@Override
 	final public QueryMutationExecutionProtocol getQueryMutationExecutionProtocol() {
-		return this.queryMutationExecutionProtocol;
+		return queryMutationExecutionProtocol;
 	}
 
 	final public void setQueryMutationExecutionProtocol(QueryMutationExecutionProtocol queryMutationExecutionProtocol) {
@@ -223,7 +225,7 @@ public class GenerateCodeCommonExtension extends CommonExtension implements Gene
 
 	@Override
 	final public boolean isSeparateUtilityClasses() {
-		return this.separateUtilityClasses;
+		return separateUtilityClasses;
 	}
 
 	final public void setSeparateUtilityClasses(boolean separateUtilityClasses) {
@@ -234,12 +236,12 @@ public class GenerateCodeCommonExtension extends CommonExtension implements Gene
 
 	@Override
 	final public String getSourceEncoding() {
-		return this.sourceEncoding;
+		return sourceEncoding;
 	}
 
 	@Override
 	final public String getSpringBeanSuffix() {
-		return this.springBeanSuffix;
+		return springBeanSuffix;
 	}
 
 	public final void setSpringBeanSuffix(String springBeanSuffix) {
@@ -256,34 +258,46 @@ public class GenerateCodeCommonExtension extends CommonExtension implements Gene
 
 	@Override
 	final public File getTargetClassFolder() {
-		return new File(this.projectDir, "build/classes/java/main");
+		return new File(getProjectBuildDir(), "classes/java/main");
 	}
 
 	@Override
 	final public File getTargetResourceFolder() {
-		return new File(this.projectDir, this.targetResourceFolder);
+		return (targetResourceFolder != null) ? targetResourceFolder
+				: new File(getProjectBuildDir(), "generated/resources/graphqlGradlePlugin");
 	}
 
+	/**
+	 * 
+	 * @param targetResourceFolder
+	 *            A folder, relative to the project dir (not the the build dir)
+	 */
 	final public void setTargetResourceFolder(String targetResourceFolder) {
-		this.targetResourceFolder = targetResourceFolder;
+		this.targetResourceFolder = new File(getProjectDir(), targetResourceFolder);
 		// This task as being configured. So we'll mark compileJava and processResources as depending on it
 		setInitialized(true);
 	}
 
 	@Override
 	final public File getTargetSourceFolder() {
-		return new File(this.projectDir, this.targetSourceFolder);
+		return (targetSourceFolder != null) ? targetSourceFolder
+				: new File(getProjectBuildDir(), "generated/sources/graphqlGradlePlugin");
 	}
 
+	/**
+	 * 
+	 * @param targetSourceFolder
+	 *            A folder, relative to the project dir (not the the build dir)
+	 */
 	final public void setTargetSourceFolder(String targetSourceFolder) {
-		this.targetSourceFolder = targetSourceFolder;
+		this.targetSourceFolder = new File(getProjectDir(), targetSourceFolder);
 		// This task as being configured. So we'll mark compileJava and processResources as depending on it
 		setInitialized(true);
 	}
 
 	@Override
 	final public boolean isUseJakartaEE9() {
-		return this.useJakartaEE9;
+		return useJakartaEE9;
 	}
 
 	final public void setUseJakartaEE9(boolean useJakartaEE9) {
@@ -294,8 +308,8 @@ public class GenerateCodeCommonExtension extends CommonExtension implements Gene
 
 	@Override
 	public File getSchemaPersonalizationFile() {
-		return (GraphQLConfiguration.DEFAULT_SCHEMA_PERSONALIZATION_FILE.equals(this.schemaPersonalizationFile)) ? null
-				: new File(this.projectDir, this.schemaPersonalizationFile);
+		return (GraphQLConfiguration.DEFAULT_SCHEMA_PERSONALIZATION_FILE.equals(schemaPersonalizationFile)) ? null
+				: new File(getProjectDir(), schemaPersonalizationFile);
 	}
 
 	public void setSchemaPersonalizationFile(String schemaPersonalizationFile) {

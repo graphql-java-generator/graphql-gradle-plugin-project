@@ -136,11 +136,57 @@ task copyPluginCodeToPlugin3(type: Copy) {
 }
 
 
-task cleanAll {
+task cleanAll(type: Delete) {
 	dependsOn clean
-	dependsOn(gradle.includedBuild('graphql-gradle-plugin').task(':clean'))
-	dependsOn(gradle.includedBuild('graphql-gradle-plugin3').task(':clean'))	
+	println("Executing cleanAll task ($rootProject.projectDir)")
+	
+	// Let's execute the default task, which will also clean the subprojects
+	delete "build/"
+	delete "buildSrc/build/"
+	delete "target/"
+	
+	// Let's clean the two plugins
+	delete "graphql-gradle-plugin/build/"
+	delete "graphql-gradle-plugin3/build/"
+	
+	// Let's loop into each subproject
+	subprojects {
+		println("  Executing cleanAll task for subproject $project.name ($project.projectDir/bin)")
+		delete "$project.projectDir/bin"
+		delete "$project.projectDir/build"
+		delete "$project.projectDir/build2"
+		delete "$project.projectDir/target"
+		delete "$project.projectDir/target2"
+	}
 }
+
+tasks.named("clean") {
+	actions.clear()
+	doLast {
+		println("Executing overrided clean task ($rootProject.projectDir)")
+		
+		// Let's execute the default task, which will also clean the subprojects
+		delete "build/"
+		delete "buildSrc/build/"
+		delete "target/"
+		delete "toto/"
+		
+		// Let's clean the two plugins
+		delete "graphql-gradle-plugin/build/"
+		delete "graphql-gradle-plugin3/build/"
+		
+		// Let's loop into each subproject
+		subprojects {
+			println("  Executing overrided clean task for subproject $project.name ($project.projectDir/bin)")
+			delete "$project.projectDir/bin"
+			delete "$project.projectDir/build"
+			delete "$project.projectDir/build2"
+			delete "$project.projectDir/target"
+			delete "$project.projectDir/target2"
+		}
+	}
+}
+
 
 task publishPlugins {
 	dependsOn(gradle.includedBuild('graphql-gradle-plugin').task(':publishPlugins'))

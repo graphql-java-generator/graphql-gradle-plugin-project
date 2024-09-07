@@ -3,11 +3,11 @@
  */
 package com.graphql_java_generator.gradleplugin;
 
-import java.io.File;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 import org.dataloader.BatchLoaderEnvironment;
+import org.gradle.api.file.ProjectLayout;
 
 import com.graphql_java_generator.plugin.conf.BatchMappingDataFetcherReturnType;
 import com.graphql_java_generator.plugin.conf.GenerateServerCodeConfiguration;
@@ -297,14 +297,14 @@ public class GenerateServerCodeExtension extends GenerateCodeCommonExtension
 	 */
 	private String scanBasePackages = GraphQLConfiguration.DEFAULT_SCAN_BASE_PACKAGES;
 
-	public GenerateServerCodeExtension(File projectDir, Packaging packaging) {
-		super(projectDir);
+	public GenerateServerCodeExtension(ProjectLayout projectLayout, Packaging packaging) {
+		super(projectLayout);
 		this.packaging = packaging;
 	}
 
 	@Override
 	public boolean isGenerateBatchLoaderEnvironment() {
-		return this.generateBatchLoaderEnvironment;
+		return generateBatchLoaderEnvironment;
 	}
 
 	public void setGenerateBatchLoaderEnvironment(boolean generateBatchLoaderEnvironment) {
@@ -315,7 +315,7 @@ public class GenerateServerCodeExtension extends GenerateCodeCommonExtension
 
 	@Override
 	public boolean isGenerateBatchMappingDataFetchers() {
-		return this.generateBatchMappingDataFetchers;
+		return generateBatchMappingDataFetchers;
 	}
 
 	public void setGenerateBatchMappingDataFetchers(boolean generateBatchMappingDataFetchers) {
@@ -326,7 +326,7 @@ public class GenerateServerCodeExtension extends GenerateCodeCommonExtension
 
 	@Override
 	public boolean isGenerateDataFetcherForEveryFieldsWithArguments() {
-		return this.generateDataFetcherForEveryFieldsWithArguments;
+		return generateDataFetcherForEveryFieldsWithArguments;
 	}
 
 	public void setGenerateDataFetcherForEveryFieldsWithArguments(
@@ -338,7 +338,7 @@ public class GenerateServerCodeExtension extends GenerateCodeCommonExtension
 
 	@Override
 	public boolean isGenerateJPAAnnotation() {
-		return this.generateJPAAnnotation;
+		return generateJPAAnnotation;
 	}
 
 	public void setGenerateJPAAnnotation(boolean generateJPAAnnotation) {
@@ -349,7 +349,7 @@ public class GenerateServerCodeExtension extends GenerateCodeCommonExtension
 
 	@Override
 	public boolean isGenerateDataLoaderForLists() {
-		return this.generateDataLoaderForLists;
+		return generateDataLoaderForLists;
 	}
 
 	public final void setGenerateDataLoaderForLists(boolean generateDataLoaderForLists) {
@@ -360,7 +360,7 @@ public class GenerateServerCodeExtension extends GenerateCodeCommonExtension
 
 	@Override
 	public BatchMappingDataFetcherReturnType getBatchMappingDataFetcherReturnType() {
-		return this.batchMappingDataFetcherReturnType;
+		return batchMappingDataFetcherReturnType;
 	}
 
 	public void setBatchMappingDataFetcherReturnType(
@@ -372,7 +372,7 @@ public class GenerateServerCodeExtension extends GenerateCodeCommonExtension
 
 	@Override
 	public String getIgnoredSpringMappings() {
-		return this.ignoredSpringMappings;
+		return ignoredSpringMappings;
 	}
 
 	public final void setIgnoredSpringMappings(String ignoredSpringMappings) {
@@ -383,7 +383,7 @@ public class GenerateServerCodeExtension extends GenerateCodeCommonExtension
 
 	@Override
 	public String getJavaTypeForIDType() {
-		return this.javaTypeForIDType;
+		return javaTypeForIDType;
 	}
 
 	public void setJavaTypeForIDType(String javaTypeForIDType) {
@@ -400,7 +400,7 @@ public class GenerateServerCodeExtension extends GenerateCodeCommonExtension
 
 	@Override
 	public Packaging getPackaging() {
-		return this.packaging;
+		return packaging;
 	}
 
 	@Override
@@ -421,7 +421,7 @@ public class GenerateServerCodeExtension extends GenerateCodeCommonExtension
 
 	@Override
 	public String getScanBasePackages() {
-		return this.scanBasePackages;
+		return scanBasePackages;
 	}
 
 	public void setScanBasePackages(String scanBasePackages) {

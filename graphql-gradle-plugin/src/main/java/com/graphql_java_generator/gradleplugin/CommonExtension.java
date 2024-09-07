@@ -7,6 +7,8 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.gradle.api.file.ProjectLayout;
+
 import com.graphql_java_generator.plugin.conf.CommonConfiguration;
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
 
@@ -27,8 +29,8 @@ public class CommonExtension implements CommonConfiguration {
 
 	private boolean initialized = false;
 
-	/** The root of the current project. This allowed to create an instance of {@link File} from a relative path */
-	protected final File projectDir;
+	/** The layout of the current project. This allowed to create an instance of {@link File} from a relative path */
+	protected final ProjectLayout projectLayout;
 
 	private String enumPrefix = CommonConfiguration.DEFAULT_PREFIX;
 	private String enumSuffix = CommonConfiguration.DEFAULT_SUFFIX;
@@ -49,8 +51,8 @@ public class CommonExtension implements CommonConfiguration {
 	private String unionPrefix = CommonConfiguration.DEFAULT_PREFIX;
 	private String unionSuffix = CommonConfiguration.DEFAULT_SUFFIX;
 
-	public CommonExtension(File projectDir) {
-		this.projectDir = projectDir;
+	public CommonExtension(ProjectLayout projectLayout) {
+		this.projectLayout = projectLayout;
 	}
 
 	/**
@@ -60,7 +62,7 @@ public class CommonExtension implements CommonConfiguration {
 	 */
 	@Override
 	public String getEnumPrefix() {
-		return this.enumPrefix;
+		return enumPrefix;
 	}
 
 	public void setEnumPrefix(String enumPrefix) {
@@ -73,7 +75,7 @@ public class CommonExtension implements CommonConfiguration {
 	 */
 	@Override
 	public String getEnumSuffix() {
-		return this.enumSuffix;
+		return enumSuffix;
 	}
 
 	public void setEnumSuffix(String enumSuffix) {
@@ -81,7 +83,7 @@ public class CommonExtension implements CommonConfiguration {
 	}
 
 	public boolean isInitialized() {
-		return this.initialized;
+		return initialized;
 	}
 
 	public void setInitialized(boolean initialized) {
@@ -95,7 +97,7 @@ public class CommonExtension implements CommonConfiguration {
 	 */
 	@Override
 	public String getInputPrefix() {
-		return this.inputPrefix;
+		return inputPrefix;
 	}
 
 	public void setInputPrefix(String inputPrefix) {
@@ -109,7 +111,7 @@ public class CommonExtension implements CommonConfiguration {
 	 */
 	@Override
 	public String getInputSuffix() {
-		return this.inputSuffix;
+		return inputSuffix;
 	}
 
 	public void setInputSuffix(String inputSuffix) {
@@ -118,7 +120,7 @@ public class CommonExtension implements CommonConfiguration {
 
 	@Override
 	public Integer getMaxTokens() {
-		return this.maxTokens;
+		return maxTokens;
 	}
 
 	public void setMaxTokens(Integer maxTokens) {
@@ -126,13 +128,18 @@ public class CommonExtension implements CommonConfiguration {
 	}
 
 	@Override
+	public File getProjectBuildDir() {
+		return projectLayout.getBuildDirectory().getAsFile().get();
+	}
+
+	@Override
 	public File getProjectDir() {
-		return this.projectDir;
+		return projectLayout.getProjectDirectory().getAsFile();
 	}
 
 	@Override
 	public File getSchemaFileFolder() {
-		return new File(this.projectDir, this.schemaFileFolder);
+		return new File(getProjectDir(), schemaFileFolder);
 	}
 
 	public final void setSchemaFileFolder(String schemaFileFolder) {
@@ -141,7 +148,7 @@ public class CommonExtension implements CommonConfiguration {
 
 	@Override
 	public String getSchemaFilePattern() {
-		return this.schemaFilePattern;
+		return schemaFilePattern;
 	}
 
 	public final void setSchemaFilePattern(String schemaFilePattern) {
@@ -150,7 +157,7 @@ public class CommonExtension implements CommonConfiguration {
 
 	@Override
 	public Map<String, String> getTemplates() {
-		return this.templates;
+		return templates;
 	}
 
 	public final void setTemplates(Map<String, String> templates) {
@@ -164,7 +171,7 @@ public class CommonExtension implements CommonConfiguration {
 	 */
 	@Override
 	public String getTypePrefix() {
-		return this.typePrefix;
+		return typePrefix;
 	}
 
 	public void setTypePrefix(String typePrefix) {
@@ -177,7 +184,7 @@ public class CommonExtension implements CommonConfiguration {
 	 */
 	@Override
 	public String getTypeSuffix() {
-		return this.typeSuffix;
+		return typeSuffix;
 	}
 
 	public void setTypeSuffix(String typeSuffix) {
@@ -191,7 +198,7 @@ public class CommonExtension implements CommonConfiguration {
 	 */
 	@Override
 	public String getUnionPrefix() {
-		return this.unionPrefix;
+		return unionPrefix;
 	}
 
 	public void setUnionPrefix(String unionPrefix) {
@@ -204,7 +211,7 @@ public class CommonExtension implements CommonConfiguration {
 	 */
 	@Override
 	public String getUnionSuffix() {
-		return this.unionSuffix;
+		return unionSuffix;
 	}
 
 	public void setUnionSuffix(String unionSuffix) {
@@ -218,7 +225,7 @@ public class CommonExtension implements CommonConfiguration {
 	 */
 	@Override
 	public String getInterfacePrefix() {
-		return this.interfacePrefix;
+		return interfacePrefix;
 	}
 
 	public void setInterfacePrefix(String interfacePrefix) {
@@ -232,7 +239,7 @@ public class CommonExtension implements CommonConfiguration {
 	 */
 	@Override
 	public String getInterfaceSuffix() {
-		return this.interfaceSuffix;
+		return interfaceSuffix;
 	}
 
 	public void setInterfaceSuffix(String interfaceSuffix) {
@@ -258,7 +265,7 @@ public class CommonExtension implements CommonConfiguration {
 	 */
 	@Override
 	public String getJsonGraphqlSchemaFilename() {
-		return this.jsonGraphqlSchemaFilename;
+		return jsonGraphqlSchemaFilename;
 	}
 
 	public void setJsonGraphqlSchemaFilename(String jsonGraphqlSchemaFilename) {
@@ -267,7 +274,7 @@ public class CommonExtension implements CommonConfiguration {
 
 	@Override
 	public boolean isAddRelayConnections() {
-		return this.addRelayConnections;
+		return addRelayConnections;
 	}
 
 	public final void setAddRelayConnections(boolean addRelayConnections) {
@@ -277,7 +284,7 @@ public class CommonExtension implements CommonConfiguration {
 	@Override
 	@Deprecated
 	public boolean isSkipGenerationIfSchemaHasNotChanged() {
-		return this.skipGenerationIfSchemaHasNotChanged;
+		return skipGenerationIfSchemaHasNotChanged;
 	}
 
 	public final void setSkipGenerationIfSchemaHasNotChanged(boolean skipGenerationIfSchemaHasNotChanged) {

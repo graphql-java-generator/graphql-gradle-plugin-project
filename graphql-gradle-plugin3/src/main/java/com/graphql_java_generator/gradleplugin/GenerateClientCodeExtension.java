@@ -1,6 +1,6 @@
 package com.graphql_java_generator.gradleplugin;
 
-import java.io.File;
+import org.gradle.api.file.ProjectLayout;
 
 import com.graphql_java_generator.plugin.conf.GenerateClientCodeConfiguration;
 import com.graphql_java_generator.plugin.conf.GraphQLConfiguration;
@@ -12,13 +12,13 @@ public class GenerateClientCodeExtension extends GenerateCodeCommonExtension
 	private boolean generateDeprecatedRequestResponse = GraphQLConfiguration.DEFAULT_GENERATE_DEPRECATED_REQUEST_RESPONSE
 			.equals("true");
 
-	public GenerateClientCodeExtension(File projectDir) {
-		super(projectDir);
+	public GenerateClientCodeExtension(ProjectLayout projectLayout) {
+		super(projectLayout);
 	}
 
 	@Override
 	public boolean isGenerateDeprecatedRequestResponse() {
-		return this.generateDeprecatedRequestResponse;
+		return generateDeprecatedRequestResponse;
 	}
 
 	public void setGenerateDeprecatedRequestResponse(boolean generateDeprecatedRequestResponse) {

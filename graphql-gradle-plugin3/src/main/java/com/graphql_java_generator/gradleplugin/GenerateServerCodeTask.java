@@ -367,8 +367,7 @@ public class GenerateServerCodeTask extends GenerateCodeCommonTask implements Ge
 	 */
 	@Inject
 	public GenerateServerCodeTask(ProjectLayout projectLayout) {
-		super(new GenerateServerCodeExtension(projectLayout.getProjectDirectory().getAsFile(), Packaging.jar),
-				projectLayout);
+		super(new GenerateServerCodeExtension(projectLayout, Packaging.jar), projectLayout);
 	}
 
 	public GenerateServerCodeTask(GenerateServerCodeExtension extension, ProjectLayout projectLayout) {
@@ -403,7 +402,7 @@ public class GenerateServerCodeTask extends GenerateCodeCommonTask implements Ge
 	@Override
 	@Input
 	public BatchMappingDataFetcherReturnType getBatchMappingDataFetcherReturnType() {
-		return getValue(this.batchMappingDataFetcherReturnType, getExtension().getBatchMappingDataFetcherReturnType());
+		return getValue(batchMappingDataFetcherReturnType, getExtension().getBatchMappingDataFetcherReturnType());
 	}
 
 	public void setBatchMappingDataFetcherReturnType(
@@ -416,7 +415,7 @@ public class GenerateServerCodeTask extends GenerateCodeCommonTask implements Ge
 	@Override
 	@Input
 	public String getIgnoredSpringMappings() {
-		return getValue(this.ignoredSpringMappings, getExtension().getIgnoredSpringMappings());
+		return getValue(ignoredSpringMappings, getExtension().getIgnoredSpringMappings());
 	}
 
 	public final void setIgnoredSpringMappings(String ignoredSpringMappings) {
@@ -428,7 +427,7 @@ public class GenerateServerCodeTask extends GenerateCodeCommonTask implements Ge
 	@Override
 	@Input
 	final public String getJavaTypeForIDType() {
-		return getValue(this.javaTypeForIDType, getExtension().getJavaTypeForIDType());
+		return getValue(javaTypeForIDType, getExtension().getJavaTypeForIDType());
 	}
 
 	public final void setJavaTypeForIDType(String javaTypeForIDType) {
@@ -447,7 +446,7 @@ public class GenerateServerCodeTask extends GenerateCodeCommonTask implements Ge
 	@Optional
 	@Override
 	public Packaging getPackaging() {
-		return getValue(this.packaging, ((GenerateServerCodeExtension) this.extension).getPackaging());
+		return getValue(packaging, ((GenerateServerCodeExtension) extension).getPackaging());
 	}
 
 	public void setPackaging(Packaging packaging) {
@@ -463,7 +462,7 @@ public class GenerateServerCodeTask extends GenerateCodeCommonTask implements Ge
 	@Input
 	@Override
 	final public String getScanBasePackages() {
-		return getValue(this.scanBasePackages, getExtension().getScanBasePackages());
+		return getValue(scanBasePackages, getExtension().getScanBasePackages());
 	}
 
 	public final void setScanBasePackages(String scanBasePackages) {
@@ -475,7 +474,7 @@ public class GenerateServerCodeTask extends GenerateCodeCommonTask implements Ge
 	@Override
 	@Input
 	final public boolean isGenerateBatchLoaderEnvironment() {
-		return getValue(this.generateBatchLoaderEnvironment, getExtension().isGenerateBatchLoaderEnvironment());
+		return getValue(generateBatchLoaderEnvironment, getExtension().isGenerateBatchLoaderEnvironment());
 	}
 
 	public final void setGenerateBatchLoaderEnvironment(boolean generateBatchLoaderEnvironment) {
@@ -487,7 +486,7 @@ public class GenerateServerCodeTask extends GenerateCodeCommonTask implements Ge
 	@Override
 	@Input
 	public boolean isGenerateBatchMappingDataFetchers() {
-		return getValue(this.generateBatchMappingDataFetchers, getExtension().isGenerateBatchMappingDataFetchers());
+		return getValue(generateBatchMappingDataFetchers, getExtension().isGenerateBatchMappingDataFetchers());
 	}
 
 	public void setGenerateBatchMappingDataFetchers(boolean generateBatchMappingDataFetchers) {
@@ -499,7 +498,7 @@ public class GenerateServerCodeTask extends GenerateCodeCommonTask implements Ge
 	@Override
 	@Input
 	final public boolean isGenerateDataFetcherForEveryFieldsWithArguments() {
-		return getValue(this.generateDataFetcherForEveryFieldsWithArguments,
+		return getValue(generateDataFetcherForEveryFieldsWithArguments,
 				getExtension().isGenerateDataFetcherForEveryFieldsWithArguments());
 	}
 
@@ -519,7 +518,7 @@ public class GenerateServerCodeTask extends GenerateCodeCommonTask implements Ge
 	@Override
 	@Input
 	final public boolean isGenerateJPAAnnotation() {
-		return getValue(this.generateJPAAnnotation, getExtension().isGenerateJPAAnnotation());
+		return getValue(generateJPAAnnotation, getExtension().isGenerateJPAAnnotation());
 	}
 
 	public final void setGenerateJPAAnnotation(boolean generateJPAAnnotation) {
@@ -531,7 +530,7 @@ public class GenerateServerCodeTask extends GenerateCodeCommonTask implements Ge
 	@Override
 	@Input
 	public boolean isGenerateDataLoaderForLists() {
-		return getValue(this.generateDataLoaderForLists, getExtension().isGenerateDataLoaderForLists());
+		return getValue(generateDataLoaderForLists, getExtension().isGenerateDataLoaderForLists());
 	}
 
 	public final void setGenerateDataLoaderForLists(boolean generateDataLoaderForLists) {

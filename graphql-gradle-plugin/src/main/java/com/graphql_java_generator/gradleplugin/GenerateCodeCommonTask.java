@@ -165,10 +165,10 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 	private String springBeanSuffix;
 
 	/** The folder where the generated resources will be generated */
-	protected String targetResourceFolder;
+	protected File targetResourceFolder;
 
 	/** The folder where the source code for the generated classes will be generated */
-	protected String targetSourceFolder;
+	protected File targetSourceFolder;
 
 	/**
 	 * (since 2.0RC) If false, it uses jakarta EE8 imports (that begins by javax.). If true, it uses jakarta EE8 imports
@@ -184,7 +184,7 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 	@Input
 	@Override
 	final public boolean isCopyRuntimeSources() {
-		return getValue(this.copyRuntimeSources, getExtension().isCopyRuntimeSources());
+		return getValue(copyRuntimeSources, getExtension().isCopyRuntimeSources());
 	}
 
 	@Internal
@@ -202,7 +202,7 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 	@Input
 	@Override
 	final public List<CustomScalarDefinition> getCustomScalars() {
-		return getValue(this.customScalars, getExtension().getCustomScalars());
+		return getValue(customScalars, getExtension().getCustomScalars());
 	}
 
 	final public void setCustomScalars(CustomScalarDefinition[] customScalars) {
@@ -222,7 +222,7 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 	@Input
 	@Override
 	final public String getPackageName() {
-		return getValue(this.packageName, getExtension().getPackageName());
+		return getValue(packageName, getExtension().getPackageName());
 	}
 
 	final public void setPackageName(String packageName) {
@@ -234,7 +234,7 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 	@Input
 	@Override
 	final public QueryMutationExecutionProtocol getQueryMutationExecutionProtocol() {
-		return getValue(this.queryMutationExecutionProtocol, getExtension().getQueryMutationExecutionProtocol());
+		return getValue(queryMutationExecutionProtocol, getExtension().getQueryMutationExecutionProtocol());
 	}
 
 	final public void setQueryMutationExecutionProtocol(QueryMutationExecutionProtocol queryMutationExecutionProtocol) {
@@ -247,7 +247,7 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 	@InputFile
 	@Optional
 	final public File getSchemaPersonalizationFile() {
-		return getFileValue(this.schemaPersonalizationFile, getExtension().getSchemaPersonalizationFile());
+		return getFileValue(schemaPersonalizationFile, getExtension().getSchemaPersonalizationFile());
 	}
 
 	public final void setSchemaPersonalizationFile(String schemaPersonalizationFile) {
@@ -259,7 +259,7 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 	@Input
 	@Override
 	public boolean isSeparateUtilityClasses() {
-		return getValue(this.separateUtilityClasses, getExtension().isSeparateUtilityClasses());
+		return getValue(separateUtilityClasses, getExtension().isSeparateUtilityClasses());
 	}
 
 	final public void setSeparateUtilityClasses(boolean separateUtilityClasses) {
@@ -271,7 +271,7 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 	@Input
 	@Override
 	final public String getSourceEncoding() {
-		return getValue(this.sourceEncoding, getExtension().getSourceEncoding());
+		return getValue(sourceEncoding, getExtension().getSourceEncoding());
 	}
 
 	final public void setSourceEncoding(String sourceEncoding) {
@@ -290,7 +290,7 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 	@Input
 	@Override
 	final public String getSpringBeanSuffix() {
-		return getValue(this.springBeanSuffix, getExtension().getSpringBeanSuffix());
+		return getValue(springBeanSuffix, getExtension().getSpringBeanSuffix());
 	}
 
 	public final void setSpringBeanSuffix(String springBeanSuffix) {
@@ -302,19 +302,24 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 	@OutputDirectory
 	@Override
 	final public File getTargetClassFolder() {
-		return new File(getProjectDir(), "build/classes/java/main");
+		return new File(getProjectBuildDir(), "classes/java/main");
 	}
 
 	@OutputDirectory
 	@Override
 	final public File getTargetResourceFolder() {
-		File file = getFileValue(this.targetResourceFolder, getExtension().getTargetResourceFolder());
+		File file = getValue(targetResourceFolder, getExtension().getTargetResourceFolder());
 		file.mkdirs();
 		return file;
 	}
 
+	/**
+	 * 
+	 * @param targetResourceFolder
+	 *            A folder, relative to the project dir (not the the build dir)
+	 */
 	final public void setTargetResourceFolder(String targetResourceFolder) {
-		this.targetResourceFolder = targetResourceFolder;
+		this.targetResourceFolder = new File(getProjectDir(), targetResourceFolder);
 		// This task as being configured. So we'll mark compileJava and processResources as depending on it
 		setInitialized(true);
 	}
@@ -322,13 +327,18 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 	@OutputDirectory
 	@Override
 	final public File getTargetSourceFolder() {
-		File file = getFileValue(this.targetSourceFolder, getExtension().getTargetSourceFolder());
+		File file = getValue(targetSourceFolder, getExtension().getTargetSourceFolder());
 		file.mkdirs();
 		return file;
 	}
 
+	/**
+	 * 
+	 * @param targetSourceFolder
+	 *            A folder, relative to the project dir (not the the build dir)
+	 */
 	final public void setTargetSourceFolder(String targetSourceFolder) {
-		this.targetSourceFolder = targetSourceFolder;
+		this.targetSourceFolder = new File(getProjectDir(), targetSourceFolder);
 		// This task as being configured. So we'll mark compileJava and processResources as depending on it
 		setInitialized(true);
 	}
@@ -336,7 +346,7 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 	@Input
 	@Override
 	public boolean isUseJakartaEE9() {
-		return getValue(this.useJakartaEE9, getExtension().isUseJakartaEE9());
+		return getValue(useJakartaEE9, getExtension().isUseJakartaEE9());
 	}
 
 	final public void setUseJakartaEE9(boolean useJakartaEE9) {

@@ -1,7 +1,8 @@
 package com.graphql_java_generator.gradleplugin;
 
-import java.io.File;
 import java.io.Serializable;
+
+import org.gradle.api.file.ProjectLayout;
 
 import com.graphql_java_generator.plugin.conf.GeneratePojoConfiguration;
 import com.graphql_java_generator.plugin.conf.PluginMode;
@@ -36,20 +37,20 @@ public class GeneratePojoExtension extends GraphQLExtension implements GenerateP
 	 */
 	Boolean generateJacksonAnnotations = null;
 
-	public GeneratePojoExtension(File projectDir) {
-		super(projectDir, null);
+	public GeneratePojoExtension(ProjectLayout projectLayout) {
+		super(projectLayout, null);
 	}
 
 	@Override
 	public boolean isGenerateJacksonAnnotations() {
-		if (this.generateJacksonAnnotations != null)
-			return this.generateJacksonAnnotations;
+		if (generateJacksonAnnotations != null)
+			return generateJacksonAnnotations;
 		else
 			return getMode().equals(PluginMode.client);
 	}
 
 	public Boolean isGenerateJacksonAnnotations_Raw() {
-		return this.generateJacksonAnnotations;
+		return generateJacksonAnnotations;
 	}
 
 	public void setGenerateJacksonAnnotations(boolean generateJacksonAnnotations) {

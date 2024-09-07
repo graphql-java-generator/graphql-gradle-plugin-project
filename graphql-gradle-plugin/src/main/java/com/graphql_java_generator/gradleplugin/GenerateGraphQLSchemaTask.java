@@ -55,7 +55,7 @@ public class GenerateGraphQLSchemaTask extends CommonTask implements GenerateGra
 	String resourceEncoding;
 
 	/** The folder where the generated GraphQL schema will be stored */
-	private String targetFolder;
+	private File targetFolder;
 
 	/**
 	 * The name of the target filename, in which the schema is generated. This file is stored in the folder, defined in
@@ -65,7 +65,7 @@ public class GenerateGraphQLSchemaTask extends CommonTask implements GenerateGra
 
 	@Inject
 	public GenerateGraphQLSchemaTask(ProjectLayout projectLayout) {
-		super(new GenerateGraphQLSchemaExtension(projectLayout.getProjectDirectory().getAsFile()), projectLayout);
+		super(new GenerateGraphQLSchemaExtension(projectLayout), projectLayout);
 	}
 
 	public GenerateGraphQLSchemaTask(GenerateGraphQLSchemaExtension extension, ProjectLayout projectLayout) {
@@ -98,7 +98,7 @@ public class GenerateGraphQLSchemaTask extends CommonTask implements GenerateGra
 	@Override
 	@Input
 	public String getResourceEncoding() {
-		return getValue(this.resourceEncoding, getExtension().getResourceEncoding());
+		return getValue(resourceEncoding, getExtension().getResourceEncoding());
 	}
 
 	public String setResourceEncoding(String resourceEncoding) {
@@ -111,16 +111,21 @@ public class GenerateGraphQLSchemaTask extends CommonTask implements GenerateGra
 	@Override
 	@InputDirectory
 	public File getTargetFolder() {
-		File file = getFileValue(this.targetFolder, getExtension().getTargetFolder());
+		File file = getValue(targetFolder, getExtension().getTargetFolder());
 		file.mkdirs();
 		return file;
 	}
 
+	/**
+	 * 
+	 * @param targetFolder
+	 *            A folder, relative to the project dir (not the the build dir)
+	 */
 	public void setTargetFolder(String targetFolder) {
-		// Let's create the folder now, so that it exists when if any other task needs it, during configuration time
-		new File(getProjectDir(), targetFolder).mkdirs();
+		this.targetFolder = new File(getProjectDir(), targetFolder);
 
-		this.targetFolder = targetFolder;
+		// Let's create the folder now, so that it exists when if any other task needs it, during configuration time
+		this.targetFolder.mkdirs();
 
 		// This task as being configured. So we'll mark compileJava and processResources as depending on it
 		setInitialized(true);
@@ -129,7 +134,7 @@ public class GenerateGraphQLSchemaTask extends CommonTask implements GenerateGra
 	@Override
 	@Input
 	public String getTargetSchemaFileName() {
-		return getValue(this.targetSchemaFileName, getExtension().getTargetSchemaFileName());
+		return getValue(targetSchemaFileName, getExtension().getTargetSchemaFileName());
 	}
 
 	public void setTargetSchemaFileName(String targetSchemaFileName) {

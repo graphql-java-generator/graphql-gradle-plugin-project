@@ -27,12 +27,12 @@ public class GenerateGraphQLSchemaTaskTest {
 
 	@BeforeEach
 	void setup() {
-		this.projectDir = new File(".");
-		this.project = ProjectBuilder.builder().withName(PROJECT_NAME).withProjectDir(this.projectDir).build();
-		this.extension = new GenerateGraphQLSchemaExtension(this.project.getProjectDir());
-		this.task = spy(this.project.getTasks().register("task", GenerateGraphQLSchemaTask.class).get());
-		this.task.setExtension(this.extension);
-		doReturn(this.extension).when(this.task).getExtension();
+		projectDir = new File(".");
+		project = ProjectBuilder.builder().withName(PROJECT_NAME).withProjectDir(projectDir).build();
+		extension = new GenerateGraphQLSchemaExtension(project.getLayout());
+		task = spy(project.getTasks().register("task", GenerateGraphQLSchemaTask.class).get());
+		task.setExtension(extension);
+		doReturn(extension).when(task).getExtension();
 	}
 
 	/**
@@ -43,12 +43,11 @@ public class GenerateGraphQLSchemaTaskTest {
 	 */
 	@Test
 	void test_noExtension() throws IOException {
-		assertEquals(GenerateGraphQLSchemaConfiguration.DEFAULT_RESOURCE_ENCODING, this.task.getResourceEncoding());
-		assertEquals(
-				new File(this.projectDir, GenerateGraphQLSchemaConfiguration.DEFAULT_TARGET_FOLDER).getCanonicalPath(),
-				this.task.getTargetFolder().getCanonicalPath());
+		assertEquals(GenerateGraphQLSchemaConfiguration.DEFAULT_RESOURCE_ENCODING, task.getResourceEncoding());
+		assertEquals(new File(projectDir, GenerateGraphQLSchemaConfiguration.DEFAULT_TARGET_FOLDER).getCanonicalPath(),
+				task.getTargetFolder().getCanonicalPath());
 		assertEquals(GenerateGraphQLSchemaConfiguration.DEFAULT_TARGET_SCHEMA_FILE_NAME,
-				this.task.getTargetSchemaFileName());
+				task.getTargetSchemaFileName());
 	}
 
 	/**
@@ -60,17 +59,17 @@ public class GenerateGraphQLSchemaTaskTest {
 	@Test
 	void test_withExtensionValues() throws IOException {
 		// Preparation
-		this.extension.setResourceEncoding("UTF 666");
-		this.extension.setTargetFolder("anotherFolder");
-		this.extension.setTargetSchemaFileName("a.file.txt");
+		extension.setResourceEncoding("UTF 666");
+		extension.setTargetFolder("anotherFolder");
+		extension.setTargetSchemaFileName("a.file.txt");
 
 		// Go, go, go
 
 		// Verification
-		assertEquals("UTF 666", this.task.getResourceEncoding());
-		assertEquals(new File(this.projectDir, "anotherFolder").getCanonicalPath(),
-				this.task.getTargetFolder().getCanonicalPath());
-		assertEquals("a.file.txt", this.task.getTargetSchemaFileName());
+		assertEquals("UTF 666", task.getResourceEncoding());
+		assertEquals(new File(projectDir, "anotherFolder").getCanonicalPath(),
+				task.getTargetFolder().getCanonicalPath());
+		assertEquals("a.file.txt", task.getTargetSchemaFileName());
 	}
 
 	/**
@@ -81,17 +80,17 @@ public class GenerateGraphQLSchemaTaskTest {
 	@Test
 	void test_withTaskValues() throws IOException {
 		// Preparation
-		this.extension.setResourceEncoding("UTF 666");
-		this.extension.setTargetFolder("anotherFolder");
-		this.extension.setTargetSchemaFileName("a.file.txt");
+		extension.setResourceEncoding("UTF 666");
+		extension.setTargetFolder("anotherFolder");
+		extension.setTargetSchemaFileName("a.file.txt");
 
 		// Go, go, go
 
 		// Verification
-		assertEquals("UTF 666", this.task.getResourceEncoding());
-		assertEquals(new File(this.projectDir, "anotherFolder").getCanonicalPath(),
-				this.task.getTargetFolder().getCanonicalPath());
-		assertEquals("a.file.txt", this.task.getTargetSchemaFileName());
+		assertEquals("UTF 666", task.getResourceEncoding());
+		assertEquals(new File(projectDir, "anotherFolder").getCanonicalPath(),
+				task.getTargetFolder().getCanonicalPath());
+		assertEquals("a.file.txt", task.getTargetSchemaFileName());
 	}
 
 }
