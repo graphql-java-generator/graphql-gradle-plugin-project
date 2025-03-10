@@ -19,6 +19,7 @@ public class GenerateGraphQLSchemaTaskTest {
 
 	static final String PROJECT_NAME = "A Dummy project";
 	File projectDir;
+	File buildDir;
 	Project project;
 	GenerateGraphQLSchemaExtension extension;
 
@@ -28,6 +29,7 @@ public class GenerateGraphQLSchemaTaskTest {
 	@BeforeEach
 	void setup() {
 		projectDir = new File(".");
+		buildDir = new File(projectDir, "build");
 		project = ProjectBuilder.builder().withName(PROJECT_NAME).withProjectDir(projectDir).build();
 		extension = new GenerateGraphQLSchemaExtension(project.getLayout());
 		task = spy(project.getTasks().register("task", GenerateGraphQLSchemaTask.class).get());
@@ -44,7 +46,7 @@ public class GenerateGraphQLSchemaTaskTest {
 	@Test
 	void test_noExtension() throws IOException {
 		assertEquals(GenerateGraphQLSchemaConfiguration.DEFAULT_RESOURCE_ENCODING, task.getResourceEncoding());
-		assertEquals(new File(projectDir, GenerateGraphQLSchemaConfiguration.DEFAULT_TARGET_FOLDER).getCanonicalPath(),
+		assertEquals(new File(buildDir, GenerateGraphQLSchemaConfiguration.DEFAULT_TARGET_FOLDER).getCanonicalPath(),
 				task.getTargetFolder().getCanonicalPath());
 		assertEquals(GenerateGraphQLSchemaConfiguration.DEFAULT_TARGET_SCHEMA_FILE_NAME,
 				task.getTargetSchemaFileName());

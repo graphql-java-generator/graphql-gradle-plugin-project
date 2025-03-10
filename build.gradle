@@ -81,10 +81,8 @@ subprojects {
 			group = "Preparation"
 			description = "Copy the sources from the GraphQL maven plugin to the Gradle plugin"
 
-			doLast {
-				println "copy from: " + System.properties['graphqlGradlePlugin.graphqlMavenPluginProject.path'] +'/graphql-maven-plugin-samples/' + project.name.replace('gradle', 'maven')
-				println "copy into: ${project.projectDir}"
-			}
+			println "copy from: " + System.properties['graphqlGradlePlugin.graphqlMavenPluginProject.path'] +'/graphql-maven-plugin-samples/' + project.name.replace('gradle', 'maven')
+			println "copy into: ${project.projectDir}"
 							
 			// Please set the systemProp.graphqlGradlePlugin.graphqlMavenPluginProject.path in the gradle.properties to the
 			// full path for the graphql-maven-plugin-project folder
