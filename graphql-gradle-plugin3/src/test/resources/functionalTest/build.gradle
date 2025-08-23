@@ -1,5 +1,5 @@
 plugins {
-	id 'com.graphql-java-generator.graphql-gradle-plugin'
+	id 'com.graphql-java-generator.graphql-gradle-plugin3'
 }
 
 generateClientPojo {

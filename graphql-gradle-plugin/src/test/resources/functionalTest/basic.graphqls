@@ -1,7 +1,0 @@
-type Query {
-    getMsg: Message!
-}
-
-type Message {
-	msg: String!
-}

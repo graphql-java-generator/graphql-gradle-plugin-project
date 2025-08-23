@@ -49,17 +49,17 @@ public class GraphQLDirectiveTest {
 		}
 
 		ExpectedDirective withParamName(String paramName) {
-			this.parameterNames.add(paramName);
+			parameterNames.add(paramName);
 			return this;
 		}
 
 		ExpectedDirective withParamType(String paramType) {
-			this.parameterTypes.add(paramType);
+			parameterTypes.add(paramType);
 			return this;
 		}
 
 		ExpectedDirective withParamValue(String paramValue) {
-			this.parameterValues.add(paramValue);
+			parameterValues.add(paramValue);
 			return this;
 		}
 	};
@@ -212,18 +212,21 @@ public class GraphQLDirectiveTest {
 				Arrays.asList("getName", "setName"));
 	}
 
+	@SuppressWarnings("static-method")
 	@Disabled
 	@Test
 	void testGraphQLDirective_onScalars() {
 		fail("No GraphQLDirective on scalar yet");
 	}
 
+	@SuppressWarnings("static-method")
 	@Disabled
 	@Test
 	void testGraphQLDirective_onSchema() {
 		fail("No GraphQLDirective on schema yet");
 	}
 
+	@SuppressWarnings("static-method")
 	@Test
 	void testGraphQLDirective_onObjetTypeAndFieldsAndGettersSetters() throws Exception {
 
@@ -237,6 +240,10 @@ public class GraphQLDirectiveTest {
 								.withParamValue(
 										"on Object\n With a line feed\\\n and a carriage return.\n It also contains 'strange' characters, to check the plugin behavior: \\'\"}])({[\\"), //
 						new ExpectedDirective("@anotherTestDirective"),
+						new ExpectedDirective("@aRepeatableDirective").withParamName("str").withParamType("String!")
+								.withParamValue("repetition 1"), //
+						new ExpectedDirective("@aRepeatableDirective").withParamName("str").withParamType("String!")
+								.withParamValue("repetition 2"), //
 						new ExpectedDirective("@testExtendKeyword").withParamName("msg").withParamType("String")
 								.withParamValue("comes from type extension")), //
 				CTP_AllFieldCases_CTS.class);
@@ -264,6 +271,7 @@ public class GraphQLDirectiveTest {
 				"id");
 	}
 
+	@SuppressWarnings("static-method")
 	@Test
 	void testGraphQLDirective_onUnions() {
 		checkClassDirective(//
@@ -287,14 +295,14 @@ public class GraphQLDirectiveTest {
 	 *            may be null
 	 * @param cls
 	 */
-	private void checkClassDirective(List<ExpectedDirective> expectedDirectives, Class<?> cls) {
+	private static void checkClassDirective(List<ExpectedDirective> expectedDirectives, Class<?> cls) {
 		checkDirectiveAnnotationList(//
 				expectedDirectives, //
 				cls.getAnnotationsByType(GraphQLDirective.class), //
 				"class " + cls.getName());
 	}
 
-	private void checkEnumValueDirective(List<ExpectedDirective> expectedDirectives, String valueName,
+	private static void checkEnumValueDirective(List<ExpectedDirective> expectedDirectives, String valueName,
 			Class<? extends Enum<?>> enumClass) throws Exception {
 		checkDirectiveAnnotationList(//
 				expectedDirectives, //
@@ -312,7 +320,7 @@ public class GraphQLDirectiveTest {
 	 *            The names of the method to check. If several methods have match this name, each of them will be
 	 *            tested. If <i>cls/<i> have no method of any of these method names, then this check fails.
 	 */
-	private void checkMethodDirective(List<ExpectedDirective> expectedDirectives, Class<?> cls,
+	private static void checkMethodDirective(List<ExpectedDirective> expectedDirectives, Class<?> cls,
 			List<String> methodNames) {
 		for (String methodName : methodNames) {
 			boolean found = false;
@@ -343,8 +351,8 @@ public class GraphQLDirectiveTest {
 	 * @throws Exception
 	 *             when the attribute doesn't exist, or is not acessible
 	 */
-	private void checkAttributeDirective(List<ExpectedDirective> expectedDirectives, Class<?> cls, String attributeName)
-			throws Exception {
+	private static void checkAttributeDirective(List<ExpectedDirective> expectedDirectives, Class<?> cls,
+			String attributeName) throws Exception {
 		Field field = cls.getDeclaredField(attributeName);
 
 		checkDirectiveAnnotationList(//
@@ -365,7 +373,7 @@ public class GraphQLDirectiveTest {
 	 * @param parameterName
 	 *            If any of these methods doesn't have any argument of this name, then this check fails.
 	 */
-	private void checkMethodArgumentDirective(List<ExpectedDirective> expectedDirectives, Class<?> cls,
+	private static void checkMethodArgumentDirective(List<ExpectedDirective> expectedDirectives, Class<?> cls,
 			List<String> methodNames, String parameterName) {
 		for (String methodName : methodNames) {
 			boolean foundMethod = false;
@@ -401,45 +409,35 @@ public class GraphQLDirectiveTest {
 		} // for(methodName)
 	}
 
-	private void checkDirectiveAnnotationList(List<ExpectedDirective> expectedDirectives,
+	private static void checkDirectiveAnnotationList(List<ExpectedDirective> expectedDirectives,
 			GraphQLDirective[] annotations, String src) {
 		checkDirectiveAnnotationList(expectedDirectives, Arrays.asList(annotations), src);
 	}
 
-	private void checkDirectiveAnnotationList(List<ExpectedDirective> expectedDirectives,
+	private static void checkDirectiveAnnotationList(List<ExpectedDirective> expectedDirectives,
 			List<GraphQLDirective> annotations, String src) {
-		if (expectedDirectives == null)
+		if (expectedDirectives == null) {
 			expectedDirectives = new ArrayList<>();
-
+		}
 		assertEquals(expectedDirectives.size(), annotations.size(), "Nb of @GraphQLDirective for " + src);
 
 		// Ok the number of annotations is correct. Let's loop and check the annotation list content
-		boolean found;
-		for (ExpectedDirective expectedDirective : expectedDirectives) {
-			found = false;
-			for (GraphQLDirective annotation : annotations) {
-				if (annotation.name().equals(expectedDirective.name)) {
-					found = true;
-					assertlistOfStringIsEqual(expectedDirective.parameterNames,
-							Arrays.asList(annotation.parameterNames()),
-							"check of parameterNames of " + annotation.name() + " for " + src);
-					assertlistOfStringIsEqual(expectedDirective.parameterTypes,
-							Arrays.asList(annotation.parameterTypes()),
-							"check of parameterTypes of " + annotation.name() + " for " + src);
-					assertlistOfStringIsEqual(expectedDirective.parameterValues,
-							Arrays.asList(annotation.parameterValues()),
-							"check of parameterValues of " + annotation.name() + " for " + src);
-				}
-			} // for
+		// Since GraphQL 2021, the directives must remain in the GraphQL schema order
+		for (int i = 0; i < expectedDirectives.size(); i += 1) {
+			ExpectedDirective expectedDirective = expectedDirectives.get(i);
+			GraphQLDirective annotation = annotations.get(i);
 
-			// We should have found the directive in the expected list
-			assertTrue(found, "The expected " + expectedDirective.name
-					+ " directive is missing in the @GraphQLDirective of the " + src);
-
-		}
+			assertEquals(expectedDirective.name, annotation.name());
+			assertlistOfStringIsEqual(expectedDirective.parameterNames, Arrays.asList(annotation.parameterNames()),
+					"check of parameterNames of " + annotation.name() + " for " + src);
+			assertlistOfStringIsEqual(expectedDirective.parameterTypes, Arrays.asList(annotation.parameterTypes()),
+					"check of parameterTypes of " + annotation.name() + " for " + src);
+			assertlistOfStringIsEqual(expectedDirective.parameterValues, Arrays.asList(annotation.parameterValues()),
+					"check of parameterValues of " + annotation.name() + " for " + src);
+		} // for
 	}
 
-	private void assertlistOfStringIsEqual(List<String> expected, List<String> actual, String src) {
+	static private void assertlistOfStringIsEqual(List<String> expected, List<String> actual, String src) {
 		if (expected == null || expected.size() == 0) {
 			assertTrue(actual == null || actual.size() == 0,
 					"if one list is null, both should be null or empty (" + src + ")");

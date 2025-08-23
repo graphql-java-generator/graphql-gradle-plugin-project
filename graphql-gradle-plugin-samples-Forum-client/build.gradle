@@ -2,11 +2,13 @@ plugins {
 	id 'java'
 	id 'application'
 	id 'com.graphql-java-generator.graphql-gradle-plugin3'
-	id 'org.springframework.boot' version "${spring3_springBootVersion}"
-	id 'io.spring.dependency-management' version "${spring3_DependencyManagementPluginVersion}"
+	id 'org.springframework.boot' version "${springBootVersion}"
+	id 'io.spring.dependency-management' version "${springDependencyManagementPluginVersion}"
 }
-sourceCompatibility = '17'
-mainClassName = 'com.graphql_java_generator.samples.forum.SpringMain'
+
+application {
+    mainClass.set('com.graphql_java_generator.samples.forum.SpringMain')
+}
  
 repositories {
 	mavenCentral()

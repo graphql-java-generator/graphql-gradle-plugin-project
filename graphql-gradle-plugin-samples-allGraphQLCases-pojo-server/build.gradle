@@ -1,6 +1,6 @@
 plugins {
 	id 'java-library'
-	id 'com.graphql-java-generator.graphql-gradle-plugin'
+	id 'com.graphql-java-generator.graphql-gradle-plugin3'
 	id 'org.springframework.boot' version "${springBootVersion}"
 	id 'io.spring.dependency-management' version "${springDependencyManagementPluginVersion}"
 }
@@ -22,7 +22,7 @@ repositories {
 
 dependencies {
 	// And the Jackson annotations
-	implementation "com.fasterxml.jackson.core:jackson-databind"
+	implementation "com.graphql-java-generator:graphql-java-client-dependencies:${project.version}"
     // This project uses some custom scalars from the graphql-java-extended-scalars module
     implementation "com.graphql-java:graphql-java-extended-scalars:${graphqlJavaExtendedScalarsVersion}"
 
@@ -90,4 +90,5 @@ tasks.register('generateServerPojo', com.graphql_java_generator.gradleplugin.Gen
 test {
 	// enable JUnit Platform (a.k.a. JUnit 5) support
 	useJUnitPlatform()
+	failOnNoDiscoveredTests=false // There is no tests there. We just want to check that the test code compiles
 }

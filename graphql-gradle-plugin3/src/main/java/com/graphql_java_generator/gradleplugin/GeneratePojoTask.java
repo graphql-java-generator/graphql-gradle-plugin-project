@@ -4,11 +4,11 @@
 package com.graphql_java_generator.gradleplugin;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 
 import javax.inject.Inject;
 
 import org.gradle.api.Project;
-import org.gradle.api.UncheckedIOException;
 import org.gradle.api.file.ProjectLayout;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.TaskAction;
@@ -55,13 +55,49 @@ import com.graphql_java_generator.plugin.generate_code.GenerateCodeGenerator;
  * serialize and unserialize the GraphQL POJO to and from JSON. And the <I>CustomJacksonDeserializers</I> utility class
  * is generated, that allows to deserialize custom scalars and arrays.</LI>
  * </UL>
- * <P>
- * To avoid to add plugin dependencies, the recommended value for copyRuntimeSources is true. Please note that the
- * default value changed from true to false since 2.0.
  * </P>
  * <P>
- * In other word, since 2.0, it is a recommended to set the copyRuntimeSources plugin parameter to true.
+ * If <B>false</B> (default value since 2.0, recommended), you must add the runtime dependency, for the client or
+ * server, depending on the <code>mode</code> parameter you choosed. So the needed dependency would one of these two:
  * </P>
+ * 
+ * <PRE>
+		<dependency>
+			<groupId>com.graphql-java-generator</groupId>
+			<artifactId>graphql-java-client-runtime</artifactId>
+			<version>${graphql-plugin.version}</version>
+		</dependency>
+ * </PRE>
+ * 
+ * <PRE>
+		<dependency>
+			<groupId>com.graphql-java-generator</groupId>
+			<artifactId>graphql-java-server-runtime</artifactId>
+			<version>${graphql-plugin.version}</version>
+		</dependency>
+ * </PRE>
+ * <P>
+ * If <B>true</B>, you must add the runtime dependency, for the client or server, depending on the <code>mode</code>
+ * parameter you choosed. So the needed dependency would one of these two:
+ * </P>
+ * 
+ * <PRE>
+		<dependency>
+			<groupId>com.graphql-java-generator</groupId>
+			<artifactId>graphql-java-client-dependencies</artifactId>
+			<type>pom</type>
+			<version>${graphql-plugin.version}</version>
+		</dependency>
+ * </PRE>
+ * 
+ * <PRE>
+		<dependency>
+			<groupId>com.graphql-java-generator</groupId>
+			<artifactId>graphql-java-server-dependencies</artifactId>
+			<type>pom</type>
+			<version>${graphql-plugin.version}</version>
+		</dependency>
+ * </PRE>
  * 
  * @author EtienneSF
  */

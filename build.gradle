@@ -11,7 +11,6 @@ buildscript {
     	//
     	// Of course, for a real use of the plugin in your project, you'll have to replace by the last plugin's version,
     	// or better: put this version number in the gradle.properties file, to use it for both the plugin and the dependencies version
-        classpath 'com.graphql-java-generator:graphql-gradle-plugin:dummy'
         classpath 'com.graphql-java-generator:graphql-gradle-plugin3:dummy'
     }
 }
@@ -21,35 +20,39 @@ plugins {
 	id 'org.asciidoctor.convert' version '1.5.6' apply false
 	
 	// The GraphQL plugin is activated here only to check its version
-	id 'com.graphql-java-generator.graphql-gradle-plugin'
 	id 'com.graphql-java-generator.graphql-gradle-plugin3'
 }
 
 
 // Let's get the group and version for this project
-//apply from: 'graphql-gradle-plugin/gradle.properties'
+//apply from: 'graphql-gradle-plugin3/gradle.properties'
 
-def graphQLplugin = getPlugins().getPlugin('com.graphql-java-generator.graphql-gradle-plugin')
-if (graphQLplugin == null) {
-	throw new ProjectConfigurationException("[Internal error] The GraphQL plugin should have been added to the main build")
-}
 def graphQLplugin3 = getPlugins().getPlugin('com.graphql-java-generator.graphql-gradle-plugin3')
 if (graphQLplugin3 == null) {
 	throw new ProjectConfigurationException("[Internal error] The GraphQL plugin 3 should have been added to the main build")
 }
-println "graphQLplugin version is " + graphQLplugin.getVersion()
 println "graphQLplugin3 version is " + graphQLplugin3.getVersion()
 println "project version is ${project.version}" 
-if (graphQLplugin.getVersion() != "${project.version}") {
-	throw new GradleException(
-		"The plugin version and the project version should be identical, but plugin version is '"
-			+ graphQLplugin.getVersion()+ "' whereas the project version is '${project.version}'")
-}
 if (graphQLplugin3.getVersion() != "${project.version}") {
 	throw new GradleException(
 		"The plugin3 version and the project version should be identical, but plugin version is '"
 			+ graphQLplugin3.getVersion()+ "' whereas the project version is '${project.version}'")
 }
+
+
+/**
+ * This task checks that the configuration is ok to execute the copySamplesFromMavenPlugin on sub projects
+ */
+tasks.register('copySamplesFromMavenPlugin')
+tasks.named('copySamplesFromMavenPlugin') {
+	doFirst {
+		if (System.properties['graphqlGradlePlugin.graphqlMavenPluginProject.path'] == null) {
+			throw new GradleException(
+				"The 'graphqlGradlePlugin.graphqlMavenPluginProject.path' system property must be defined. For more information, see https://github.com/graphql-java-generator/graphql-maven-plugin-project/wiki/internal_howto_release#how-to-release-the-gradle-plugin");
+		}
+	}
+}
+
 
 subprojects {
 
@@ -77,13 +80,8 @@ subprojects {
 			}
 		}
 
-		task copySamplesFromMavenPlugin(type: Copy) {
-			group = "Preparation"
-			description = "Copy the sources from the GraphQL maven plugin to the Gradle plugin"
-
-			println "copy from: " + System.properties['graphqlGradlePlugin.graphqlMavenPluginProject.path'] +'/graphql-maven-plugin-samples/' + project.name.replace('gradle', 'maven')
-			println "copy into: ${project.projectDir}"
-							
+		tasks.register('copySamplesFromMavenPlugin', Copy)
+		tasks.named('copySamplesFromMavenPlugin', Copy) {							
 			// Please set the systemProp.graphqlGradlePlugin.graphqlMavenPluginProject.path in the gradle.properties to the
 			// full path for the graphql-maven-plugin-project folder
 			// OR IGNORE IF YOU JUST BUILD THE GRADLE PLUGIN as a standalone
@@ -96,6 +94,14 @@ subprojects {
 		    
 		    dependsOn cleanSamplesCode
 		    mustRunAfter cleanSamplesCode
+
+			doFirst {
+				group = "Preparation"
+				description = "Copy the sources from the GraphQL maven plugin to the Gradle plugin"
+	
+				println "copy from: " + System.properties['graphqlGradlePlugin.graphqlMavenPluginProject.path'] +'/graphql-maven-plugin-samples/' + project.name.replace('gradle', 'maven')
+				println "copy into: ${project.projectDir}"
+			}
 		}
 	}
 }
@@ -112,49 +118,32 @@ task cleanPlugin3Code() {
 		delete 'graphql-gradle-plugin3/src'
 	}
 }
-/**
- * This task copies the code and dependencies version (in the gradle.properties file) from this project into the graphql-gradle-plugin3 folder  
- */
-task copyPluginCodeToPlugin3(type: Copy) {
-	group = 'Preparation'
-	description = 'Copy the plugin code from the graphql-gradle-plugin to the graphql-gradle-plugin3 folder'
 
-	doLast {
-		println 'Coping the src folder (and gradle.properties) from graphql-gradle-plugin to graphql-gradle-plugin3'
-	}
-						
-    from('graphql-gradle-plugin') {
-    	include "gradle.properties"
-	    include "src/**"
-    }
-    into 'graphql-gradle-plugin3'
-
-    dependsOn cleanPlugin3Code
-    mustRunAfter cleanPlugin3Code
-}
-
-
-task cleanAll(type: Delete) {
+tasks.register('cleanAll', Delete)
+tasks.named('cleanAll', Delete) {
 	dependsOn clean
-	println("Executing cleanAll task ($rootProject.projectDir)")
 	
-	// Let's execute the default task, which will also clean the subprojects
-	delete "build/"
-	delete "buildSrc/build/"
-	delete "target/"
-	
-	// Let's clean the two plugins
-	delete "graphql-gradle-plugin/build/"
-	delete "graphql-gradle-plugin3/build/"
-	
-	// Let's loop into each subproject
-	subprojects {
-		println("  Executing cleanAll task for subproject $project.name ($project.projectDir/bin)")
-		delete "$project.projectDir/bin"
-		delete "$project.projectDir/build"
-		delete "$project.projectDir/build2"
-		delete "$project.projectDir/target"
-		delete "$project.projectDir/target2"
+	doLast {
+		println("Executing cleanAll task ($rootProject.projectDir)")
+		
+		// Let's execute the default task, which will also clean the subprojects
+		delete "build/"
+		delete "buildSrc/build/"
+		delete "target/"
+		
+		// Let's clean the two plugins
+		delete "graphql-gradle-plugin/build/"
+		delete "graphql-gradle-plugin3/build/"
+		
+		// Let's loop into each subproject
+		subprojects {
+			println("  Executing cleanAll task for subproject $project.name ($project.projectDir/bin)")
+			delete "$project.projectDir/bin"
+			delete "$project.projectDir/build"
+			delete "$project.projectDir/build2"
+			delete "$project.projectDir/target"
+			delete "$project.projectDir/target2"
+		}
 	}
 }
 
@@ -187,7 +176,6 @@ tasks.named("clean") {
 
 
 task publishPlugins {
-	dependsOn(gradle.includedBuild('graphql-gradle-plugin').task(':publishPlugins'))
 	dependsOn(gradle.includedBuild('graphql-gradle-plugin3').task(':publishPlugins'))	
 }
 
@@ -253,7 +241,7 @@ task stopForumServer(type: StopApp) {
 task startAuthorizationServer(type: StartApp) {
 	// Let's start the server that matches the current client project
 	jarFile = file("graphql-gradle-plugin-samples-OAuth-authorization-server/build/libs/graphql-gradle-plugin-samples-OAuth-authorization-server-${project.version}.jar")
-	url = 'http://localhost:8181/helloworld.html'
+	url = 'http://localhost:8181/helloWorld'
 
 	// The next lines insures that the relevant server project is built before starting the integration test from this client module.
 	dependsOn ":graphql-gradle-plugin-samples-OAuth-authorization-server:bootJar"

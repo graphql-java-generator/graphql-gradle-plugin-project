@@ -8,7 +8,6 @@
  */
 
 pluginManagement {
-	includeBuild 'graphql-gradle-plugin'
 	includeBuild 'graphql-gradle-plugin3'
 }
 

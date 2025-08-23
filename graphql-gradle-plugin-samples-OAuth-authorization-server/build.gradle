@@ -1,7 +1,7 @@
 plugins {
 	id 'java-library'
 	id 'application'
-	id 'com.graphql-java-generator.graphql-gradle-plugin'
+	id 'com.graphql-java-generator.graphql-gradle-plugin3'
 	id 'org.springframework.boot' version "${springBootVersion}"
 	id 'io.spring.dependency-management' version "${springDependencyManagementPluginVersion}"
 }
@@ -17,10 +17,6 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-web"
     implementation "org.springframework.boot:spring-boot-starter-security"
     implementation "org.springframework.security:spring-security-oauth2-authorization-server:${oauth2AuthorizationServerVersion}"
-    
-    // Dependencies mandatory to build with java 17
-    implementation "com.sun.xml.bind:jaxb-impl:${jaxbImplVersion}"
-    implementation "com.sun.xml.messaging.saaj:saaj-impl:${saajImplVersion}"
     
 	// Dependencies for tests
 	testImplementation "org.springframework.boot:spring-boot-starter-test"

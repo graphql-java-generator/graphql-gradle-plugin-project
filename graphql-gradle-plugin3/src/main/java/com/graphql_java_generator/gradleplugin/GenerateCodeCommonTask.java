@@ -171,8 +171,13 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 	protected File targetSourceFolder;
 
 	/**
-	 * (since 2.0RC) If false, it uses jakarta EE8 imports (that begins by javax.). If true, it uses jakarta EE8 imports
-	 * (that begins by jakarta.).
+	 * <P>
+	 * (since 2.0RC1) If false, it uses jakarta EE8 imports (that begins by javax.). If true, it uses jakarta EE8
+	 * imports (that begins by jakarta.).
+	 * </P>
+	 * <P>
+	 * (since 3.0) The parameter is ignored. Its value is always true.
+	 * </P>
 	 */
 	protected Boolean useJakartaEE9;
 
