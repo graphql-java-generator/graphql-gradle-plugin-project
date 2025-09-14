@@ -172,8 +172,6 @@ public class GenerateServerCodeExtension extends GenerateCodeCommonExtension
 	 * This parameter is available since version 2.5. Its default value is false in 2.x versions for backward
 	 * compatibility with existing implementations based on the plugin. But the <b>recommended value is true</b>.
 	 * </P>
-	 * 
-	 * @return
 	 */
 	public boolean generateDataFetcherForEveryFieldsWithArguments = GenerateServerCodeConfiguration.DEFAULT_GENERATE_DATA_FETCHER_FOR_EVERY_FIELD_WITH_ARGUMENT
 			.equals("true");

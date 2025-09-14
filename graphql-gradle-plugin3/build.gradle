@@ -19,10 +19,11 @@ buildscript {
 }
 
 plugins {
-  id "com.gradle.plugin-publish" version '1.2.0'
-  id "java-gradle-plugin"
-  id 'maven-publish'
-  id "eclipse" // For use of this project within eclipse. For refresh, use: gradlew cleanEclipse eclipse
+	id "com.gradle.plugin-publish" version '1.2.0'
+	id "java-gradle-plugin"
+	id 'maven-publish'
+	id "eclipse" // For use of this project within eclipse. For refresh, use: gradlew cleanEclipse eclipse
+	id 'io.spring.dependency-management' version "${springDependencyManagementPluginVersion}"
 }
 
 // The publishing bloc is used to publish on localhost, and allow to test the plugin that will be published,
@@ -59,16 +60,24 @@ dependencies {
 	implementation "org.springframework:spring-context:${springFrameworkVersion}"
 
 	// Dependencies for tests
-	testImplementation("org.springframework.boot:spring-boot-starter-test:${springBootVersion}"){
+	testImplementation("org.springframework.boot:spring-boot-starter-test:${springBootVersion}") {
 		exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
 		exclude group: 'org.slf4j', module: 'slf4j-api'
 	}
+	testImplementation platform("org.junit:junit-bom:${junitVersion}")
+	testImplementation "org.junit.jupiter:junit-jupiter"
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 compileJava {
-    sourceCompatibility = 21
-    targetCompatibility = 21
+    sourceCompatibility = "${javaVersion}"
+    targetCompatibility = "${javaVersion}"
+    options.encoding = "UTF-8"
 }
+compileTestJava {
+	options.encoding = "UTF-8"
+}
+
 
 tasks.withType(JavaCompile) {
     options.compilerArgs += ['-Xlint:deprecation']
@@ -82,10 +91,8 @@ processResources {
 }
 
 test {
+	// enable JUnit Platform (a.k.a. JUnit 5) support
 	useJUnitPlatform()
-	testLogging {
-		events "passed", "skipped", "failed"
-	}
 }
 
 gradlePlugin {

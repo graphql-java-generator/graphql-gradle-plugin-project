@@ -8,7 +8,6 @@ import java.io.IOException;
 import javax.inject.Inject;
 
 import org.gradle.api.Project;
-import org.gradle.api.UncheckedIOException;
 import org.gradle.api.file.ProjectLayout;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.Internal;
@@ -125,7 +124,7 @@ public class GraphQLGenerateCodeTask extends GenerateServerCodeTask implements G
 			logger.debug("Finished generation of java classes from graphqls files (5)");
 
 		} catch (IOException e) {
-			throw new UncheckedIOException(e.getMessage(), e);
+			throw new RuntimeException(e.getMessage(), e);
 		}
 	}
 

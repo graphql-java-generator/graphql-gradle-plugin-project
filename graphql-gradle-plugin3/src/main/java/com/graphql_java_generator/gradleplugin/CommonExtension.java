@@ -43,6 +43,7 @@ public class CommonExtension implements CommonConfiguration {
 	private boolean addRelayConnections = CommonConfiguration.DEFAULT_ADD_RELAY_CONNECTIONS.equals("true");
 	private String schemaFileFolder = GraphQLConfiguration.DEFAULT_SCHEMA_FILE_FOLDER;
 	private String schemaFilePattern = GraphQLConfiguration.DEFAULT_SCHEMA_FILE_PATTERN;
+	private String targetSchemaSubFolder = GraphQLConfiguration.DEFAULT_TARGET_SCHEMA_SUBFOLDER;
 	private boolean skipGenerationIfSchemaHasNotChanged = CommonConfiguration.DEFAULT_SKIP_GENERATION_IF_SCHEMA_HAS_NOT_CHANGED
 			.equals("true");
 	private Map<String, String> templates = new HashMap<>();
@@ -138,8 +139,22 @@ public class CommonExtension implements CommonConfiguration {
 	}
 
 	@Override
+	public File getProjectMainSourceFolder() {
+		return new File(getProjectDir(), "src/main/java");
+	}
+
+	@Override
 	public File getSchemaFileFolder() {
 		return new File(getProjectDir(), schemaFileFolder);
+	}
+
+	@Override
+	public String getTargetSchemaSubFolder() {
+		return targetSchemaSubFolder;
+	}
+
+	public void setTargetSchemaSubFolder(String targetSchemaSubFolder) {
+		this.targetSchemaSubFolder = targetSchemaSubFolder;
 	}
 
 	public final void setSchemaFileFolder(String schemaFileFolder) {

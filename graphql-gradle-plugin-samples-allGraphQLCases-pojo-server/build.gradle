@@ -37,6 +37,7 @@ tasks.register('generateServerPojo', com.graphql_java_generator.gradleplugin.Gen
 	mode = 'server'
 	packageName = 'org.allGraphQLCases.server.pojo'
 	schemaFileFolder = '../graphql-gradle-plugin-samples-allGraphQLCases-client/src/graphqls/allGraphQLCases'
+	targetSchemaSubFolder = 'graphql_schema'
 	customScalars = [ [
 			graphQLTypeName: "Base64String",
 			javaType: "byte[]",

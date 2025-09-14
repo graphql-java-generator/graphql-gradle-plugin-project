@@ -3,6 +3,7 @@ plugins {
 	id 'com.graphql-java-generator.graphql-gradle-plugin3'
 	id 'org.springframework.boot' version "${springBootVersion}"
 	id 'io.spring.dependency-management' version "${springDependencyManagementPluginVersion}"
+	id 'org.gradlex.extra-java-module-info' version "${extraJavaModuleInfoVersion}" 
 }
 
 repositories {
@@ -30,6 +31,39 @@ dependencies {
 	testImplementation "org.springframework.boot:spring-boot-starter-test"
 }
 
+// There is an issue with dozer under gradle. We need to define the dozer Java Module "ourselves":
+extraJavaModuleInfo {
+    module("com.github.dozermapper:dozer-core", "dozer.core") {
+    	exports('com.github.dozermapper.core')
+    }
+    module('commons-beanutils:commons-beanutils', 'org.apache.commons.beanutils') {
+        exports('org.apache.commons.beanutils')
+        requires('org.apache.commons.logging')
+    }
+    module('commons-collections:commons-collections', 'org.apache.commons.collections') {
+        exports('org.apache.commons.collections')
+    }
+    module('com.github.stephenc.jcip:jcip-annotations', 'jcip.annotations') {
+        exports('net.jcip.annotations')
+    }
+
+    module('net.minidev:json-smart', 'net.minidev.json.smart') {
+        exports('net.minidev.json')
+    }
+    module('org.awaitility:awaitility', 'org.awaitility') {
+        exports('org.awaitility')
+    }
+    module('org.skyscreamer:jsonassert', 'org.skyscreamer.jsonassert') {
+        exports('org.skyscreamer.jsonassert')
+    }
+    module('net.minidev:accessors-smart', 'net.minidev.accessors.smart') {
+        exports('net.minidev.accessor')
+    }
+    module('com.vaadin.external.google:android-json', 'com.vaadin.external.google.android.json') {
+        exports('org.json')
+    }
+}
+
 // The line below adds the generated sources as a java source folder, in the IDE
 sourceSets.main.java.srcDirs += '/build/generated/sources/graphqlGradlePlugin'
 sourceSets.main.resources.srcDirs += '/build/generated/resources/graphqlGradlePlugin'
@@ -45,6 +79,7 @@ generateServerCodeConf {
 	separateUtilityClasses = false
 	schemaFileFolder = '../graphql-gradle-plugin-samples-allGraphQLCases-client/src/graphqls/allGraphQLCases'
 	schemaPersonalizationFile = '/src/main/graphql/schema_personalization.json'
+	targetSchemaSubFolder = 'graphql_schema'
 
 	// prefixes and suffixes for the generated POJOs	
 	inputPrefix = "SINP_"
@@ -64,8 +99,8 @@ generateServerCodeConf {
 			graphQLScalarTypeStaticField: "com.graphql_java_generator.customscalars.GraphQLScalarTypeBase64String.GraphQLBase64String"
 		], [
 			graphQLTypeName: "CustomId",
-			javaType: "com.generated.graphql.samples.customscalar.CustomId",
-			graphQLScalarTypeStaticField: "com.generated.graphql.samples.customscalar.GraphQLScalarTypeCustomId.CustomIdScalarType"
+			javaType: "com.generated.graphql.samples.customscalars.CustomId",
+			graphQLScalarTypeStaticField: "com.generated.graphql.samples.customscalars.GraphQLScalarTypeCustomId.CustomIdScalarType"
 		], [
 			graphQLTypeName: "MyCustomScalarForADate",
 			javaType: "java.util.Date",
@@ -77,7 +112,7 @@ generateServerCodeConf {
 		], [
 			graphQLTypeName: "else",
 			javaType: "java.lang.String",
-			graphQLScalarTypeGetter: "org.allGraphQLCases.server.impl.GraphQLScalarTypeElse.getElseScalar()"
+			graphQLScalarTypeGetter: "com.generated.graphql.samples.customscalars.GraphQLScalarTypeElse.getElseScalar()"
 		], [
 			graphQLTypeName: "JSON",
 			javaType: "com.fasterxml.jackson.databind.node.ObjectNode",
@@ -85,7 +120,7 @@ generateServerCodeConf {
 		], [
 			graphQLTypeName: "MyBoolean",
 			javaType: "java.lang.Boolean",
-			graphQLScalarTypeGetter: "com.generated.graphql.samples.customscalar.GraphQLScalarTypeMyBoolean.MyBooleanScalarType"
+			graphQLScalarTypeGetter: "com.generated.graphql.samples.customscalars.GraphQLScalarTypeMyBoolean.MyBooleanScalarType"
 		], [
 			graphQLTypeName: "Long",
 			javaType: "java.lang.Long",

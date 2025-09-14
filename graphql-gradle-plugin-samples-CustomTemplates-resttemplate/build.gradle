@@ -1,5 +1,14 @@
 
-
 plugins {
 	id 'java-library'
 }
+
+compileJava {
+    sourceCompatibility = "${javaVersion}"
+    targetCompatibility = "${javaVersion}"
+    options.encoding = "UTF-8"
+}
+compileTestJava {
+	options.encoding = "UTF-8"
+}
+

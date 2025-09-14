@@ -41,6 +41,7 @@ dependencies {
 
 	// Dependencies for tests
 	testImplementation "org.springframework.boot:spring-boot-starter-test"
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 // The default build dir is changed, to check the plugin compatibility with this change
@@ -101,7 +102,7 @@ tasks.register('generateClientCodeAllGraphQLCases', com.graphql_java_generator.g
 		], [
 			graphQLTypeName: "else",
 			javaType: "java.lang.String",
-			graphQLScalarTypeGetter: "org.allGraphQLCases.demo.GraphQLScalarTypeElse.getElseScalar()"
+			graphQLScalarTypeGetter: "com.generated.customscalars.GraphQLScalarTypeElse.getElseScalar()"
 		], [
 			graphQLTypeName: "JSON",
 			javaType: "com.fasterxml.jackson.databind.node.ObjectNode",
@@ -157,7 +158,7 @@ tasks.register('generateClientCodeAllGraphQLCases2', com.graphql_java_generator.
 		], [
 			graphQLTypeName: "else",
 			javaType: "java.lang.String",
-			graphQLScalarTypeGetter: "org.allGraphQLCases.demo.GraphQLScalarTypeElse.getElseScalar()"
+			graphQLScalarTypeGetter: "com.generated.customscalars.GraphQLScalarTypeElse.getElseScalar()"
 		], [
 			graphQLTypeName: "JSON",
 			javaType: "com.fasterxml.jackson.databind.node.ObjectNode",

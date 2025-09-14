@@ -2,8 +2,10 @@
 .gradle
 
 # Ignore Gradle build output directory
-build/
-userHome/
+**/build/
+**/build2/
+**/target/
+**/target2/
 
 # Ignore jvm dump files
 /*.hprof
@@ -16,7 +18,12 @@ logs/
 **.log
 
 # Ignore eclipse files
-.settings/
-.classpath
-.project
-bin/
+**/.settings/
+**/.classpath
+**/.project
+**/bin/
+
+
+# Ignore VSCode files
+**/.vscode
+**/userHome/
