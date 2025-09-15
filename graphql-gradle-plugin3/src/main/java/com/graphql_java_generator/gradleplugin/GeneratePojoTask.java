@@ -188,7 +188,7 @@ public class GeneratePojoTask extends GraphQLGenerateCodeTask implements Generat
 
 	public void setGenerateJacksonAnnotations(boolean generateJacksonAnnotations) {
 		this.generateJacksonAnnotations = generateJacksonAnnotations;
-		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		// This task is now configured. So we'll mark compileJava and processResources as depending on it
 		setInitialized(true);
 	}
 

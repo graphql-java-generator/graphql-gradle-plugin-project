@@ -37,6 +37,8 @@ sourceSets.main.resources.srcDirs += '/build/generated/resources/graphqlGradlePl
 generateServerCodeConf {
 	batchMappingDataFetcherReturnType = "FLUX"
 	generateBatchMappingDataFetchers = true
+	// generateDataFetcherForEveryFieldsWithArguments should be true (default value). It's set here to false for integration tests
+	generateDataFetcherForEveryFieldsWithArguments = false
 	generateDataLoaderForLists = true
 	generateJPAAnnotation = true
 	javaTypeForIDType = "java.lang.Long"

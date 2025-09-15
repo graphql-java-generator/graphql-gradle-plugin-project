@@ -102,7 +102,7 @@ public class GenerateGraphQLSchemaTask extends CommonTask implements GenerateGra
 	}
 
 	public String setResourceEncoding(String resourceEncoding) {
-		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		// This task is now configured. So we'll mark compileJava and processResources as depending on it
 		setInitialized(true);
 
 		return this.resourceEncoding = resourceEncoding;
@@ -127,7 +127,7 @@ public class GenerateGraphQLSchemaTask extends CommonTask implements GenerateGra
 		// Let's create the folder now, so that it exists when if any other task needs it, during configuration time
 		this.targetFolder.mkdirs();
 
-		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		// This task is now configured. So we'll mark compileJava and processResources as depending on it
 		setInitialized(true);
 	}
 
@@ -139,7 +139,7 @@ public class GenerateGraphQLSchemaTask extends CommonTask implements GenerateGra
 
 	public void setTargetSchemaFileName(String targetSchemaFileName) {
 		this.targetSchemaFileName = targetSchemaFileName;
-		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		// This task is now configured. So we'll mark compileJava and processResources as depending on it
 		setInitialized(true);
 	}
 

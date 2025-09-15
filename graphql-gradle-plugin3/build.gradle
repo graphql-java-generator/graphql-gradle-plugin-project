@@ -69,9 +69,12 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of("${javaVersion}")
+    }
+}
 compileJava {
-    sourceCompatibility = "${javaVersion}"
-    targetCompatibility = "${javaVersion}"
     options.encoding = "UTF-8"
 }
 compileTestJava {

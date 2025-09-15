@@ -212,6 +212,10 @@ public class GenerateServerCodeTask extends GenerateCodeCommonTask implements Ge
 	 * easy access to the field's parameters.
 	 * </P>
 	 * <P>
+	 * This parameter is <b>forced to true</b> when the <code>generateBatchMappingDataFetchers</code> parameter is set
+	 * to <i>true</i>.
+	 * </P>
+	 * <P>
 	 * With this argument to false, the data fetchers are generated only for field which type is a type (not a scalar or
 	 * an enum), and for the query, mutation and subscription types.
 	 * </P>
@@ -220,9 +224,13 @@ public class GenerateServerCodeTask extends GenerateCodeCommonTask implements Ge
 	 * scalar or an enum) <b><i>or</i></b> that has one or arguments
 	 * </P>
 	 * <P>
-	 * This parameter is available since version 2.5. Its default value is false in 2.x versions for backward
-	 * compatibility with existing implementations based on the plugin. But the <b>recommended value is true</b>.
+	 * This parameter is available since version 2.5:
 	 * </P>
+	 * <UL>
+	 * <LI>From 2.5 to 3.0: Default value is false in 2.x versions for backward compatibility with existing
+	 * implementations based on the plugin. But the <b>recommended value is true</b>.</LI>
+	 * <LI>From 3.0.1: Default value is true</LI>
+	 * </UL>
 	 */
 	private Boolean generateDataFetcherForEveryFieldsWithArguments;
 
@@ -408,7 +416,7 @@ public class GenerateServerCodeTask extends GenerateCodeCommonTask implements Ge
 	public void setBatchMappingDataFetcherReturnType(
 			BatchMappingDataFetcherReturnType batchMappingDataFetcherReturnType) {
 		this.batchMappingDataFetcherReturnType = batchMappingDataFetcherReturnType;
-		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		// This task is now configured. So we'll mark compileJava and processResources as depending on it
 		setInitialized(true);
 	}
 
@@ -420,7 +428,7 @@ public class GenerateServerCodeTask extends GenerateCodeCommonTask implements Ge
 
 	public final void setIgnoredSpringMappings(String ignoredSpringMappings) {
 		this.ignoredSpringMappings = ignoredSpringMappings;
-		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		// This task is now configured. So we'll mark compileJava and processResources as depending on it
 		setInitialized(true);
 	}
 
@@ -432,7 +440,7 @@ public class GenerateServerCodeTask extends GenerateCodeCommonTask implements Ge
 
 	public final void setJavaTypeForIDType(String javaTypeForIDType) {
 		this.javaTypeForIDType = javaTypeForIDType;
-		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		// This task is now configured. So we'll mark compileJava and processResources as depending on it
 		setInitialized(true);
 	}
 
@@ -467,7 +475,7 @@ public class GenerateServerCodeTask extends GenerateCodeCommonTask implements Ge
 
 	public final void setScanBasePackages(String scanBasePackages) {
 		this.scanBasePackages = scanBasePackages;
-		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		// This task is now configured. So we'll mark compileJava and processResources as depending on it
 		setInitialized(true);
 	}
 
@@ -479,7 +487,7 @@ public class GenerateServerCodeTask extends GenerateCodeCommonTask implements Ge
 
 	public final void setGenerateBatchLoaderEnvironment(boolean generateBatchLoaderEnvironment) {
 		this.generateBatchLoaderEnvironment = generateBatchLoaderEnvironment;
-		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		// This task is now configured. So we'll mark compileJava and processResources as depending on it
 		setInitialized(true);
 	}
 
@@ -491,7 +499,7 @@ public class GenerateServerCodeTask extends GenerateCodeCommonTask implements Ge
 
 	public void setGenerateBatchMappingDataFetchers(boolean generateBatchMappingDataFetchers) {
 		this.generateBatchMappingDataFetchers = generateBatchMappingDataFetchers;
-		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		// This task is now configured. So we'll mark compileJava and processResources as depending on it
 		setInitialized(true);
 	}
 
@@ -505,7 +513,7 @@ public class GenerateServerCodeTask extends GenerateCodeCommonTask implements Ge
 	public final void setGenerateDataFetcherForEveryFieldsWithArguments(
 			boolean generateDataFetcherForEveryFieldsWithArguments) {
 		this.generateDataFetcherForEveryFieldsWithArguments = generateDataFetcherForEveryFieldsWithArguments;
-		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		// This task is now configured. So we'll mark compileJava and processResources as depending on it
 		setInitialized(true);
 	}
 
@@ -523,7 +531,7 @@ public class GenerateServerCodeTask extends GenerateCodeCommonTask implements Ge
 
 	public final void setGenerateJPAAnnotation(boolean generateJPAAnnotation) {
 		this.generateJPAAnnotation = generateJPAAnnotation;
-		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		// This task is now configured. So we'll mark compileJava and processResources as depending on it
 		setInitialized(true);
 	}
 
@@ -535,7 +543,7 @@ public class GenerateServerCodeTask extends GenerateCodeCommonTask implements Ge
 
 	public final void setGenerateDataLoaderForLists(boolean generateDataLoaderForLists) {
 		this.generateDataLoaderForLists = generateDataLoaderForLists;
-		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		// This task is now configured. So we'll mark compileJava and processResources as depending on it
 		setInitialized(true);
 	}
 

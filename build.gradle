@@ -49,6 +49,18 @@ tasks.named('copySamplesFromMavenPlugin') {
 	}
 }
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of("${javaVersion}")
+    }
+}
+compileJava {
+    options.encoding = "UTF-8"
+}
+compileTestJava {
+	options.encoding = "UTF-8"
+}
+
 
 // Let's set some parameters and tasks that are common to all sub projects
 subprojects {
@@ -59,9 +71,12 @@ subprojects {
         options.compilerArgs << '-parameters'
     }	
 
+	java {
+	    toolchain {
+	        languageVersion = JavaLanguageVersion.of("${javaVersion}")
+	    }
+	}
 	compileJava {
-	    sourceCompatibility = "${javaVersion}"
-	    targetCompatibility = "${javaVersion}"
 	    options.encoding = "UTF-8"
 	}
 	compileTestJava {

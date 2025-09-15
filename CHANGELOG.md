@@ -3,8 +3,38 @@
 
 # Breaking changes to come with the 3.x releases
 
-* The default value for `generateDataFetcherForEveryFieldsWithArguments` will be changed to true, which makes more Data Fetchers to implement
+* The default value for `generateDataFetcherForEveryFieldsWithArguments` be changed to true in version 3.0.1. This implies to implement more Data Fetchers
+* The com.graphql-java-generator.graphql-gradle-plugin is no more maintained
+    * You must switch to the com.graphql-java-generator.graphql-gradle-plugin3 plugin. That is: add '3' to the plugin's name
 
+# 3.x versions
+
+
+## 3.0.1
+
+Gradle plugin:
+* The plugin would need java 21, and not 17 as indicated
+
+server mode:
+* The default value for `generateDataFetcherForEveryFieldsWithArguments` is now true, as announced for the  3.x versions
+
+
+## 3.0
+
+
+All modes (client and server) :
+* The plugin now needs at least Java 17
+* Upgrade of all dependencies: spring boot 3.5.4, graphql-java 24.0, ...
+* Usage of JPMS (Java Platform Module System): the `graphql-java-client-runtime` and `graphql-java-server-runtime` are now java modules
+    * Caution: due to java naming rules, in the module names, the 'minus' have been changed into underscores. The module names are:
+        * com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_client_runtime
+        * com.graphql_java_generator.graphql_maven_plugin_project.graphql_java_server_runtime
+Gradle:
+* Upgrade of gradle wrapper to 9.0.0
+* The com.graphql-java-generator.graphql-gradle-plugin is no more maintained
+    * You must switch to the com.graphql-java-generator.graphql-gradle-plugin3 plugin. That is: add '3' to the plugin's name
+    
+    
 
 # 2.x versions
 
@@ -22,6 +52,19 @@
     * [server mode] When the `generateDataLoaderForLists` plugin parameter is set to true, the plugin no more generates two methods per field (for field that return lists)
         * Two methods in `DataFetchersDelegateXxx`: one with the `DataLoader` parameter, that is used by the controller, and one without the `DataLoader` parameter, that is not used. The useless method is no more generated. This may result in compilation error, if the `@Override` method was added: you would then have to remove the implementation for this useless method.
 
+
+## Not released yet
+
+All modes (client and server):
+* Added full support for the GraphQL 2021 specification:
+    * The plugin now properly manages repeatable directives
+    * Support added for the standard `@specifiedBy` annotation
+    * interface hierarchy was already implemented (an interface may implement another one)
+    * Added tests, to be sure that directives are in the correct order
+
+Internal:
+* Java version for the forum samples changed to 17 
+* Various enhancements on the web site
 
 ## 2.9
 

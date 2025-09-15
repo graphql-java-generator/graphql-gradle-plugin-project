@@ -73,7 +73,6 @@ sourceSets.main.resources.srcDirs += '/build/generated/resources/graphqlGradlePl
 generateServerCodeConf {
 	addRelayConnections = true
 	generateBatchLoaderEnvironment = true
-	generateDataFetcherForEveryFieldsWithArguments = true
 	ignoredSpringMappings = " Bar140 , IBar140 Character.name MyQueryType.checkOverriddenController "
 	packageName = 'org.allGraphQLCases.server'
 	separateUtilityClasses = false

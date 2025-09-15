@@ -300,7 +300,7 @@ public class CommonTask extends DefaultTask implements CommonConfiguration {
 
 	final public void setAddRelayConnections(Boolean addRelayConnections) {
 		this.addRelayConnections = addRelayConnections;
-		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		// This task is now configured. So we'll mark compileJava and processResources as depending on it
 		setInitialized(true);
 	}
 
@@ -445,7 +445,7 @@ public class CommonTask extends DefaultTask implements CommonConfiguration {
 
 	public void setParserOptions(Integer maxTokens) {
 		this.maxTokens = maxTokens;
-		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		// This task is now configured. So we'll mark compileJava and processResources as depending on it
 		setInitialized(true);
 	}
 
@@ -571,7 +571,7 @@ public class CommonTask extends DefaultTask implements CommonConfiguration {
 
 	final public void setSkipGenerationIfSchemaHasNotChanged(boolean skipGenerationIfSchemaHasNotChanged) {
 		this.skipGenerationIfSchemaHasNotChanged = skipGenerationIfSchemaHasNotChanged;
-		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		// This task is now configured. So we'll mark compileJava and processResources as depending on it
 		setInitialized(true);
 	}
 
@@ -584,7 +584,7 @@ public class CommonTask extends DefaultTask implements CommonConfiguration {
 
 	final public void setSchemaFileFolder(String schemaFileFolder) {
 		this.schemaFileFolder = schemaFileFolder;
-		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		// This task is now configured. So we'll mark compileJava and processResources as depending on it
 		setInitialized(true);
 	}
 
@@ -596,7 +596,7 @@ public class CommonTask extends DefaultTask implements CommonConfiguration {
 
 	final public void setSchemaFilePattern(String schemaFilePattern) {
 		this.schemaFilePattern = schemaFilePattern;
-		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		// This task is now configured. So we'll mark compileJava and processResources as depending on it
 		setInitialized(true);
 	}
 
@@ -608,7 +608,7 @@ public class CommonTask extends DefaultTask implements CommonConfiguration {
 
 	final public void setTemplates(Map<String, String> templates) {
 		this.templates = templates;
-		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		// This task is now configured. So we'll mark compileJava and processResources as depending on it
 		setInitialized(true);
 	}
 
@@ -629,7 +629,7 @@ public class CommonTask extends DefaultTask implements CommonConfiguration {
 	}
 
 	/**
-	 * When initialized is set to true, this marks this task as being configured. So we'll mark compileJava and
+	 * When initialized is set to true, this marks This task is now configured. So we'll mark compileJava and
 	 * processResources as depending on it.
 	 * 
 	 * @param initialized

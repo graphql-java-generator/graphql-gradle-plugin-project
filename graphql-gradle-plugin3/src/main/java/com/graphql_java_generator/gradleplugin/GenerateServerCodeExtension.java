@@ -307,7 +307,7 @@ public class GenerateServerCodeExtension extends GenerateCodeCommonExtension
 
 	public void setGenerateBatchLoaderEnvironment(boolean generateBatchLoaderEnvironment) {
 		this.generateBatchLoaderEnvironment = generateBatchLoaderEnvironment;
-		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		// This task is now configured. So we'll mark compileJava and processResources as depending on it
 		setInitialized(true);
 	}
 
@@ -318,7 +318,7 @@ public class GenerateServerCodeExtension extends GenerateCodeCommonExtension
 
 	public void setGenerateBatchMappingDataFetchers(boolean generateBatchMappingDataFetchers) {
 		this.generateBatchMappingDataFetchers = generateBatchMappingDataFetchers;
-		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		// This task is now configured. So we'll mark compileJava and processResources as depending on it
 		setInitialized(true);
 	}
 
@@ -330,7 +330,7 @@ public class GenerateServerCodeExtension extends GenerateCodeCommonExtension
 	public void setGenerateDataFetcherForEveryFieldsWithArguments(
 			boolean generateDataFetcherForEveryFieldsWithArguments) {
 		this.generateDataFetcherForEveryFieldsWithArguments = generateDataFetcherForEveryFieldsWithArguments;
-		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		// This task is now configured. So we'll mark compileJava and processResources as depending on it
 		setInitialized(true);
 	}
 
@@ -341,7 +341,7 @@ public class GenerateServerCodeExtension extends GenerateCodeCommonExtension
 
 	public void setGenerateJPAAnnotation(boolean generateJPAAnnotation) {
 		this.generateJPAAnnotation = generateJPAAnnotation;
-		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		// This task is now configured. So we'll mark compileJava and processResources as depending on it
 		setInitialized(true);
 	}
 
@@ -352,7 +352,7 @@ public class GenerateServerCodeExtension extends GenerateCodeCommonExtension
 
 	public final void setGenerateDataLoaderForLists(boolean generateDataLoaderForLists) {
 		this.generateDataLoaderForLists = generateDataLoaderForLists;
-		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		// This task is now configured. So we'll mark compileJava and processResources as depending on it
 		setInitialized(true);
 	}
 
@@ -364,7 +364,7 @@ public class GenerateServerCodeExtension extends GenerateCodeCommonExtension
 	public void setBatchMappingDataFetcherReturnType(
 			BatchMappingDataFetcherReturnType batchMappingDataFetcherReturnType) {
 		this.batchMappingDataFetcherReturnType = batchMappingDataFetcherReturnType;
-		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		// This task is now configured. So we'll mark compileJava and processResources as depending on it
 		setInitialized(true);
 	}
 
@@ -375,7 +375,7 @@ public class GenerateServerCodeExtension extends GenerateCodeCommonExtension
 
 	public final void setIgnoredSpringMappings(String ignoredSpringMappings) {
 		this.ignoredSpringMappings = ignoredSpringMappings;
-		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		// This task is now configured. So we'll mark compileJava and processResources as depending on it
 		setInitialized(true);
 	}
 
@@ -386,7 +386,7 @@ public class GenerateServerCodeExtension extends GenerateCodeCommonExtension
 
 	public void setJavaTypeForIDType(String javaTypeForIDType) {
 		this.javaTypeForIDType = javaTypeForIDType;
-		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		// This task is now configured. So we'll mark compileJava and processResources as depending on it
 		setInitialized(true);
 	}
 
@@ -424,7 +424,7 @@ public class GenerateServerCodeExtension extends GenerateCodeCommonExtension
 
 	public void setScanBasePackages(String scanBasePackages) {
 		this.scanBasePackages = scanBasePackages;
-		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		// This task is now configured. So we'll mark compileJava and processResources as depending on it
 		setInitialized(true);
 	}
 

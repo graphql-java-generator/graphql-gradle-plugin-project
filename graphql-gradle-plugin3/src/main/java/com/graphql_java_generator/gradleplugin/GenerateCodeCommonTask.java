@@ -200,7 +200,7 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 
 	final public void setCopyRuntimeSources(boolean copyRuntimeSources) {
 		this.copyRuntimeSources = copyRuntimeSources;
-		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		// This task is now configured. So we'll mark compileJava and processResources as depending on it
 		setInitialized(true);
 	}
 
@@ -212,7 +212,7 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 
 	final public void setCustomScalars(CustomScalarDefinition[] customScalars) {
 		this.customScalars = Arrays.asList(customScalars);
-		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		// This task is now configured. So we'll mark compileJava and processResources as depending on it
 		setInitialized(true);
 	}
 
@@ -232,7 +232,7 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 
 	final public void setPackageName(String packageName) {
 		this.packageName = packageName;
-		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		// This task is now configured. So we'll mark compileJava and processResources as depending on it
 		setInitialized(true);
 	}
 
@@ -244,7 +244,7 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 
 	final public void setQueryMutationExecutionProtocol(QueryMutationExecutionProtocol queryMutationExecutionProtocol) {
 		this.queryMutationExecutionProtocol = queryMutationExecutionProtocol;
-		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		// This task is now configured. So we'll mark compileJava and processResources as depending on it
 		setInitialized(true);
 	}
 
@@ -257,7 +257,7 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 
 	public final void setSchemaPersonalizationFile(String schemaPersonalizationFile) {
 		this.schemaPersonalizationFile = schemaPersonalizationFile;
-		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		// This task is now configured. So we'll mark compileJava and processResources as depending on it
 		setInitialized(true);
 	}
 
@@ -269,7 +269,7 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 
 	final public void setSeparateUtilityClasses(boolean separateUtilityClasses) {
 		this.separateUtilityClasses = separateUtilityClasses;
-		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		// This task is now configured. So we'll mark compileJava and processResources as depending on it
 		setInitialized(true);
 	}
 
@@ -281,7 +281,7 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 
 	final public void setSourceEncoding(String sourceEncoding) {
 		this.sourceEncoding = sourceEncoding;
-		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		// This task is now configured. So we'll mark compileJava and processResources as depending on it
 		setInitialized(true);
 	}
 
@@ -300,7 +300,7 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 
 	public final void setSpringBeanSuffix(String springBeanSuffix) {
 		this.springBeanSuffix = springBeanSuffix;
-		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		// This task is now configured. So we'll mark compileJava and processResources as depending on it
 		setInitialized(true);
 	}
 
@@ -325,7 +325,7 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 	 */
 	final public void setTargetResourceFolder(String targetResourceFolder) {
 		this.targetResourceFolder = new File(getProjectDir(), targetResourceFolder);
-		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		// This task is now configured. So we'll mark compileJava and processResources as depending on it
 		setInitialized(true);
 	}
 
@@ -344,7 +344,7 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 	 */
 	final public void setTargetSourceFolder(String targetSourceFolder) {
 		this.targetSourceFolder = new File(getProjectDir(), targetSourceFolder);
-		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		// This task is now configured. So we'll mark compileJava and processResources as depending on it
 		setInitialized(true);
 	}
 
@@ -356,7 +356,7 @@ public class GenerateCodeCommonTask extends CommonTask implements GenerateCodeCo
 
 	final public void setUseJakartaEE9(boolean useJakartaEE9) {
 		this.useJakartaEE9 = useJakartaEE9;
-		// This task as being configured. So we'll mark compileJava and processResources as depending on it
+		// This task is now configured. So we'll mark compileJava and processResources as depending on it
 		setInitialized(true);
 	}
 
