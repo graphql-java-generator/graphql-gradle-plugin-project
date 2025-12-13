@@ -13,11 +13,6 @@ pluginManagement {
 
 rootProject.name = 'graphql-gradle-plugin-project'
 
-// graphql-gradle-plugin-samples-CustomTemplates-resttemplate must be built first
-// And, as we consume the resulting jar in the buildsrc section, it seems mandatory to build it as a separate build 
-// (see the graphql-gradle-plugin-samples-allGraphQLCases-client subproject for its use)
-includeBuild 'graphql-gradle-plugin-samples-CustomTemplates-resttemplate'
-
 include 'graphql-gradle-plugin-samples-allGraphQLCases-client'
 include 'graphql-gradle-plugin-samples-allGraphQLCases-pojo-client'
 include 'graphql-gradle-plugin-samples-allGraphQLCases-pojo-client-jackson'

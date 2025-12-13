@@ -35,19 +35,41 @@ if (graphQLplugin3.getVersion() != "${project.version}") {
 			+ graphQLplugin3.getVersion()+ "' whereas the project version is '${project.version}'")
 }
 
+task cleanSamplesCode() {
+	group = "Preparation"
+	description = "Delete the ${customTemplateMavenFolder} folder (to allow fresh copy of the sources from the GraphQL maven sample code)"
 
-/**
- * This task checks that the configuration is ok to execute the copySamplesFromMavenPlugin on sub projects
- */
-tasks.register('copySamplesFromMavenPlugin')
-tasks.named('copySamplesFromMavenPlugin') {
-	doFirst {
-		if (System.properties['graphqlGradlePlugin.graphqlMavenPluginProject.path'] == null) {
-			throw new GradleException(
-				"The 'graphqlGradlePlugin.graphqlMavenPluginProject.path' system property must be defined. For more information, see https://github.com/graphql-java-generator/graphql-maven-plugin-project/wiki/internal_howto_release#how-to-release-the-gradle-plugin");
-		}
+	// The action for this task is to delete the customTemplateMavenFolder folder (defined in the properties file)
+	doLast {
+		println "Deleting folder: ${customTemplateGradleFolder}"
+		delete "${customTemplateGradleFolder}/*"
 	}
 }
+
+task copySamplesFromMavenPlugin(type: Copy) {							
+	// Please set the systemProp.graphqlGradlePlugin.graphqlMavenPluginProject.path in the gradle.properties to the
+	// full path for the graphql-maven-plugin-project folder
+	// OR IGNORE IF YOU JUST BUILD THE GRADLE PLUGIN as a standalone
+	// 
+	// Let's the source files from the graphql-maven-plugin-samples-XXX folder into the current project
+	group = "Preparation"
+	description = "copy the custom templates from the maven graphql-maven-plugin-samples-CustomTemplates-resttemplate project into the ${customTemplateGradleFolder} folder"
+
+	// doNotTrackState('Copy fails if Gradle tracks this task\'s state.')
+	doFirst {
+		println "copy from: " + System.properties['graphqlGradlePlugin.graphqlMavenPluginProject.path'] + "${customTemplateMavenFolder}"
+		println "copy into: ${customTemplateGradleFolder}"
+	}
+
+    from(System.properties['graphqlGradlePlugin.graphqlMavenPluginProject.path'] + "${customTemplateMavenFolder}") {
+    	include "**"
+    }
+    into "${customTemplateGradleFolder}"
+    
+    dependsOn cleanSamplesCode
+    mustRunAfter cleanSamplesCode
+}
+
 
 java {
     toolchain {
@@ -103,6 +125,9 @@ subprojects {
 
 		tasks.register('copySamplesFromMavenPlugin', Copy)
 		tasks.named('copySamplesFromMavenPlugin', Copy) {							
+			group = "Preparation"
+			description = "copy the src folder from the GraphQL maven relevant project"
+
 			// Please set the systemProp.graphqlGradlePlugin.graphqlMavenPluginProject.path in the gradle.properties to the
 			// full path for the graphql-maven-plugin-project folder
 			// OR IGNORE IF YOU JUST BUILD THE GRADLE PLUGIN as a standalone
@@ -117,11 +142,8 @@ subprojects {
 		    mustRunAfter cleanSamplesCode
 
 			doFirst {
-				group = "Preparation"
-				description = "Copy the sources from the GraphQL maven plugin to the Gradle plugin"
-	
-				println "copy from: " + System.properties['graphqlGradlePlugin.graphqlMavenPluginProject.path'] +'/graphql-maven-plugin-samples/' + project.name.replace('gradle', 'maven')
-				println "copy into: ${project.projectDir}"
+				// println "copy from: " + source[0]
+				println "copy into: " + destinationDir
 			}
 		}
 	}

@@ -1,16 +1,3 @@
-buildscript {
-    repositories {
-		// The plugin depends on the graphql-maven-plugin, whose snapshot versions are on the local maven repository.
-		// So, for development reason, we need to access to the local maven repository. It's useless for standard use of the plugin
-        mavenLocal()
-        mavenCentral()
-    }
-    dependencies {
-        // The below dependency is used to test the custom templates from a built jar, as it is used by graphql-gradle-plugin3
-        classpath 'com.graphql-java-generator:graphql-gradle-plugin-samples-CustomTemplates-resttemplate:dummy'
-    }
-}
-
 plugins {
 	id 'java-library'
 	id 'application'

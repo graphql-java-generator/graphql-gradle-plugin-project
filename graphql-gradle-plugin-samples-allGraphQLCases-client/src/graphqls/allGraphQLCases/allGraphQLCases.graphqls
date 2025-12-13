@@ -1,12 +1,13 @@
 
 scalar MyCustomScalarForADate 
 	@testDirective(value:"on Scalar") 
-	@specifiedBy(url: "url for the ISO-8601 data format")
+	@specifiedBy(url: "https://en.wikipedia.org/wiki/ISO_8601")
 	@anotherTestDirective 
 
 """ The MyCustomScalarForADateTime uses the ExtendedScalars#MyCustomScalarForADateTime implementation, provided by graphql-java (in the graphql-java-extended-scalars) """
 scalar MyCustomScalarForADateTime
-@testDirective(value:"directive on a custom scalar")
+	@specifiedBy(url: "https://en.wikipedia.org/wiki/ISO_8601")
+	@testDirective(value:"directive on a custom scalar")
 
 scalar Long
 
@@ -364,10 +365,10 @@ type AllFieldCases implements WithID
     matrix: [[Float]]!
     oneWithoutFieldParameter: AllFieldCasesWithIdSubtype
     oneWithIdSubType(uppercase: Boolean @testDirective(value:"on uppercase parameter")): AllFieldCasesWithIdSubtype
-    listWithIdSubTypes(nbItems: Long!, date: MyCustomScalarForADate, dates: [MyCustomScalarForADate]!, uppercaseName: Boolean, textToAppendToTheForname: String): [AllFieldCasesWithIdSubtype]
+    listWithIdSubTypes(nbItems: Long!, date: MyCustomScalarForADate, dates: [MyCustomScalarForADate]!, uppercaseName: Boolean, textToAppendToTheName: String): [AllFieldCasesWithIdSubtype]
        @generateDataLoaderForLists
     oneWithoutIdSubType(input: FieldParameterInput): AllFieldCasesWithoutIdSubtype
-    listWithoutIdSubTypes(nbItems: Long!, input: FieldParameterInput, textToAppendToTheForname: String): [AllFieldCasesWithoutIdSubtype]
+    listWithoutIdSubTypes(nbItems: Long!, input: FieldParameterInput, textToAppendToTheName: String): [AllFieldCasesWithoutIdSubtype]
     issue65(inputs: [FieldParameterInput!]): [AllFieldCasesWithoutIdSubtype]
     issue66(input: [AllFieldCasesInput] = 
     	[
@@ -415,7 +416,7 @@ interface AllFieldCasesInterface @testDirective(value:"on Interface") {
     planets: [String!]!
     friends: [Human!] @RelayConnection
     oneWithIdSubType: AllFieldCasesWithIdSubtype
-    listWithIdSubTypes(nbItems: Int!, uppercaseName: Boolean, textToAppendToTheForname: String): [AllFieldCasesWithIdSubtype]
+    listWithIdSubTypes(nbItems: Int!, uppercaseName: Boolean, textToAppendToTheName: String): [AllFieldCasesWithIdSubtype]
     oneWithoutIdSubType(input: FieldParameterInput): AllFieldCasesWithoutIdSubtype
     listWithoutIdSubTypes(nbItems: Int!, input: FieldParameterInput, textToAppendToTheForname: String): [AllFieldCasesWithoutIdSubtype]
 }
@@ -434,7 +435,7 @@ type AllFieldCasesInterfaceType implements AllFieldCasesInterface & WithID {
     # @RelayConnection should be but is not applied on the friends field (this allows the unit test that checks that a warning is correctly generated)
     friends: [Human!] 
     oneWithIdSubType: AllFieldCasesWithIdSubtype
-    listWithIdSubTypes(nbItems: Int!, uppercaseName: Boolean, textToAppendToTheForname: String): [AllFieldCasesWithIdSubtype]
+    listWithIdSubTypes(nbItems: Int!, uppercaseName: Boolean, textToAppendToTheName: String): [AllFieldCasesWithIdSubtype]
     oneWithoutIdSubType(input: FieldParameterInput): AllFieldCasesWithoutIdSubtype
     listWithoutIdSubTypes(nbItems: Int!, input: FieldParameterInput, textToAppendToTheForname: String): [AllFieldCasesWithoutIdSubtype]
 }
@@ -442,6 +443,8 @@ type AllFieldCasesInterfaceType implements AllFieldCasesInterface & WithID {
 type AllFieldCasesWithIdSubtype {
     id: ID!
     name: String!
+    date: MyCustomScalarForADate
+    dates: [MyCustomScalarForADate]!
 }
 
 type AllFieldCasesWithoutIdSubtype {

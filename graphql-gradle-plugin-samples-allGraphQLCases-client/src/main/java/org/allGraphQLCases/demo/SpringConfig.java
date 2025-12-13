@@ -4,33 +4,36 @@
 package org.allGraphQLCases.demo;
 
 import java.net.URI;
+import java.util.Collections;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.codec.CodecCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.graphql.client.GraphQlClient;
 import org.springframework.graphql.client.WebSocketGraphQlClient;
 import org.springframework.http.HttpHeaders;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
-import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClientProvider;
-import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClientProviderBuilder;
+import org.springframework.http.MediaType;
+import org.springframework.lang.NonNull;
+import org.springframework.security.oauth2.client.AuthorizedClientServiceReactiveOAuth2AuthorizedClientManager;
+import org.springframework.security.oauth2.client.InMemoryReactiveOAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.registration.ReactiveClientRegistrationRepository;
-import org.springframework.security.oauth2.client.web.DefaultReactiveOAuth2AuthorizedClientManager;
 import org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction;
-import org.springframework.security.oauth2.client.web.server.ServerOAuth2AuthorizedClientRepository;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.socket.WebSocketHandler;
 import org.springframework.web.reactive.socket.client.ReactorNettyWebSocketClient;
-import org.springframework.web.server.ServerWebExchange;
 
 import com.graphql_java_generator.client.OAuthTokenExtractor;
 
 import reactor.core.publisher.Mono;
+import reactor.netty.http.client.HttpClient;
 
 /**
  * Spring configuration for this app. The main configuration is the oauth one.
@@ -43,41 +46,45 @@ public class SpringConfig {
 	/** Logger for this class */
 	private static Logger logger = LoggerFactory.getLogger(SpringConfig.class);
 
+	@Value("${another.parameter.for.the.graphql.endpointAllGraphQLCases.url}")
+	private String anotherParameterForTheGraphqlEndpointAllGraphQLCasesUrl;
+
 	@Bean
-	@SuppressWarnings("static-method")
-	public WebClient webClient(ReactiveClientRegistrationRepository clientRegistrations) {
-		ReactiveOAuth2AuthorizedClientProvider authorizedClientProvider = ReactiveOAuth2AuthorizedClientProviderBuilder
-				.builder().clientCredentials().build();
-
-		ServerOAuth2AuthorizedClientRepository authorizedClientRepository = new ServerOAuth2AuthorizedClientRepository() {
-			@Override
-			public <T extends OAuth2AuthorizedClient> Mono<T> loadAuthorizedClient(String clientRegistrationId,
-					Authentication principal, ServerWebExchange exchange) {
-				return Mono.empty();
-			}
-
-			@Override
-			public Mono<Void> saveAuthorizedClient(OAuth2AuthorizedClient authorizedClient, Authentication principal,
-					ServerWebExchange exchange) {
-				return Mono.empty();
-			}
-
-			@Override
-			public Mono<Void> removeAuthorizedClient(String clientRegistrationId, Authentication principal,
-					ServerWebExchange exchange) {
-				return Mono.empty();
-			}
-		};
-
-		DefaultReactiveOAuth2AuthorizedClientManager authorizedClientManager = new DefaultReactiveOAuth2AuthorizedClientManager(
-				clientRegistrations, authorizedClientRepository);
-		authorizedClientManager.setAuthorizedClientProvider(authorizedClientProvider);
-
-		ServerOAuth2AuthorizedClientExchangeFilterFunction oauth2 = new ServerOAuth2AuthorizedClientExchangeFilterFunction(
+	@Primary
+	ServerOAuth2AuthorizedClientExchangeFilterFunction serverOAuth2AuthorizedClientExchangeFilterFunctionAllGraphQLCases(
+			ReactiveClientRegistrationRepository clientRegistrations) {
+		InMemoryReactiveOAuth2AuthorizedClientService clientService = new InMemoryReactiveOAuth2AuthorizedClientService(
+				clientRegistrations);
+		AuthorizedClientServiceReactiveOAuth2AuthorizedClientManager authorizedClientManager = new AuthorizedClientServiceReactiveOAuth2AuthorizedClientManager(
+				clientRegistrations, clientService);
+		ServerOAuth2AuthorizedClientExchangeFilterFunction oauth = new ServerOAuth2AuthorizedClientExchangeFilterFunction(
 				authorizedClientManager);
-		oauth2.setDefaultClientRegistrationId("provider_test");
+		oauth.setDefaultClientRegistrationId("provider_test"); // Defines our custom OAuth2 provider
+		return oauth;
+	}
 
-		return WebClient.builder().filter(oauth2).build();
+	@Bean
+	@Primary // Overrides the default one provided by the plugin
+	@SuppressWarnings("static-method")
+	// Note: as the AllGraphQLCases schema has been generated with springBeanSuffix plugin pararameter set to
+	// "AllGraphQLCases", the webClient bean must be for this GraphQL schema must be suffixed by AllGraphQLCases
+	public WebClient webClientAllGraphQLCases(//
+			CodecCustomizer defaultCodecCustomizer, //
+			@Autowired(required = false) @Qualifier("httpClientAllGraphQLCases") HttpClient httpClientAllGraphQLCases,
+			@Autowired(required = false) @Qualifier("serverOAuth2AuthorizedClientExchangeFilterFunctionAllGraphQLCases") ServerOAuth2AuthorizedClientExchangeFilterFunction serverOAuth2AuthorizedClientExchangeFilterFunctionAllGraphQLCases) {
+
+		// This raises the volume of the in-memory buffer to manager large server responses
+		ExchangeStrategies exchangeStrategies = ExchangeStrategies.builder()
+				.codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(1024 * 1024 * 10)).build();
+
+		return WebClient.builder()//
+				.baseUrl(anotherParameterForTheGraphqlEndpointAllGraphQLCasesUrl)//
+				.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+				.defaultUriVariables(
+						Collections.singletonMap("url", anotherParameterForTheGraphqlEndpointAllGraphQLCasesUrl))
+				.filter(serverOAuth2AuthorizedClientExchangeFilterFunctionAllGraphQLCases)//
+				.exchangeStrategies(exchangeStrategies)//
+				.build();
 	}
 
 	/**
@@ -93,9 +100,10 @@ public class SpringConfig {
 	 * @return
 	 */
 	@Bean
-	@Qualifier("AllGraphQLCases")
-	@Primary
-	GraphQlClient webSocketGraphQlClientAllGraphQLCases(String graphqlEndpointAllGraphQLCases,
+	@Primary // Overrides the default one provided by the plugin
+	// Note: as the AllGraphQLCases schema has been generated with springBeanSuffix plugin pararameter set to
+	// "AllGraphQLCases", the webClient bean must be for this GraphQL schema must be suffixed by AllGraphQLCases
+	GraphQlClient webSocketGraphQlClientAllGraphQLCases(
 			@Qualifier("serverOAuth2AuthorizedClientExchangeFilterFunctionAllGraphQLCases") ServerOAuth2AuthorizedClientExchangeFilterFunction serverOAuth2AuthorizedClientExchangeFilterFunctionAllGraphQLCases) {
 
 		logger.debug("Creating SpringConfig webSocketGraphQlClientAllGraphQLCases");
@@ -109,16 +117,13 @@ public class SpringConfig {
 		// capability:
 		ReactorNettyWebSocketClient client = new ReactorNettyWebSocketClient() {
 			@Override
-			public Mono<Void> execute(URI url, HttpHeaders requestHeaders, WebSocketHandler handler) {
+			public @NonNull Mono<Void> execute(@NonNull URI url, @NonNull HttpHeaders requestHeaders,
+					@NonNull WebSocketHandler handler) {
 				// Let's retrieve the valid OAuth token
 				String authorizationHeaderValue = oAuthTokenExtractor.getAuthorizationHeaderValue();
 
 				// Then we apply it to the given headers
-				if (requestHeaders == null) {
-					requestHeaders = new HttpHeaders();
-				} else {
-					requestHeaders.remove(OAuthTokenExtractor.AUTHORIZATION_HEADER_NAME);
-				}
+				requestHeaders.remove(OAuthTokenExtractor.AUTHORIZATION_HEADER_NAME);
 				logger.trace("Adding the bearer token to the Subscription websocket request");
 				requestHeaders.add(OAuthTokenExtractor.AUTHORIZATION_HEADER_NAME, authorizationHeaderValue);
 
@@ -127,7 +132,7 @@ public class SpringConfig {
 			}
 		};
 
-		return WebSocketGraphQlClient.builder(graphqlEndpointAllGraphQLCases, client).build();
+		return WebSocketGraphQlClient.builder(anotherParameterForTheGraphqlEndpointAllGraphQLCasesUrl, client).build();
 	}
 
 }

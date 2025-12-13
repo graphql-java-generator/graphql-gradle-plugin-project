@@ -1,7 +1,42 @@
 # Explanation
 
-This template is a copy/paste of the 'client_query_mutation_type.vm.java' template, as it is redefined in the 
-`graphql-maven-plugin-samples-CustomTemplates-resttemplate` module of the maven plugin project.
+This template is a copy/paste of the 'client_query_mutation_type.vm.java' template, with this only modification:
+* Add of a boolean field: thisIsADummyFieldToCheckThatThisTemplateIsUsed. It is checked in the IT test, to check that the custom templates is actually used.
 
-Like in the maven plugin project, this custom template should come from an external project. But custom templates embedded 
-in an external library doesn't seem to be readable from a Gradle plugin, so this custom template has been copied into the ./CustomTemplates-resttemplate of this project, so that the JUnit tests coming from the Maven project still work.
+
+# Internal note
+
+# To update it :
+
+* Copy/paste the `client_query_mutation_type.vm.java` template, from the plugin-logic module.
+* Add the thisIsADummyFieldToCheckThatThisTemplateIsUsed just after the class declaration, like this :
+
+```Java
+${object.annotation}
+@SuppressWarnings("unused")
+public class ${object.classSimpleName} extends ${object.name}Executor${springBeanSuffix} #if(!${configuration.separateUtilityClasses} && ${object.requestType})implements com.graphql_java_generator.client.GraphQLRequestObject #end{
+
+	/** 
+	 * The field below is the only change from the original template. It is here only to check that 
+	 * this template is actually used
+	 */ 
+	public boolean thisIsADummyFieldToCheckThatThisTemplateIsUsed = true;
+	
+
+```
+
+## To document it
+
+A good idea is to add these lines at the beginning of the file, for documentation:
+
+```md
+##
+## This template is a copy/paste of the 'client_query_mutation_type.vm.java' template, with this only modification:
+##  - Add of a boolean field: thisIsADummyFieldToCheckThatThisTemplateIsUsed. It is checked in the IT test, 
+##    to check that the custom templates is actually used.
+##
+```
+
+## To test it
+
+The `com.graphql_java_generator.samples.basic.client.ValidateCustomQueryIT` integration test checks that the thisIsADummyFieldToCheckThatThisTemplateIsUsed is true, which implies that the field exists, and so that the custom templates has been used to generate the code.

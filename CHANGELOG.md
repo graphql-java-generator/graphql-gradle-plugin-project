@@ -9,6 +9,19 @@
 
 # 3.x versions
 
+## 3.1
+
+All modes (client and server):
+* [minor] Better formatting of the generated code
+* [minor] All strings in the generated code are marked with //$NON-NLS-1$ style comments, to prevent compilation warnings in some environments
+* [Templates] Issue #125: Creation of the OBJECT_CONTENT template, that allows to override the content of an object (fields and methods)
+
+Client mode:
+* PR #237: Better generation for parameters (thanks to klafbang)
+    * Setting a bind variable to null would erroneously remove the relevant argument in the query
+    * Default value in GraphQL request parameters was not managed
+* Correction of a NullPointerException when a query returns an interface containing fields with parameters
+* Issue #238: if a webClient overrides the default one, it may use its own property (the application property _graphql.endpoint.url_ is then no more mandatory). This allows such application to use any property of their own to define the GraphQL url
 
 ## 3.0.1
 
