@@ -4,6 +4,8 @@ plugins {
 	id 'com.graphql-java-generator.graphql-gradle-plugin3'
 	id 'org.springframework.boot' version "${springBootVersion}"
 	id 'io.spring.dependency-management' version "${springDependencyManagementPluginVersion}"
+	// Avoid some errors about libraries that are not java modules
+	id 'org.gradlex.extra-java-module-info' version "${extraJavaModuleInfoVersion}"
 }
 
 repositories {
@@ -14,11 +16,10 @@ repositories {
 }
 
 dependencies {
-    implementation "org.springframework.boot:spring-boot-starter-web"
-    implementation "org.springframework.boot:spring-boot-starter-security"
-    implementation "org.springframework.security:spring-security-oauth2-authorization-server:${oauth2AuthorizationServerVersion}"
-    
-	// Dependencies for tests
-	testImplementation "org.springframework.boot:spring-boot-starter-test"
-	testImplementation "org.springframework.security:spring-security-test" 
+    implementation "org.springframework.boot:spring-boot-starter-security-oauth2-authorization-server:${springBootVersion}"
+}
+
+extraJavaModuleInfo {
+	// Avoid some errors about libraries that are not java modules
+    failOnMissingModuleInfo.set(false)
 }

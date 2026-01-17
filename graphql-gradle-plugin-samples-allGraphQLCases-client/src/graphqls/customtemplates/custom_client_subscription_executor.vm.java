@@ -63,7 +63,7 @@ import com.graphql_java_generator.exception.GraphQLRequestExecutionException;
 import com.graphql_java_generator.exception.GraphQLRequestPreparationException;
 import com.graphql_java_generator.util.GraphqlUtils;
 import com.graphql_java_generator.client.GraphqlClientUtils;
-import com.graphql_java_generator.client.GraphQLObjectMapper;
+import com.graphql_java_generator.client.GraphQLJsonMapper;
 import com.graphql_java_generator.client.GraphQLSubscriptionExecutor;
 import com.graphql_java_generator.client.SubscriptionCallback;
 import com.graphql_java_generator.client.SubscriptionClient;
@@ -114,14 +114,12 @@ public class ${object.name}Executor${springBeanSuffix}  implements GraphQLSubscr
 
 	public ${object.name}Executor${springBeanSuffix}() {
 ## The @..@ is the placeholder for the maven resource filtering
-		if (!"0-SNAPSHOT".equals(this.graphqlUtils.getRuntimeVersion())) { //$NON-NLS-1$
+		if (!"@project.version@".equals(this.graphqlUtils.getRuntimeVersion())) { //$NON-NLS-1$
 			throw new RuntimeException("The GraphQL runtime version doesn't match the GraphQL plugin version. The runtime's version is '" //$NON-NLS-1$
 					+ this.graphqlUtils.getRuntimeVersion() 
-					+ "' whereas the GraphQL plugin version is '0-SNAPSHOT'"); //$NON-NLS-1$
+					+ "' whereas the GraphQL plugin version is '@project.version@'"); //$NON-NLS-1$
 		}
-		CustomScalarRegistryInitializer.initCustomScalarRegistry();
-		DirectiveRegistryInitializer.initDirectiveRegistry();
-		GraphQLTypeMappingImpl.initGraphQLTypeMappingRegistry();
+		RegistriesInitializer.initializeAllRegistries();
 	}
 
 	/**

@@ -3,6 +3,8 @@ plugins {
 	id 'com.graphql-java-generator.graphql-gradle-plugin3'
 	id 'org.springframework.boot' version "${springBootVersion}"
 	id 'io.spring.dependency-management' version "${springDependencyManagementPluginVersion}"
+	// Avoid some errors about libraries that are not java modules
+	id 'org.gradlex.extra-java-module-info' version "${extraJavaModuleInfoVersion}"
 }
 
 // The two configurations below are mandatory, as there is no main class in this module
@@ -66,7 +68,7 @@ tasks.register('generateClientPojo', com.graphql_java_generator.gradleplugin.Gen
 			graphQLScalarTypeGetter: "org.allGraphQLCases.GraphQLScalarTypeElse.getElseScalar()"
 		], [
 			graphQLTypeName: "JSON",
-			javaType: "com.fasterxml.jackson.databind.node.ObjectNode",
+			javaType: "tools.jackson.databind.node.ObjectNode",
 			graphQLScalarTypeStaticField: "graphql.scalars.ExtendedScalars.Json"
 		], [
 			graphQLTypeName: "MyBoolean",
@@ -87,6 +89,10 @@ tasks.register('generateClientPojo', com.graphql_java_generator.gradleplugin.Gen
 	] ]
 }
 
+extraJavaModuleInfo {
+	// Avoid some errors about libraries that are not java modules
+    failOnMissingModuleInfo.set(false)
+}
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

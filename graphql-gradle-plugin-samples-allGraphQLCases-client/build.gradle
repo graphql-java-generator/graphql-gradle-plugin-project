@@ -4,6 +4,8 @@ plugins {
 	id 'com.graphql-java-generator.graphql-gradle-plugin3'
 	id 'org.springframework.boot' version "${springBootVersion}"
 	id 'io.spring.dependency-management' version "${springDependencyManagementPluginVersion}"
+	// Avoid some errors about libraries that are not java modules
+	id 'org.gradlex.extra-java-module-info' version "${extraJavaModuleInfoVersion}"
 }
 
 application {
@@ -18,11 +20,12 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-graphql'
 	// The graphql-java-client-dependencies module agregates all dependencies for the generated code
     implementation "com.graphql-java-generator:graphql-java-client-runtime:${project.version}"
+    
     // This project uses some custom scalars from the graphql-java-extended-scalars module
     implementation "com.graphql-java:graphql-java-extended-scalars:${graphqlJavaExtendedScalarsVersion}"
+    
     // This project checks OAuth 
     implementation 'org.springframework.security:spring-security-oauth2-client' 
 
@@ -92,7 +95,7 @@ tasks.register('generateClientCodeAllGraphQLCases', com.graphql_java_generator.g
 			graphQLScalarTypeGetter: "com.generated.customscalars.GraphQLScalarTypeElse.getElseScalar()"
 		], [
 			graphQLTypeName: "JSON",
-			javaType: "com.fasterxml.jackson.databind.node.ObjectNode",
+			javaType: "tools.jackson.databind.node.ObjectNode",
 			graphQLScalarTypeStaticField: "graphql.scalars.ExtendedScalars.Json"
 		], [
 			graphQLTypeName: "MyBoolean",
@@ -148,7 +151,7 @@ tasks.register('generateClientCodeAllGraphQLCases2', com.graphql_java_generator.
 			graphQLScalarTypeGetter: "com.generated.customscalars.GraphQLScalarTypeElse.getElseScalar()"
 		], [
 			graphQLTypeName: "JSON",
-			javaType: "com.fasterxml.jackson.databind.node.ObjectNode",
+			javaType: "tools.jackson.databind.node.ObjectNode",
 			graphQLScalarTypeStaticField: "graphql.scalars.ExtendedScalars.Json"
 		], [
 			graphQLTypeName: "MyBoolean",
@@ -198,6 +201,11 @@ tasks.register('generateClientCodeForum', com.graphql_java_generator.gradleplugi
 	]
 }
 
+extraJavaModuleInfo {
+	// Avoid some errors about libraries that are not java modules
+    failOnMissingModuleInfo.set(false)
+}
+
 test {
 	// enable JUnit Platform (a.k.a. JUnit 5) support
 	useJUnitPlatform()
@@ -208,6 +216,6 @@ test {
 
 
 // The next lines insures that the necessary servers are started before starting the integration test from the client.
-test.dependsOn ":startAuthorizationServer"
+test.dependsOn ":startOAuthServer"
 test.dependsOn ":startAllGraphQLCasesServer"
 test.dependsOn ":startForumServer"

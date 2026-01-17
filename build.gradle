@@ -86,7 +86,7 @@ compileTestJava {
 
 // Let's set some parameters and tasks that are common to all sub projects
 subprojects {
-
+	
 	// The '-parameters' compiler parameter allows to keep the parameter names in the generated code. It's useful for some tests.
 	// It has no impact on the plugin, as it is in a separate build.
     tasks.withType(JavaCompile) {
@@ -193,8 +193,6 @@ tasks.named('cleanAll', Delete) {
 tasks.named("clean") {
 	actions.clear()
 	doLast {
-		println("Executing overrided clean task ($rootProject.projectDir)")
-		
 		// Let's execute the default task, which will also clean the subprojects
 		delete "build/"
 		delete "buildSrc/build/"
@@ -207,7 +205,6 @@ tasks.named("clean") {
 		
 		// Let's loop into each subproject
 		subprojects {
-			println("  Executing overrided clean task for subproject $project.name ($project.projectDir/bin)")
 			delete "$project.projectDir/bin"
 			delete "$project.projectDir/build"
 			delete "$project.projectDir/build2"
@@ -241,6 +238,7 @@ task startAllGraphQLCasesServer(type: StartApp) {
 
 	// The next lines insures that the relevant server project is built before starting the integration test from this client module.
 	dependsOn ":graphql-gradle-plugin-samples-allGraphQLCases-server:bootJar"
+	dependsOn "startOAuthServer"
 
 	// The stopWebApp must be attached here. And must run after tests
 	finalizedBy 'stopAllGraphQLCasesServer'
@@ -253,6 +251,7 @@ task stopAllGraphQLCasesServer(type: StopApp) {
 
 	// The stopWebApp is attached to startWebApp, and must run after tests
 	dependsOn 'startAllGraphQLCasesServer'
+
 	mustRunAfter ":graphql-gradle-plugin-samples-allGraphQLCases-client:test"
 	mustRunAfter ":graphql-gradle-plugin-samples-Forum-client:test"
 }
@@ -264,6 +263,7 @@ task startForumServer(type: StartApp) {
 
 	// The next lines insures that the relevant server project is built before starting the integration test from this client module.
 	dependsOn ":graphql-gradle-plugin-samples-Forum-server:bootJar"
+	dependsOn "startOAuthServer"
 
 	// The stopForumServer must be attached here. And must run after tests
 	finalizedBy 'stopForumServer'
@@ -281,25 +281,25 @@ task stopForumServer(type: StopApp) {
 
 }
 
-task startAuthorizationServer(type: StartApp) {
+task startOAuthServer(type: StartApp) {
 	// Let's start the server that matches the current client project
-	jarFile = file("graphql-gradle-plugin-samples-OAuth-authorization-server/build/libs/graphql-gradle-plugin-samples-OAuth-authorization-server-${project.version}.jar")
+	jarFile = file("graphql-gradle-plugin-samples-OAuth-server/build/libs/graphql-gradle-plugin-samples-OAuth-server-${project.version}.jar")
 	url = 'http://localhost:8181/helloWorld'
 
 	// The next lines insures that the relevant server project is built before starting the integration test from this client module.
-	dependsOn ":graphql-gradle-plugin-samples-OAuth-authorization-server:bootJar"
+	dependsOn ":graphql-gradle-plugin-samples-OAuth-server:bootJar"
 
 	// The stopWebApp must be attached here. And must run after tests
-	finalizedBy 'stopAuthorizationServer'
+	finalizedBy 'stopOAuthServer'
 }
 
-task stopAuthorizationServer(type: StopApp) {
+task stopOAuthServer(type: StopApp) {
 	// The line blow is executed during configuration phase. So the process is unknown.
 	// We just define the Task object. The StopApp task will read the process id at execution time
-	startAppTaskPath = tasks["startAuthorizationServer"].path
+	startAppTaskPath = tasks["startOAuthServer"].path
 
 	// The stopWebApp is attached to startWebApp, and must run after tests
-	dependsOn 'startAuthorizationServer'
+	dependsOn 'startOAuthServer'
 	mustRunAfter ":graphql-gradle-plugin-samples-allGraphQLCases-client:test"
 	mustRunAfter ":graphql-gradle-plugin-samples-Forum-client:test"
 }

@@ -4,6 +4,8 @@ plugins {
 	id 'com.graphql-java-generator.graphql-gradle-plugin3'
 	id 'org.springframework.boot' version "${springBootVersion}"
 	id 'io.spring.dependency-management' version "${springDependencyManagementPluginVersion}"
+	// Avoid some errors about libraries that are not java modules
+	id 'org.gradlex.extra-java-module-info' version "${extraJavaModuleInfoVersion}"
 }
 
 repositories {
@@ -22,7 +24,7 @@ dependencies {
 	implementation "org.springframework.boot:spring-boot-starter-data-jpa"
 	implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
 	
-	runtimeOnly "com.h2database:h2"
+	runtimeOnly "com.h2database:h2:${h2Version}"
 
 	// Dependencies for tests
 	testImplementation "org.springframework.boot:spring-boot-starter-test" 
@@ -51,4 +53,9 @@ generateServerCodeConf {
 			javaType: "java.util.Date",
 			graphQLScalarTypeStaticField: "com.graphql_java_generator.customscalars.GraphQLScalarTypeDate.Date"
 	] ]
+}
+
+extraJavaModuleInfo {
+	// Avoid some errors about libraries that are not java modules
+    failOnMissingModuleInfo.set(false)
 }
