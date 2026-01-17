@@ -43,13 +43,14 @@ public class GeneratePojoExtension extends GraphQLExtension implements GenerateP
 
 	@Override
 	public boolean isGenerateJacksonAnnotations() {
-		if (generateJacksonAnnotations != null)
+		if (generateJacksonAnnotations != null) {
 			return generateJacksonAnnotations;
-		else
+		} else {
 			return getMode().equals(PluginMode.client);
+		}
 	}
 
-	public Boolean isGenerateJacksonAnnotations_Raw() {
+	public Boolean getGenerateJacksonAnnotations_Raw() {
 		return generateJacksonAnnotations;
 	}
 

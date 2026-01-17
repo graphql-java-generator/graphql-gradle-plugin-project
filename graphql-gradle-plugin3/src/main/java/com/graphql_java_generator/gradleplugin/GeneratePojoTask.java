@@ -178,11 +178,11 @@ public class GeneratePojoTask extends GraphQLGenerateCodeTask implements Generat
 	@Override
 	@Input
 	public boolean isGenerateJacksonAnnotations() {
-		if (generateJacksonAnnotations == null && getExtension().isGenerateJacksonAnnotations_Raw() == null) {
+		if (generateJacksonAnnotations == null && getExtension().getGenerateJacksonAnnotations_Raw() == null) {
 			// Both stored values are null. We select the default value according to the plugin mode
 			return getMode().equals(PluginMode.client);
 		} else {
-			return getValue(generateJacksonAnnotations, getExtension().isGenerateJacksonAnnotations_Raw());
+			return getValue(generateJacksonAnnotations, getExtension().getGenerateJacksonAnnotations_Raw());
 		}
 	}
 
