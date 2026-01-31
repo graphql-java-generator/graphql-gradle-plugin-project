@@ -1,13 +1,45 @@
-[TOC]
+
+<!--ts-->
+<!--te-->
+
+    
+
+# 4.x versions
+
+## Main changes in the 4.x releases (including breaking changes)
+
+* Upgrade to Spring Boot 4 and Spring Framework 7. This implies:
+    * Upgrade from Jackson 2 to Jackson 3. 
+        * If you're using the JSON scalar, you may have to change the javaType parameter from `om.fasterxml.jackson.databind.node.ObjectNode` to `tools.jackson.databind.node.ObjectNode`
+    * In server mode, when using an alternate path to expose the GraphQL server, the property in the spring `application.properties` file changed from `spring.graphql.path` to `spring.graphql.http.path`
+* Needs at least java 17 (tested with Java 25)
 
 
-# Breaking changes to come with the 3.x releases
+## 4.0
+
+All modes (client and server):
+* Upgrade to Spring Boot 4 and Spring Framework 7. This implies:
+    * Upgrade from Jackson 2 to Jackson 3. 
+        * If you're using the JSON scalar, you may have to change the javaType parameter from `om.fasterxml.jackson.databind.node.ObjectNode` to `tools.jackson.databind.node.ObjectNode`
+    * In server mode, when using an alternate path to expose the GraphQL server, the property in the spring `application.properties` file changed from `spring.graphql.path` to `spring.graphql.http.path`
+
+Gradle plugin:
+* Correction of issue 26: Gradle deprecation in GeneratePojoExtension.isGenerateJacksonAnnotations_Raw
+
+
+Client mode:
+* When connected to two different GraphQL servers, there could be conflicts between directive defined in this two schemas
+* Removal of two templates (CUSTOM_SCALAR_REGISTRY_INITIALIZER and DIRECTIVE_REGISTRY_INITIALIZER), replaced by one: REGISTRIES_INITIALIZER. This allows a better isolation of some plugin's internal technical code.
+
+
+# 3.x versions
+
+## Breaking changes in the 3.x releases
 
 * The default value for `generateDataFetcherForEveryFieldsWithArguments` be changed to true in version 3.0.1. This implies to implement more Data Fetchers
 * The com.graphql-java-generator.graphql-gradle-plugin is no more maintained
     * You must switch to the com.graphql-java-generator.graphql-gradle-plugin3 plugin. That is: add '3' to the plugin's name
 
-# 3.x versions
 
 ## 3.1
 

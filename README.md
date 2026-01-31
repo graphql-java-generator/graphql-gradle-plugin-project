@@ -48,25 +48,32 @@ Other points that are worth to point out:
 * A big effort is done to __avoid any impact on your code, when the plugin evolves__. 
 * The `generateGraphQLSchema` maven/gradle goal/task allows to __merge several schemas in one__, adding (for instance) relay capability in the generated schema
 
-# Three main versions: 1.x, 2.x and 3.x
+# Three main versions: 1.x, 2.x, 3.x and 4.x
 
-The 1.x version:
+The 1.x versions:
 * Allows non-spring application either by using the `javax.ws.rs.client.Client` client, which is deprecated and has been removed in Spring Boot 3
 * Is based directly on [graphql-java](https://www.graphql-java.com/), and a clone of [graphql-java-spring](https://github.com/graphql-java/graphql-java-spring).
 * Is not compatible with Spring Boot 3 and Spring Framework 5
 
-The 2.x version:
+The 2.x versions:
 * Is based on [spring-graphql](https://spring.io/projects/spring-graphql)
 * Is compatible with Spring Boot 3 and Spring Framework 6
     * Another version of the Gradle plugin had been created to achieve this (see below)
 * (since 2.3) Allows also reactive queries (that returns reactive Mono or Flux)
 * Please check the [Client migration from 1.x to 2.x](../../wiki/client_migrate_1-x_to_2-x) or [Server migration from 1.x to 2.x](../../wiki/server_migrate_1-x_to_2-x) if you're using the 1.x version.
 
-The 3.x version:
-* Is compatible with java 17 (and upper)
+The 3.x versions:
+* Is compatible with java 17 and upper (tested ok with java 25)
 * Is compatible with JPMS (Java Modules)
 * Doesn't maintain the Gradle graphql-gradle-plugin plugin. If your using gradle, you'll have to switch to graphql-gradle-plugin3 (just add a '3' to the plugin name if you was not already using it).
+* The project won't build in java 25, but the published plugin is compatible with java 25.
+* Is based on spring boot 3 and spring framework 5
 
+The 4.x versions:
+* Is compatible with java 17 and upper (tested ok with java 25)
+* Is compatible with JPMS (Java Modules)
+* Doesn't maintain the Gradle graphql-gradle-plugin plugin. If your using gradle, you'll have to switch to graphql-gradle-plugin3 (just add a '3' to the plugin name if you was not already using it).
+* Is based on spring boot 4 and spring framework 7 (see the [CHANGELOG](CHANGELOG.md) for the impacts)
 
 # Availability: Maven and Gradle
 
@@ -145,7 +152,7 @@ This plugin respects all the GraphQL specifications:
 
 # Change log
 
-The Change Log is available [here](CHANGELOG.md)
+The change log is available on the [CHANGELOG](CHANGELOG.md) page
 
 
 # Note for contributors
