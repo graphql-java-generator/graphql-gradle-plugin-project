@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.graphql_java_generator.gradleplugin;
 
 import java.io.File;

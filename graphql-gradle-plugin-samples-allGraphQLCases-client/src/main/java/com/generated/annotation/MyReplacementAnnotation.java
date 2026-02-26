@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.generated.annotation;
 
 import static java.lang.annotation.ElementType.FIELD;
@@ -20,5 +17,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ TYPE, FIELD, METHOD, PARAMETER })
 public @interface MyReplacementAnnotation {
-
+	// Empty block
 }

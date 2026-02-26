@@ -1,6 +1,4 @@
-/**
- * 
- */
+
 package com.graphql_java_generator.gradleplugin;
 
 import java.io.File;
@@ -84,11 +82,13 @@ public class GraphQLPlugin implements Plugin<Project> {
 
 			@Override
 			public void execute(Project p) {
-				Set<Task> compileJavaTasks = project.getTasksByName("compileJava", false);
-				Set<Task> processResourcesTasks = project.getTasksByName("processResources", false);
 				Set<Task> allDependingTasks = new HashSet<>();
-				allDependingTasks.addAll(compileJavaTasks);
-				allDependingTasks.addAll(processResourcesTasks);
+				allDependingTasks
+						.addAll(project.getTasks().withType(org.gradle.api.tasks.compile.AbstractCompile.class));
+				allDependingTasks.addAll(project.getTasksByName("processResources", false));
+
+				Set<Task> runBeforeTasks = new HashSet<>();
+				runBeforeTasks.addAll(project.getTasks().withType(org.gradle.api.tasks.Delete.class));
 
 				Set<String> list = new TreeSet<>();
 				for (Task t : p.getTasks()) {
@@ -98,7 +98,7 @@ public class GraphQLPlugin implements Plugin<Project> {
 								p.getName(), t.getPath(), t.property("initialized").getClass().getSimpleName(),
 								t.property("initialized"), t.getEnabled(), t.getExtensions()));
 						if ((boolean) t.property("initialized") && t instanceof CommonTask) {
-							configurePluginTasks(p, t, allDependingTasks);
+							configurePluginTasks(p, t, allDependingTasks, runBeforeTasks);
 						} else {
 							logger.debug(
 									"Task {} ignored, as its initialized state is {} and it is an instance of {} (it will not be added as a dependency for the compileJava and processResources tasks)",
@@ -116,19 +116,37 @@ public class GraphQLPlugin implements Plugin<Project> {
 			 * 
 			 * @param taskName
 			 * @param dependsOnTask
+			 * @param runBeforeTasks
+			 *            List of tasks that, if they run, must run before this task
 			 * @return the set of tasks, that has <I>taskName<I> as a name. This set contains at least one item (and
 			 *         should not contain more than one)
+			 * 
 			 */
-			private void configurePluginTasks(Project p, Task task, Set<Task> dependingTasks) {
+			private void configurePluginTasks(Project p, Task task, Set<Task> dependingTasks,
+					Set<Task> runBeforeTasks) {
 
-				// Step1 : the plugin task is marked as a dependency for standard tasks
+				// Step 1 : the plugin task is marked as a dependency for standard tasks
 				for (Task dependingTask : dependingTasks) {
 					logger.info("Adding the {} task as a dependency for the {} task", task.getPath(),
 							dependingTask.getPath());
 					dependingTask.dependsOn(task);
 				}
 
-				// Step 2: Add the generated source and resource folders, if applicable
+				// Step 2: declare the tasks that must run before the plugin task, if they are present in the project
+				for (Task runBeforeTask : runBeforeTasks) {
+					logger.info("Indicating that {} task must be executed before the {} task", runBeforeTask.getPath(),
+							task.getPath());
+					task.mustRunAfter(runBeforeTask.getPath());
+				}
+
+				// Step 3 : the plugin task is marked as a dependency for standard tasks
+				for (Task dependingTask : dependingTasks) {
+					logger.info("Adding the {} task as a dependency for the {} task", task.getPath(),
+							dependingTask.getPath());
+					dependingTask.dependsOn(task);
+				}
+
+				// Step 4: Add the generated source and resource folders, if applicable
 				if (task instanceof GenerateCodeCommonTask) {
 					GenerateCodeCommonTask t = (GenerateCodeCommonTask) task;
 					// Let's add the folders where the sources and resources have been generated to the project
@@ -139,7 +157,7 @@ public class GraphQLPlugin implements Plugin<Project> {
 					addGeneratedResourceFolder(project, task, t.getTargetResourceFolder());
 				}
 
-				// Step 3 :
+				// Step 5 :
 				if (task instanceof GenerateGraphQLSchemaTask) {
 					addGeneratedResourceFolder(project, task, ((GenerateGraphQLSchemaTask) task).getTargetFolder());
 				}

@@ -38,7 +38,6 @@ dependencies {
 def buildDirectory = "build2"
 project.layout.buildDirectory = buildDirectory 
 
-
 // Let's configure the GraphQL Gradle Plugin, for the merge task
 // (the plugin will automatically add it as a dependency to compileJava and processResources) 
 generateGraphQLSchema {

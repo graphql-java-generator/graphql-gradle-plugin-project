@@ -71,38 +71,25 @@ task copySamplesFromMavenPlugin(type: Copy) {
 }
 
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of("${javaVersion}")
-    }
-}
-compileJava {
-    options.encoding = "UTF-8"
-}
-compileTestJava {
-	options.encoding = "UTF-8"
-}
-
-
 // Let's set some parameters and tasks that are common to all sub projects
 subprojects {
 	
 	// The '-parameters' compiler parameter allows to keep the parameter names in the generated code. It's useful for some tests.
 	// It has no impact on the plugin, as it is in a separate build.
-    tasks.withType(JavaCompile) {
-        options.compilerArgs << '-parameters'
-    }	
 
-	java {
-	    toolchain {
-	        languageVersion = JavaLanguageVersion.of("${javaVersion}")
-	    }
-	}
-	compileJava {
-	    options.encoding = "UTF-8"
-	}
-	compileTestJava {
-		options.encoding = "UTF-8"
+	plugins.withId('java') {
+		tasks.named('compileJava', JavaCompile).configure {
+	        options.compilerArgs << '-parameters'
+		    options.encoding = "UTF-8"
+	    	options.release = "${javaVersion}".toInteger()
+	    	// Below are specific options to the main java compile
+    		options.compilerArgs += ["-Xlint:all", "-Werror"]
+    	}
+		tasks.named('compileTestJava', JavaCompile).configure {
+	        options.compilerArgs << '-parameters'
+		    options.encoding = "UTF-8"
+	    	options.release = "${javaVersion}".toInteger()
+    	}
 	}
 
 	/**
@@ -149,19 +136,6 @@ subprojects {
 	}
 }
 
-
-
-
-task cleanPlugin3Code() {
-	group = 'Preparation'
-	description = "Delete the graphql-gradle-plugin3/src folder (to allow fresh copy of the sources from the graphql-gradle-plugin's code)"
-
-	// The action for this task is to delete the src folder
-	doLast {
-		delete 'graphql-gradle-plugin3/src'
-	}
-}
-
 tasks.register('cleanAll', Delete)
 tasks.named('cleanAll', Delete) {
 	dependsOn clean
@@ -174,9 +148,10 @@ tasks.named('cleanAll', Delete) {
 		delete "buildSrc/build/"
 		delete "target/"
 		
-		// Let's clean the two plugins
-		delete "graphql-gradle-plugin/build/"
-		delete "graphql-gradle-plugin3/build/"
+		// Let's clean the plugin
+		var pluginBuildFolder = "graphql-gradle-plugin3/build"
+		println("  Removing folder $pluginBuildFolder")
+		delete pluginBuildFolder
 		
 		// Let's loop into each subproject
 		subprojects {
@@ -189,31 +164,6 @@ tasks.named('cleanAll', Delete) {
 		}
 	}
 }
-
-tasks.named("clean") {
-	actions.clear()
-	doLast {
-		// Let's execute the default task, which will also clean the subprojects
-		delete "build/"
-		delete "buildSrc/build/"
-		delete "target/"
-		delete "toto/"
-		
-		// Let's clean the two plugins
-		delete "graphql-gradle-plugin/build/"
-		delete "graphql-gradle-plugin3/build/"
-		
-		// Let's loop into each subproject
-		subprojects {
-			delete "$project.projectDir/bin"
-			delete "$project.projectDir/build"
-			delete "$project.projectDir/build2"
-			delete "$project.projectDir/target"
-			delete "$project.projectDir/target2"
-		}
-	}
-}
-
 
 task publishPlugins {
 	dependsOn(gradle.includedBuild('graphql-gradle-plugin3').task(':publishPlugins'))	
