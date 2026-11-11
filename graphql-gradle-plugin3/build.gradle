@@ -66,10 +66,14 @@ dependencies {
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
+// No toolchain here: it would require a JDK exactly matching javaVersion to be installed.
+// The 'release' option allows to compile with any JDK >= javaVersion, while generating javaVersion bytecode
 java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of("${javaVersion}")
-    }
+    sourceCompatibility = JavaVersion.toVersion("${javaVersion}")
+    targetCompatibility = JavaVersion.toVersion("${javaVersion}")
+}
+tasks.withType(JavaCompile).configureEach {
+    options.release = "${javaVersion}".toInteger()
 }
 compileJava {
     options.encoding = "UTF-8"
