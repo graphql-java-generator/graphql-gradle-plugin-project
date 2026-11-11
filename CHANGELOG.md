@@ -87,10 +87,15 @@
 * Needs at least java 17 (tested with Java 25)
 
 
-## 4.0.2
+## Not release yet
 
 Gradle plugin:
 * Issue #26: remove gradle 10 compatibility warning
+
+
+## 4.0.2
+
+Gradle plugin:
 * Resolve an issue, that the plugin's generate code could run before the clean goal.
 
 All modes (client and server):

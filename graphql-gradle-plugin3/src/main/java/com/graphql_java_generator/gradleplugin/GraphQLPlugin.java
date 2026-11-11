@@ -150,7 +150,7 @@ public class GraphQLPlugin implements Plugin<Project> {
 				if (task instanceof GenerateCodeCommonTask) {
 					GenerateCodeCommonTask t = (GenerateCodeCommonTask) task;
 					// Let's add the folders where the sources and resources have been generated to the project
-					SourceSet main = ((SourceSetContainer) project.getProperties().get("sourceSets"))
+					SourceSet main = project.getExtensions().getByType(SourceSetContainer.class)
 							.getByName(SourceSet.MAIN_SOURCE_SET_NAME);
 					main.getJava().srcDir(t.getTargetSourceFolder());
 
@@ -287,7 +287,7 @@ public class GraphQLPlugin implements Plugin<Project> {
 
 	/** Add the given resource folder to the resource folders list, if it wasn't already added. */
 	private void addGeneratedResourceFolder(Project project, Task task, File newResourcFolder) {
-		SourceSet main = ((SourceSetContainer) project.getProperties().get("sourceSets"))
+		SourceSet main = project.getExtensions().getByType(SourceSetContainer.class)
 				.getByName(SourceSet.MAIN_SOURCE_SET_NAME);
 		String newResourceFolder = newResourcFolder.getAbsolutePath();
 		java.util.Optional<File> existingResourceFolder = main.getResources().getFiles().stream()
