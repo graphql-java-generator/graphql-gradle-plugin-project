@@ -90,6 +90,7 @@
 ## 4.0.2
 
 Gradle plugin:
+* Issue #26: remove gradle 10 compatibility warning
 * Resolve an issue, that the plugin's generate code could run before the clean goal.
 
 All modes (client and server):
