@@ -90,7 +90,7 @@
 ## Not release yet
 
 Gradle plugin:
-* Issue #26: remove gradle 10 compatibility warning
+* Issue #26 and #28: remove gradle 10 compatibility warning
 
 
 ## 4.0.2
